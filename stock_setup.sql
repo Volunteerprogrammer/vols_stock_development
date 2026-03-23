@@ -73,6 +73,20 @@ INSERT INTO `page` (`id`, `pagenumber`, `name`, `usepagenum`, `pagetype`, `unres
 INSERT INTO `page_action` (`page_id`, `action_id`) VALUES
 (56, 1);
 
+-- Damaged Stock (page id=57) — VIEW + INSERT only
+INSERT INTO `page` (`id`, `pagenumber`, `name`, `usepagenum`, `pagetype`, `unrestricted`, `submenu`, `menuid`, `menutext`, `maxcolumns`, `autoextendtasks`) VALUES
+(57, 407, 'Damaged Stock', 0, 3, 0, 4, 'damagedstockoption', 'Damaged Stock', 0, 0);
+
+INSERT INTO `page_action` (`page_id`, `action_id`) VALUES
+(57, 1);
+
+INSERT INTO `menuitem` (`menucode`, `page_number`, `text`, `inactive`, `menu_number`, `is_public`) VALUES
+('10_7', '407', 'Damaged Stock', 0, 0, 0);
+
+-- Also add 'damaged' to the movement_type ENUM if not already present
+ALTER TABLE `stock_movement`
+    MODIFY `movement_type` ENUM('stocktake_adjustment','delivery','stockout','damaged','reversal') NOT NULL;
+
 -- =============================================================================
 -- After running this script:
 --   1. Log in as Admin — the Stock menu should now appear.

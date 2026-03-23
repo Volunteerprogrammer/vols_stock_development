@@ -203,6 +203,7 @@ class ViewController {
             case $c2v($mm::DELIVERYPAGE)    : $this->setthispage(0,$this->pagenum,$this->mgrs->DeliveryManager(),$this->forms->DeliveryForm(),$errormessage,"",$trace);break;
             case $c2v($mm::STOCKOUTPAGE)       : $this->setthispage(0,$this->pagenum,$this->mgrs->StockoutManager(),$this->forms->StockoutForm(),$errormessage,"",$trace);break;
             case $c2v($mm::STOCKLEVELREPORTPAGE): $this->setthispage(0,$this->pagenum,$this->mgrs->StockLevelReportManager(),$this->forms->StockLevelReportForm(),$errormessage,"",$trace);break;
+            case $c2v($mm::DAMAGEDSTOCKPAGE)    : $this->setthispage(0,$this->pagenum,$this->mgrs->DamagedStockManager(),$this->forms->DamagedStockForm(),$errormessage,"",$trace);break;
             default: die(__METHOD__." Unknown pagenum : {$this->pagenum}");
         }
        if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
@@ -265,6 +266,7 @@ class ViewController {
             case $c2v($mm::DELIVERYPAGE)          :$success = $this->prepare_stockmovement_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::STOCKOUTPAGE)          :$success = $this->prepare_stockmovement_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::STOCKLEVELREPORTPAGE)  :$success = $this->prepare_stocklevelreport_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::DAMAGEDSTOCKPAGE)      :$success = $this->prepare_stockmovement_body($user_id,$errormessage,$trace); break;
             default                                         :$success = $this->prepare_std_body($user_id,$this->orderby,$errormessage,$trace);
         }
         if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }

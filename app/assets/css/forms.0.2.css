@@ -1762,3 +1762,10 @@ input
     }
     .vols-stockreport-col-code { display: none; }
 }
+
+/* Damaged stock header — dark red/burgundy tones */
+.vols-damaged-header {
+    background-color: #fde8e8;
+    border-left: 4px solid #b22222;
+    color: #7a0000;
+}

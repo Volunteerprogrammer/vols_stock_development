@@ -34,7 +34,7 @@ class StockTable extends \fw\database\table\MySQLTable
         $query .= " ), 0)";
         $query .= " - COALESCE((";
         $query .= "   SELECT SUM(sm4.qty) FROM stock_movement sm4";
-        $query .= "   WHERE sm4.stock_id = s.id AND sm4.movement_type = 'stockout'";
+        $query .= "   WHERE sm4.stock_id = s.id AND sm4.movement_type IN ('stockout','damaged')";
         $query .= "   AND sm4.id > COALESCE((";
         $query .= "     SELECT MAX(sm5.id) FROM stock_movement sm5";
         $query .= "     WHERE sm5.stock_id = s.id AND sm5.movement_type = 'stocktake_adjustment'";
