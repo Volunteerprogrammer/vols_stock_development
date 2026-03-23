@@ -101,11 +101,9 @@ class ClassFactory
 			} else {
 				if ($this->trace) { echo $this->indent($this->i)."No Arguments<br>";}
 			}
-			for (;$paindex <= 20; ) $pa[$paindex++] = '';
-			// assume that there will be no more than 14 arguments
-			if ($this->trace) { echo $this->indent($this->i)."Exit ".__METHOD__."  >> classname = $cn (ALL GOOD!)<br>"; }
+				if ($this->trace) { echo $this->indent($this->i)."Exit ".__METHOD__."  >> classname = $cn (ALL GOOD!)<br>"; }
 			$this->adj_i(-8);
-			return new $cn($pa[0],$pa[1],$pa[2],$pa[3],$pa[4],$pa[5],$pa[6],$pa[7],$pa[8],$pa[9],$pa[10],$pa[11],$pa[12],$pa[13],$pa[14],$pa[15],$pa[16],$pa[17],$pa[18],$pa[19],$pa[20]);
+			return new $cn(...$pa);
 		} catch (\Exception $e) {
 		        die('Caught EXCEPTION in '.__METHOD__." >> classname = $cn <br> ".$e->getMessage()."<br>");
 		}

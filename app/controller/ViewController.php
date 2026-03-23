@@ -197,6 +197,11 @@ class ViewController {
             case $c2v($mm::SESSIONPAGE)     : $this->setthispage(0,$this->pagenum,$this->mgrs->SessionManager(),$this->forms->SessionForm(),$errormessage,"task_id, start",$trace);break;
             case $c2v($mm::MENUITEMPAGE)    : $this->setthispage(0,$this->pagenum,$this->mgrs->MenuManager(),$this->forms->MenuItemForm(),$errormessage,"menucode",$trace);break;
             case $c2v($mm::CONFIGPAGE)      : $this->setthispage(0,$this->pagenum,$this->mgrs->ConfigManager(),$this->forms->ConfigForm(),$errormessage,"",$trace);break;
+            case $c2v($mm::STOCKCATEGORYPAGE): $this->setthispage(0,$this->pagenum,$this->mgrs->StockCategoryManager(),$this->forms->StockCategoryForm(),$errormessage,"Name",$trace);break;
+            case $c2v($mm::STOCKPAGE)       : $this->setthispage(0,$this->pagenum,$this->mgrs->StockManager(),$this->forms->StockForm(),$errormessage,"Name",$trace);break;
+            case $c2v($mm::STOCKTAKEPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StocktakeManager(),$this->forms->StocktakeForm(),$errormessage,"",$trace);break;
+            case $c2v($mm::DELIVERYPAGE)    : $this->setthispage(0,$this->pagenum,$this->mgrs->DeliveryManager(),$this->forms->DeliveryForm(),$errormessage,"",$trace);break;
+            case $c2v($mm::STOCKOUTPAGE)    : $this->setthispage(0,$this->pagenum,$this->mgrs->StockoutManager(),$this->forms->StockoutForm(),$errormessage,"",$trace);break;
             default: die(__METHOD__." Unknown pagenum : {$this->pagenum}");
         }
        if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
@@ -255,7 +260,10 @@ class ViewController {
             case $c2v($mm::SESSIONPAGE)           :$success = $this->prepare_session_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::MENUITEMPAGE)          :$success = $this->prepare_menuitem_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::CONFIGPAGE)            :$success = $this->prepare_config_body($user_id,$errormessage,$trace); break;
-            default                                         :$success = $this->prepare_std_body($user_id,$this->orderby,$errormessage,$trace); 
+            case $c2v($mm::STOCKTAKEPAGE)         :$success = $this->prepare_stocktake_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::DELIVERYPAGE)          :$success = $this->prepare_stockmovement_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::STOCKOUTPAGE)          :$success = $this->prepare_stockmovement_body($user_id,$errormessage,$trace); break;
+            default                                         :$success = $this->prepare_std_body($user_id,$this->orderby,$errormessage,$trace);
         }
         if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
         return $success;
@@ -706,6 +714,52 @@ class ViewController {
             return false;
         }    
         if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
+        return true;
+     }
+    private function prepare_stocktake_body($user_id,&$errormessage,$trace=false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        try {
+            $data    = [];
+            $parents = [];
+            $numrows = 0;
+            $success = $this->manager->getallrecords($data,"",$parents,$numrows,false,$trace);
+            if ($success) {
+                $this->form->init($this->session,$data,$parents,false);
+                $this->bodysection = $this->bodies->standardbody();
+                $this->bodysection->init($this->session,$this->form,"Stocktake","",$errormessage);
+            } else {
+                $errormessage = __METHOD__." failed to load stock items for page {$this->pagenum}";
+                return false;
+            }
+        } catch(\Exception $e) {
+            $errormessage = __METHOD__." : {$e->getCode()} {$e->getMessage()}";
+            if ($this->trace) { echo gtab(-1)."Leave ".__METHOD__."...<br>$errormessage<br>\n"; }
+            return false;
+        }
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
+        return true;
+     }
+    private function prepare_stockmovement_body($user_id,&$errormessage,$trace=false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        try {
+            $data    = [];
+            $parents = [];
+            $numrows = 0;
+            $success = $this->manager->getallrecords($data,"",$parents,$numrows,false,$trace);
+            if ($success) {
+                $this->form->init($this->session,$data,$parents,false);
+                $this->bodysection = $this->bodies->standardbody();
+                $this->bodysection->init($this->session,$this->form,$this->manager->getname(),"",$errormessage);
+            } else {
+                $errormessage = __METHOD__." failed to load records for page {$this->pagenum}";
+                return false;
+            }
+        } catch(\Exception $e) {
+            $errormessage = __METHOD__." : {$e->getCode()} {$e->getMessage()}";
+            if ($this->trace) { echo gtab(-1)."Leave ".__METHOD__."...<br>$errormessage<br>\n"; }
+            return false;
+        }
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
         return true;
      }
 }
