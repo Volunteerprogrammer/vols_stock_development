@@ -2,7 +2,7 @@
 STOCK TRACKING SYSTEM — DEVELOPMENT REPORT
 Project: Woodend Neighbourhood House Food Bank Volunteer Rostering
 Date:    2026-03-23
-Updated: 2026-03-23
+Updated: 2026-03-23 (CSV export added)
 ================================================================================
 
 
@@ -102,7 +102,9 @@ Form Classes (app/view/form/)
                                 Last Stocktake date, Stocktake Qty,
                                 + Deliveries, − Used, − Damaged, = Current;
                                 current qty shown green (positive) or red
-                                (zero/negative); no action buttons
+                                (zero/negative); no action buttons;
+                                "Export CSV" button downloads all 9 columns
+                                as stock-levels-YYYY-MM-DD.csv
   - DamagedStockForm.php      : Same as StockoutForm; dark red/burgundy
                                 banner header with warning triangle icon;
                                 hidden field value='damaged'
@@ -191,6 +193,8 @@ app/assets/css/forms.0.2.css
     .vols-movement-fields          Wrapper around form input rows
 
   Stock level report page:
+    .vols-stockreport-toolbar      Flex row, right-aligned, holds export button
+    .vols-stockreport-csvbtn       Green export button
     .vols-stockreport-header       Green tones (#e8f4e8 / #3a7a3a)
     .vols-stockreport-icon
     .vols-stockreport-headertext
@@ -272,6 +276,11 @@ BUGS FIXED DURING DEVELOPMENT
    operations on the user table failed. Fixed by recreating the user table
    triggers and LogDML procedure with definer root@localhost.
 
+5. CSV export heading #NAME? error in Excel
+   Column headings starting with +, -, or = were interpreted as formulas
+   by Excel, showing #NAME? instead of the heading text. Fixed by renaming
+   headers to: Deliveries In, Used, Damaged, Current Qty.
+
 4. menuitem menu_number column
    The Stock Level Report menu item (10_6) was inserted with menu_number=10
    instead of 0, causing it not to appear in the menu. Fixed by updating
@@ -352,6 +361,9 @@ GIT COMMITS
   5c5b9e9  Stock level report: add breakdown columns, switch to date-based calculation
   527d740  Update development report: damaged stock page and stock level breakdown
   5a140bd  Update integration test for pages 401-407
+  dfc3799  Add last updated date to development report
+  92a79d7  Add CSV export to stock level report page
+  724cf3f  Fix CSV export column headings: remove leading +/-/= to prevent Excel formula errors
 
 
 ================================================================================
