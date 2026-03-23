@@ -2,7 +2,7 @@
 STOCK TRACKING SYSTEM — DEVELOPMENT REPORT
 Project: Woodend Neighbourhood House Food Bank Volunteer Rostering
 Date:    2026-03-23
-Updated: 2026-03-23 (CSV export added)
+Updated: 2026-03-23 (CSV export; date format dd-mm-yyyy)
 ================================================================================
 
 
@@ -364,6 +364,8 @@ GIT COMMITS
   dfc3799  Add last updated date to development report
   92a79d7  Add CSV export to stock level report page
   724cf3f  Fix CSV export column headings: remove leading +/-/= to prevent Excel formula errors
+  d76e14a  Update development report: CSV export feature and Excel formula bug fix
+  f7b69b1  Format stocktake dates as dd-mm-yyyy on report page and CSV export
 
 
 ================================================================================
