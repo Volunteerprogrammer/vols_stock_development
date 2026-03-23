@@ -38,8 +38,9 @@ class StocktakeForm extends \fw\view\form\StdCRUDForm {
     }
 
     public function buildinputs($rights=[], $trace=false) {
-        $formfields  = '<div class="vols-stocktake-instructions">';
-        $formfields .= '<p>Enter the counted quantity for each stock item. Leave blank to skip an item.</p>';
+        $formfields  = '<div class="vols-stocktake-header">';
+        $formfields .= '<span class="vols-stocktake-icon">&#9998;</span>';
+        $formfields .= '<span class="vols-stocktake-headertext">Record a stocktake. Enter the counted quantity for each item. Leave blank to skip an item.</span>';
         $formfields .= '</div>';
 
         $currentcategory = null;

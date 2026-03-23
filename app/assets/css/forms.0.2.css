@@ -1450,13 +1450,28 @@ input
 /* STOCKTAKE PAGE                                                    */
 /*==================================================================*/
 
-.vols-stocktake-instructions {
-    padding: 0.8rem 1rem;
-    margin-bottom: 0.5rem;
-    background-color: var(--volscolor2);
-    border-left: 4px solid var(--volscolor4);
-    font-size: 1.3rem;
-    color: #444;
+.vols-stocktake-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border-radius: 4px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    background-color: #f0eafa;
+    border-left: 4px solid #7c4dbb;
+    color: #4a2a7a;
+}
+
+.vols-stocktake-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.vols-stocktake-headertext {
+    flex: 1;
 }
 
 .vols-stocktake-category-heading {
