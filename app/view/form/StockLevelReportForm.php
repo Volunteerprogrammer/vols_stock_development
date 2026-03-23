@@ -24,12 +24,17 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
 
     public function initfields() {
         $this->fields = array(
-            "id"            => "",
-            "Name"          => "",
-            "Code"          => "",
-            "category_id"   => "",
-            "category_name" => "",
-            "current_qty"   => "",
+            "id"               => "",
+            "Name"             => "",
+            "Code"             => "",
+            "category_id"      => "",
+            "category_name"    => "",
+            "stocktake_date"   => "",
+            "stocktake_qty"    => "",
+            "deliveries_since" => "",
+            "stockouts_since"  => "",
+            "damaged_since"    => "",
+            "current_qty"      => "",
         );
     }
 
@@ -40,14 +45,19 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
     public function buildinputs($rights=[], $trace=false) {
         $formfields  = '<div class="vols-stockreport-header">';
         $formfields .= '<span class="vols-stockreport-icon">&#128202;</span>';
-        $formfields .= '<span class="vols-stockreport-headertext">Current stock levels. Quantities are calculated from the last stocktake plus deliveries minus stock used.</span>';
+        $formfields .= '<span class="vols-stockreport-headertext">Current stock levels. Each row shows the last stocktake as the baseline, then deliveries added and stock used or damaged since that date.</span>';
         $formfields .= '</div>';
 
         $formfields .= '<div class="vols-stockreport-table">';
         $formfields .= '<div class="vols-stockreport-colheadings">';
         $formfields .= '<div class="vols-stockreport-col-name">Item</div>';
         $formfields .= '<div class="vols-stockreport-col-code">Code</div>';
-        $formfields .= '<div class="vols-stockreport-col-qty">Current Qty</div>';
+        $formfields .= '<div class="vols-stockreport-col-stdate">Last Stocktake</div>';
+        $formfields .= '<div class="vols-stockreport-col-num">Stocktake Qty</div>';
+        $formfields .= '<div class="vols-stockreport-col-num">+ Deliveries</div>';
+        $formfields .= '<div class="vols-stockreport-col-num">&minus; Used</div>';
+        $formfields .= '<div class="vols-stockreport-col-num">&minus; Damaged</div>';
+        $formfields .= '<div class="vols-stockreport-col-num">= Current</div>';
         $formfields .= '</div>';
 
         $currentcategory = null;
@@ -57,14 +67,24 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
                 $currentcategory = $cat;
                 $formfields .= '<div class="vols-stockreport-category">'.$cat.'</div>';
             }
-            $qty  = (float)($item["current_qty"] ?? 0);
-            $name = htmlspecialchars($item["Name"]);
-            $code = htmlspecialchars($item["Code"]);
+            $qty      = (float)($item["current_qty"]      ?? 0);
+            $stqty    = (float)($item["stocktake_qty"]    ?? 0);
+            $deliv    = (float)($item["deliveries_since"] ?? 0);
+            $used     = (float)($item["stockouts_since"]  ?? 0);
+            $damaged  = (float)($item["damaged_since"]    ?? 0);
+            $stdate   = $item["stocktake_date"] ? substr($item["stocktake_date"], 0, 10) : '—';
+            $name     = htmlspecialchars($item["Name"]);
+            $code     = htmlspecialchars($item["Code"]);
             $qtyclass = $qty <= 0 ? "vols-stockreport-qty vols-stockreport-qty-zero"
                                   : "vols-stockreport-qty vols-stockreport-qty-ok";
             $formfields .= '<div class="vols-stockreport-row">';
             $formfields .= '<div class="vols-stockreport-col-name">'.$name.'</div>';
             $formfields .= '<div class="vols-stockreport-col-code">'.$code.'</div>';
+            $formfields .= '<div class="vols-stockreport-col-stdate">'.$stdate.'</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">'.$stqty.'</div>';
+            $formfields .= '<div class="vols-stockreport-col-num vols-stockreport-deliv">'.($deliv > 0 ? '+'.$deliv : $deliv).'</div>';
+            $formfields .= '<div class="vols-stockreport-col-num vols-stockreport-used">'.($used > 0 ? '&minus;'.$used : $used).'</div>';
+            $formfields .= '<div class="vols-stockreport-col-num vols-stockreport-dmgd">'.($damaged > 0 ? '&minus;'.$damaged : $damaged).'</div>';
             $formfields .= '<div class="'.$qtyclass.'">'.$qty.'</div>';
             $formfields .= '</div>';
         }
