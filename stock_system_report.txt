@@ -284,7 +284,7 @@ TESTING
 All functionality was tested via direct PHP/SQL scripts against the live
 MariaDB database. Test scripts are in the tests/ folder.
 
-tests/test_stock_pages.php — pages 401–406:
+tests/test_stock_pages.php — pages 401–407:
   Page 401 — Stock Categories : Insert, count, update, delete       PASS
   Page 402 — Stock Items      : Insert, count, update, join         PASS
   Page 403 — Stocktake        : Bulk insert, level calculation      PASS
@@ -293,9 +293,13 @@ tests/test_stock_pages.php — pages 401–406:
   Page 405 — Stock Usage      : Insert, level after stockout        PASS
                                 (Tomato Soup: 12 - 5 = 7)
                                 (Pasta: 10 + 5 - 3 = 12)
-  Page 406 — Stock Levels     : Full report query, 3 rows,          PASS
-                                correct category grouping
-  Total: 20 tests, 20 passed, 0 failed.
+  Page 407 — Damaged Stock    : Damaged movement accepted,          PASS
+                                level reduced (BB: 72 - 6 = 66),
+                                unaffected item unchanged
+  Page 406 — Stock Levels     : Full query with breakdown columns,  PASS
+                                3 rows, correct category grouping,
+                                all 6 breakdown fields verified
+  Total: 29 tests, 29 passed, 0 failed.
 
 tests/test_damaged_stock.php — page 407 (Damaged Stock):
   ENUM acceptance of 'damaged' movement type                        PASS
@@ -324,7 +328,7 @@ tests/test_stocklevel.php — page 406 breakdown columns (date-based):
   Ordering: category then item name                                 PASS
   Total: 29 tests, 29 passed, 0 failed.
 
-Grand total: 61 tests, 61 passed, 0 failed.
+Grand total: 70 tests, 70 passed, 0 failed.
 
 
 --------------------------------------------------------------------------------
@@ -345,6 +349,8 @@ GIT COMMITS
   f6420da  Add test script for damaged stock page (page 407)
   085a7ef  Add stock system development report
   5c5b9e9  Stock level report: add breakdown columns, switch to date-based calculation
+  527d740  Update development report: damaged stock page and stock level breakdown
+  5a140bd  Update integration test for pages 401-407
 
 
 ================================================================================
