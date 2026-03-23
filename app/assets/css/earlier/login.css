@@ -1,0 +1,217 @@
+:root {
+
+}
+#loginpage {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: var(--volscolor1);
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr;
+	justify-content: center;
+	align-content: center;
+	width: 75%;
+	min-width: 460px;
+	max-width: 500px;
+
+}
+#loginform, #pwresetgetemail, #pwresetgetcode, #pwresetgetpw {
+	background-color: var(--volscolor2);
+}
+
+#loginheading,#loginmessage,#loginfollowupmessage{
+	font-size: 1.5rem;
+	margin: 0px 15px 10px 15px;
+	text-align: center;
+}
+#loginfields,#loginerror {
+	font-size: 2rem;
+	margin: 0px;
+}
+#loginheading,#loginmessage,#loginfollowupmessage,#loginerror {
+	text-align: center;
+	padding: 0 1rem 1rem 1rem;
+}
+#loginheading span, #loginmessage span{
+	font-size: 1.3rem;
+	color: var(--midgrey);
+}
+
+#loginerror {
+	grid-column: 1 / 4;
+  justify-content: center;
+	width: 80%;
+	margin: 0 auto;
+	font-size: 1.3rem;
+	color: var(--redbtn);
+	font-weight: 600;
+}
+
+input 
+{
+    font-size: 1.4rem;
+}
+::-ms-input-placeholder { /* Edge 12-18 */
+  color: var(--placeholder);
+}
+::placeholder {
+  color: var(--placeholder);
+}
+#loginfields {
+	display: grid;
+	grid-template-columns: 10fr 1fr 16fr;
+	grid-template-rows: 1fr 1fr  2fr auto ;
+	margin-bottom: 1.5rem;
+}
+#loginfields.oneinput {
+	grid-template-columns: 6fr 1fr 16fr;
+	grid-template-rows: 1fr 2fr;
+}
+#loginfields.noerror {
+	grid-template-rows: 1fr 1fr  2fr;
+}
+
+@media screen and (min-width: 1960px)  { 
+	#loginfields,#loginerror {
+		font-size: 2rem;
+	}
+	#loginheading,#loginmessage {
+		font-size:1.5rem;
+	}		
+	h1 {
+		font-size: 2rem;
+	}	
+	p {
+		font-size: 1.4rem;
+	}
+}
+@media screen and (min-width: 1440px)  and (max-width: 1960px) {
+	#loginfields,#loginerror {
+		font-size: 2rem;
+	}
+	#loginheading,#loginmessage {
+		font-size:1.5rem;
+	}		
+	h1 {
+		font-size: 2rem;
+	}	
+	p {
+		font-size: 1.4rem;
+	}
+}	
+@media screen and (min-width: 1280px) and (max-width: 1440px) {
+	#loginfields,#loginerror {
+		font-size: 2rem;
+	}
+	#loginheading,#loginmessage {
+		font-size:1.5rem;
+	}		
+	h1 {
+		font-size: 2rem;
+	}	
+	p {
+		font-size: 1.4rem;
+	}
+}
+@media screen and (max-width: 1280px) {
+	#loginfields,#loginerror {
+		font-size: 2rem;
+	}
+	#loginmessage {
+		font-size:1.5rem;
+	}	
+	h1 {
+		font-size: 2rem;
+	}	
+	p {
+		font-size: 1.4rem;
+	}
+}
+
+#loginfields div {
+	padding: 0.3rem 0 ;
+	display: flex;
+	align-items: center;
+}
+#loginfields div:nth-child(3n+1) { /*left hand side - prompts */
+	justify-content: right ;
+}
+#loginfields div:nth-child(3n+3) { /*right hand side - inputs */
+	justify-content: left ;
+}
+#loginpage #loginfields .tar {
+	justify-content: right ;
+}
+#loginpage #loginfields .tal {
+	justify-content: left ;
+}
+
+#loginfields #continuebtncontainer, #loginfields #forgottenpwcontainer {
+	grid-column: 1 / 4;
+	justify-content: center ;
+}
+#loginfields #continuebtncontainer  #loginbtn{
+	padding: 0 ;
+	background-color: var(--midgrey);
+	color: var(--lightgrey);
+	justify-content: center;
+	text-decoration: none;
+	margin: 0 auto;
+	border: none;
+	width: 50%;
+	height: 40px;
+}
+#loginfields #continuebtncontainer  #loginbtn.clickable{
+	background-color: var(--darkbtn);
+	transition: background-color 0.5s;
+}
+#loginfields #continuebtncontainer  #loginbtn.clickable:hover {
+	cursor: pointer;
+	background-color: var(--doitbg);
+}
+#loginfields div#loginerror,#loginfields div#newpassworderror {
+	color: red;
+	font-weight: 700;	
+	grid-column: 1 / 4;
+	justify-content: center ;
+	height: auto;
+	padding: 0 20px;
+	text-align: center;
+}
+#forgottenpw {
+	margin: 2px auto;
+	text-decoration: underline;
+	font-size: 1.5rem;
+	color: blue;
+	cursor: pointer;
+}
+
+#loginfollowupmessage {
+	width: 450px;
+	margin: 0 auto;
+}
+#loginfollowupmessage ul.passwordreq li{
+	width: 300px;
+	margin: 0 auto;
+	text-align: left;
+}
+.selectuserline {
+	line-height: 4rem;
+	margin: 0 auto;
+}
+.selectuserline #recordselector {
+	font-size: 1.4rem;
+	float: none;
+	margin: 1rem .5rem;
+	width: auto;
+}
+
+body .password-field {
+	position: relative;
+}
+#togglepassword {
+	cursor: pointer;
+}

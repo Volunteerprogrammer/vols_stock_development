@@ -1,0 +1,41 @@
+[29-Jan-2026 16:43:12 Australia/Melbourne] PHP Warning:  Undefined variable $hiddencheckboxes in /home/sarum964/public_html/app/view/form/UserForm.php on line 101
+[29-Jan-2026 22:25:52 Australia/Melbourne] PHP Warning:  Undefined variable $hiddencheckboxes in /home/sarum964/public_html/app/view/form/UserForm.php on line 101
+[30-Jan-2026 00:17:17 Australia/Melbourne] PHP Warning:  Undefined variable $success in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 74
+[30-Jan-2026 00:17:17 Australia/Melbourne] PHP Warning:  Undefined variable $success in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 74
+[30-Jan-2026 08:25:42 Australia/Melbourne] PHP Warning:  Undefined variable $hiddencheckboxes in /home/sarum964/public_html/app/view/form/UserForm.php on line 101
+[30-Jan-2026 09:09:52 Australia/Melbourne] PHP Warning:  Undefined variable $hiddencheckboxes in /home/sarum964/public_html/app/view/form/UserForm.php on line 101
+[30-Jan-2026 11:08:27 Australia/Melbourne] PHP Fatal error:  Uncaught Error: Call to undefined method lib\StdLib::p() in /home/sarum964/public_html/app/controller/manager/MenuManager.php:102
+Stack trace:
+#0 /home/sarum964/public_html/app/controller/manager/MenuManager.php(88): app\controller\manager\MenuManager->buildmenuandscript()
+#1 /home/sarum964/public_html/app/controller/ViewController.php(126): app\controller\manager\MenuManager->buildmenu()
+#2 /home/sarum964/public_html/app/http/RequestHandler.php(133): app\controller\ViewController->processrequest()
+#3 /home/sarum964/public_html/app/app.php(19): app\http\RequestHandler->processrequest()
+#4 /home/sarum964/public_html/index.php(19): app\App->go()
+#5 {main}
+  thrown in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 102
+[30-Jan-2026 11:08:45 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 185
+[30-Jan-2026 11:08:45 Australia/Melbourne] PHP Warning:  Undefined variable $pagenum in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 188
+[30-Jan-2026 11:10:58 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 185
+[30-Jan-2026 12:30:52 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 186
+[30-Jan-2026 12:31:18 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 186
+[30-Jan-2026 12:32:12 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 186
+[30-Jan-2026 13:08:51 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 186
+[30-Jan-2026 13:57:41 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 187
+[30-Jan-2026 13:58:01 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 188
+[30-Jan-2026 14:02:00 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 185
+[30-Jan-2026 14:05:54 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 185
+[30-Jan-2026 14:29:21 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 185
+[30-Jan-2026 14:29:25 Australia/Melbourne] PHP Warning:  Undefined array key 0 in /home/sarum964/public_html/app/controller/manager/MenuManager.php on line 185
+[30-Jan-2026 06:00:41 UTC] PHP Parse error:  syntax error, unexpected variable "$success" in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 497
+[30-Jan-2026 17:02:12 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[09-Feb-2026 14:29:06 Australia/Melbourne] PHP Warning:  Undefined variable $hiddencheckboxes in /home/sarum964/public_html/app/view/form/UserForm.php on line 101
+[11-Feb-2026 13:11:57 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[11-Feb-2026 13:18:15 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[11-Feb-2026 13:39:43 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[11-Feb-2026 13:39:50 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[11-Feb-2026 16:07:33 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[12-Feb-2026 09:48:27 Australia/Melbourne] PHP Warning:  Undefined variable $user_id in /home/sarum964/public_html/app/controller/manager/UserManager.php on line 496
+[28-Feb-2026 10:47:44 Australia/Melbourne] PHP Warning:  Undefined variable $mail in /home/sarum964/public_html/vendor/fw/controller/manager/MailJetManager.php on line 65
+[28-Feb-2026 10:47:44 Australia/Melbourne] PHP Warning:  Attempt to read property "ErrorInfo" on null in /home/sarum964/public_html/vendor/fw/controller/manager/MailJetManager.php on line 65
+[28-Feb-2026 10:47:44 Australia/Melbourne] PHP Warning:  Undefined variable $mail in /home/sarum964/public_html/vendor/fw/controller/manager/MailJetManager.php on line 67
+[28-Feb-2026 10:47:44 Australia/Melbourne] PHP Warning:  Attempt to read property "ErrorInfo" on null in /home/sarum964/public_html/vendor/fw/controller/manager/MailJetManager.php on line 67

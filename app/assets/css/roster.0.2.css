@@ -1,0 +1,420 @@
+:root {
+	--bgoccupied:#a0b888;
+  	--bgunpublished: #cccccc; /* #FFB6C1 #666666;                       /*#f5945c;*/
+  	--bgunpublishedcolor: #000000;                       /*#f5945c;*/
+  	--bgyou:#ffab30;
+  	--bgyouhover:#ffdd80;
+  	--bgavailable: #5c903a;               /* */
+  	--bgavailablecolor:  #ffffff;             /* #b0d894;*/
+  	--bgavailablehover:#6ca04a;
+  	--holiday: #ffc4f8;
+
+    --mincellwidth:125;
+    --cellsgap:2;
+    --cellspad:2;
+    --sessiongap:3;
+    --lineheight:2.5;
+    --taskpad:1;
+    --taskborder:1;
+    --taskbordercolor: #cccccc;
+    --rostermargin:10;
+    --rostergap:20;
+    --rosterpadding: 10;
+    --allowance:1.0;
+    --min-displaywidth:100%;            /* 560px; */
+}
+/*=================================== SESSIONGRID CONTAINER */
+input {
+	font-size: 1.5rem;
+}
+.greetingcontainer {
+	display: grid;
+	grid-template-columns: 160px  1fr 160px;
+	justify-content: space-between;
+	min-width: var(--min-displaywidth);
+	padding-bottom: 0;
+}
+#sessiongridcontainer.waiting {
+	cursor: wait;
+}
+#rostercontainer {
+    margin: 0 10px;
+    overflow-y: auto;
+	height: auto;
+}
+#rostercontainer.waiting {
+	cursor: wait;
+}
+#rostercontainer .taskgroupcontainer{
+    margin: 0 auto;
+    padding: calc(var(--rosterpadding)*1px);
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: calc(var(--rostergap)*1px);
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+.taskcontainer {
+    background-color:var(--volscolor3);
+    border:calc(var(--taskborder)*1px) solid var(--taskbordercolor);
+    padding: calc(var(--taskpad)*1px);
+}
+.sessioncontainer {
+    border-bottom: 1px solid black;
+	background-color: var(--volscolor3);
+    padding:calc(var(--sessiongap)*1px);;
+    height: fit-content ;
+    line-height: calc(var(--lineheight)*1rem);
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: calc(var(--sessiongap)*1px);
+    
+}
+.cells {
+    padding: calc(var(--cellspad)*1px);
+    min-height: calc((var(--lineheight)*1rem) + 1rem);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: calc(var(--cellsgap)*1px);
+	line-height: 3rem;
+}
+/* the following are applied to sessioncontainer classed elements*/
+.cellsperrow1 .cells {width: calc(var(--mincellwidth)*1px + var(--cellspad)*2px + var(--cellsgap)*0px);}        
+.cellsperrow2 .cells {width: calc(var(--mincellwidth)*2px + var(--cellspad)*2px + var(--cellsgap)*1px);}        
+.cellsperrow3 .cells {width: calc(var(--mincellwidth)*3px + var(--cellspad)*2px + var(--cellsgap)*2px);}        
+.cellsperrow4 .cells {width: calc(var(--mincellwidth)*4px + var(--cellspad)*2px + var(--cellsgap)*3px);}        
+.cellsperrow5 .cells {width: calc(var(--mincellwidth)*5px + var(--cellspad)*2px + var(--cellsgap)*4px);}        
+.cellsperrow6 .cells {width: calc(var(--mincellwidth)*6px + var(--cellspad)*2px + var(--cellsgap)*5px);}        
+
+.volcell,.sessiondate {
+    width: calc(var(--mincellwidth)*1px);
+    font-size: 1.5em;
+    font-weight: 500;
+    text-align: center;
+}
+.volcell {
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+.sessiondate {
+	display: grid;
+	grid-template-columns: 6fr 1fr;
+}
+.historyclick,#buttoncontainer #printbutton{
+	border: 0;
+    margin: 0; 
+    padding: 0;
+    border: 0; 
+    height:28px;
+    width:28px;
+    cursor: pointer;
+}
+#buttoncontainer #printbutton{
+	width:35px;
+}
+
+/*=================================== ROSTER CONTAINER */
+#taskgroupcontainer {
+	margin: 1.5rem 10px;
+}
+#taskgroupcontainer.waiting {
+	cursor: wait;
+}
+/*=================================== SESSIONGRID CONTAINER */
+#sessiongridcontainer {
+/*	background-color: var(--volscolor2);*/
+    max-width: 2000px;
+    margin: 0 auto;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 4rem) ;
+}
+/*============================================================================================*/
+.volcell {
+	font-size: 1.2rem;
+	font-weight: 500;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/*============================================================================================*/
+/*============================================================================================*/
+/*============================================================================================*/
+/*============================================================================================*/
+/*============================================================================================*/
+/*============================================================================================*/
+.headeroptions {
+	height:auto;
+	display:flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	align-content: center;
+	width: var(--min-displaywidth);
+	min-width: var(--min-displaywidth);
+/*	border:calc(var(--taskborder)*1px) solid var(--taskbordercolor);*/
+	margin: 0 auto;
+	background-color: var(--volscolor2);
+ }
+.headeroptions > div {
+	width: 100%;
+/*    border: 1px solid var(--midgrey);*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rosteroption {
+	line-height: 4rem;
+	margin: 0 auto;
+}
+.rosteroption #recordselector {
+	font-size: 1.5rem;
+	float: none;
+	margin: 1rem .5rem;
+	width: auto;
+}
+.taskheading, .greetingcontainer .greeting {
+	font-size: 1.8rem;
+	font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#buttoncontainer .headeroptions {
+	padding: 1rem 0 ;
+}
+.greetingcontainer .greeting {
+ 	color: var(--volscolor4);
+    font-weight: 600;
+    font-size: 4rem;
+    line-height: 3rem;
+	@media screen and (max-width:800px){font-size: 3rem;}
+	@media screen and (max-width:700px){font-size: 2rem;}
+}
+.taskheading {
+	background-color: var(--volscolor4);
+ 	color: var(--volscolor3);
+    font-weight: 400;
+    font-size: 2rem;
+	height: 3.8rem;
+	width: 100%;
+}
+/*.greeting {
+	width: 58%;
+	margins: 0 auto;
+}*/
+.sessioncontainer.odd {
+	background-color: var(--volscolor1);
+}
+.sessioncontainer.even {
+	background-color: var(--volscolor2);
+}
+.taskcontainer > .sessioncontainer:last-child {
+	border-bottom: none;
+}
+.sessiondatetext.clickable {
+	width: 100%;
+	cursor: pointer;
+}
+.sessiondatetext.clickable.notpublished {
+	background-color: var(--bgunpublished) !important;
+	color: var(--bgunpublishedcolor);
+}
+.sessiondate  .sessiondatetext.inthepast {
+	color: var(--midgrey);
+}
+.holiday_name {
+	text-align: center;
+	line-height: 3rem;
+	padding: 2px;
+	margin: 0 auto ;
+}
+.sessioncontainer.isholiday .cells {
+	background-color: var(--bginactive);
+}
+
+.holiday_name  {font-size: 1.5rem}
+
+#rostercontainer .cells .bookingcell.unpublished {
+	background-color: var(--bgunpublished) !important;
+	color: var(--bgunpublishedcolor);
+}
+.clickable.celloccupied {
+	background-color: var(--bgoccupied);
+	color: var(--darkgrey);
+
+}
+.clickable.cellisyou {
+	background-color: var(--bgyou);
+	color: var(--darkgrey);
+}
+.clickable.cellisyou:not(.noclick):hover {
+	background-color: var(--bgyouhover);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+.clickable.cellavailable {
+	background-color: var(--bgavailable);
+	color: var(--bgavailablecolor);
+	font-size: 1.2rem;
+}
+.clickable.cellavailable:not(.noclick):hover {
+	background-color: var(--bgavailablehover);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+}
+.clickable.cellavailable:not(.noclick):hover::after {
+	color: #777;
+}
+.clickable.logout {
+	background-color: var(--logout);
+	color: var(--lightgrey);
+}
+.clickable.logout:hover {
+	background-color: var(--logouthover);
+    -webkit-transition: background-color 300ms linear;
+    -ms-transition: background-color 300ms linear;
+    transition: background-color 300ms linear;
+}
+
+
+
+.clickable.cellisyou:not(.noclick), .clickable.cellavailable:not(.noclick),.clickable.logout {
+	cursor: pointer;
+}
+.clickable.cellisyou:not(.noclick).waiting, .clickable.cellavailable:not(.noclick).waiting,.clickable.logout.waiting {
+	cursor: wait;
+}
+
+#formcontainer {
+	height: 0;
+}
+#buttoncontainer {
+	width: 100%;
+	padding: 0.5rem;
+	margin-bottom: 0;
+	position: relative;
+}
+#buttoncontainer ul {
+	display: block;
+    padding-inline-start: 3rem;
+	list-style-type: square;
+	margin: 10px auto 5px auto ;
+}
+ #buttoncontainer ul li {
+	width: 100%;
+	display: list-item;
+	font-weight: 500;
+	list-style-type: square;
+	margin: 0 .3rem;
+}
+#buttoncontainer .greetingcontainer{
+	background-color: var(--volscolor3);
+}
+#buttoncontainer .spacefiller{
+	width:200px;
+	float:left
+}
+
+#buttoncontainer {
+	font-size: 2rem;
+}
+#buttoncontainer .clickable {
+	width:auto;
+	font-size: 1.5rem;
+	font-weight: 500;
+	height: 3rem;
+	padding-left: 0.3rem;
+	padding-right: 0.3rem;
+	margin: .5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+#navcontainer {
+	max-width : 400px;
+	display: flex;
+	flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--volscolor1);
+}
+#rosternav, #updatediv {
+	display:flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	min-width:var(--min-displaywidth);
+	margin: 0 auto;
+}
+#rosternav > div {
+	margin: 0 10px;
+}
+
+#updatediv {
+ 	height: 0;
+ 	overflow:hidden;
+}
+#updatediv.displayed {
+	height: 4rem;
+	transition-duration: 1s;
+}
+#updatediv #updatepublication {
+ 	width:300px;
+}
+#buttoncontainer #rosternav #navcontainer .navdirectionbtn.clickable {
+	/*margin: .5rem 0.1rem;*/
+	width: 35px;
+	cursor: pointer;
+}
+#buttoncontainer #rosternav #navcontainer #resetpage {
+	margin: .5rem 0.1rem;
+	width: 72px;
+}
+#pagedepthcontainer {
+	padding: 0 1rem;
+}
+.headeroptions input {
+    margin: .5rem 1rem;
+}
+#extend {
+	min-width: 130px;
+}
+
+.ui-dialog .ui-dialog-content {
+	padding: 0;
+	overflow: hidden;
+}
+#history {
+	height:100%;
+	min-width : 800px;
+	max-height: 500px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+#history #actions {
+	height:100%;
+	overflow: scroll;
+}
+#history div.vols-tablecell{
+	border-right: 1px solid var(--lightgrey);
+}
+

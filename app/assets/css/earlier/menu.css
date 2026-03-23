@@ -1,0 +1,163 @@
+:root {
+    --menubtncolor:#fff;
+    --menubtnbg:#444;
+    --menubtnhovercolor:#222;
+    --menubtnhoverbg: #e2001a ; 
+    --menuulbg: transparent;
+    --menuulborder: transparent;
+    --menuullicolor: #fff;
+    --menuullibg:#444;
+    --menuullibg2:#666;
+    --menuullihovercolor: #222;
+    --menuullihoverbg: #e2001a;
+    --curtainbg: lightgray;
+}
+
+
+#curtain {
+    visibility:hidden;
+    opacity:0;
+    position: absolute;
+    width:100vw;
+    height:100vh;
+    background: var(--curtainbg);
+    z-index: 2;
+    transition:  0.5s ease;
+    -o-transition:  0.5s ease; /* opera */
+    -ms-transition:  0.5s ease; /* IE 10 */
+    -moz-transition:  0.5s ease; /* Firefox */
+    -webkit-transition:  0.5s ease; /*safari and chrome */    
+}
+body:has(#menubutton ul li.hover,#menubutton.clickable.menu.hover,#menubutton ul li:hover,#menubutton.clickable.menu:hover) #curtain {
+    visibility:visible;
+    opacity:0.7;
+    transition:  0.3s ease;
+    -o-transition:  0.3s ease; /* opera */
+    -ms-transition:  0.3s ease; /* IE 10 */
+    -moz-transition:  0.3s ease; /* Firefox */
+    -webkit-transition:  0.3s ease; /*safari and chrome */
+}
+#menubutton.clickable {
+    cursor: pointer;
+}
+#menubutton.clickable .clicked {
+    cursor: wait;
+}
+body:has(#menubutton.clickable .clicked){
+    cursor: wait;
+}
+.menu.clickable:not(.nouppercase) {
+    text-transform: uppercase;
+}
+.greetingcontainer .clickable.menu{
+    color: var(--menubtncolor);
+    background-color: var(--menubtnbg);
+    font-size: 1.7rem;
+    font-weight: 500;
+    width: 140px;
+    height: 3rem;
+}
+.clickable.menu:hover, .clickable.menu.hover {
+    color: var(--menubtnhovercolor);
+    background-color: var(--menubtnhoverbg);
+}
+#menubutton.clickable.menu {
+    overflow: visible;
+    display: block;
+    z-index: 5;
+}
+#menubutton.clickable.menu ul {
+    visibility:hidden;
+    width:200px; 
+    display: block;       
+    position: relative;  
+    background: var(--menuulbg);
+    padding-inline-start:5px; 
+    padding-top: 5px;
+    padding-bottom: 5px;
+    list-style-type: none;   
+    border: 2px solid var(--menuulborder);
+    z-index:10;
+}
+#menubutton.clickable.menu ul.submenu {
+    top:-5rem;
+    right: 218px;        
+    z-index:20;
+}
+#menubutton.clickable.menu ul.toplevel{
+    top:-12px; 
+    left: -62px;        
+    z-index:20;
+}  
+#menubutton.clickable.menu ul li,
+#menubutton.clickable.menu ul li ul li{
+    color:   var(--menuullicolor); 
+    background-color:  var(--menuullibg) ;
+    width: 200px;
+    display: block;
+    text-align: left; 
+    line-height: 1;
+    height: 2vh;
+    padding: 2rem 0 ;
+    z-index:10;
+    /*margin-left: 0.5rem;*/
+}
+#menubutton.clickable.menu ul.toplevel.menu li {
+    z-index:20;
+}
+#menubutton.clickable.menu ul li ul li:first-child{
+    width:210px; 
+}
+
+#menubutton.clickable.menu ul ,
+#menubutton.clickable.menu ul li ul{
+    opacity: 0;
+}
+
+
+#menubutton.clickable.menu li span.submenuarrowspan {
+    width: 20px;
+    display: inline-block;
+    margin-left: 1vw;
+}
+#menubutton.clickable.menu ul li.menuseparator,
+#menubutton.clickable.menu ul li ul li.menuseparator{
+    background-color: var(--volscolor1); 
+    line-height: 0;
+    height: 5px;
+    padding: 0;
+}               
+#menubutton.clickable.menu ul li:hover,
+#menubutton.clickable.menu ul li.hover {
+    color: var(--menuullihovercolor);  
+    background-color: var(--menuullihoverbg);  
+    transition:  0.5s ease;
+    -o-transition:  0.5s ease; /* opera */
+    -ms-transition:  0.5s ease; /* IE 10 */
+    -moz-transition:  0.5s ease; /* Firefox */
+    -webkit-transition:  0.5s ease; /*safari and chrome */
+}
+#menubutton.clickable.menu:hover ul.toplevel.menu,
+#menubutton.clickable.menu.hover ul.toplevel.menu, 
+#menubutton.clickable.menu ul li:hover > ul.submenu,
+#menubutton.clickable.menu ul li.hover > ul.submenu {
+    visibility:visible;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    -o-transition: opacity 0.5s ease; /* opera */
+    -ms-transition: opacity 0.5s ease; /* IE 10 */
+    -moz-transition: opacity 0.5s ease; /* Firefox */
+    -webkit-transition: opacity 0.5s ease; /*safari and chrome */
+}    
+#content_panel:has(#loginpage form#pwresetgetpw) #menubutton.clickable.menu {
+    position: relative;
+    right: -67%;
+} 
+#content_panel:has(#loginpage form#pwresetgetpw) #menubutton.clickable.menu ul.toplevel.menu {
+    top:-15px; 
+    right: 70px;        
+} 
+#content_panel:has(#loginpage form#pwresetgetpw) #menubutton.clickable.menu ul {
+    top: -51px;
+}
+
