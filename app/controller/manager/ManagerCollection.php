@@ -16,6 +16,11 @@ class ManagerCollection {
                                ,protected SessionManager $sessionmanager
                                ,protected EMailManager $emailmanager
                                ,protected ReportManager $reportmanager
+                               ,protected StockCategoryManager $stockcategorymanager
+                               ,protected StockManager $stockmanager
+                               ,protected StocktakeManager $stocktakemanager
+                               ,protected DeliveryManager $deliverymanager
+                               ,protected StockoutManager $stockoutmanager
                                ){
         if ($this->trace ) { echo "Visit ".__METHOD__."<br>\n"; }
 	}
@@ -70,5 +75,25 @@ class ManagerCollection {
     public function ReportManager() {
         if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
         return $this->reportmanager;
-    }    
+    }
+    public function StockCategoryManager() {
+        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
+        return $this->stockcategorymanager;
+    }
+    public function StockManager() {
+        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
+        return $this->stockmanager;
+    }
+    public function StocktakeManager() {
+        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
+        return $this->stocktakemanager;
+    }
+    public function DeliveryManager() {
+        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
+        return $this->deliverymanager;
+    }
+    public function StockoutManager() {
+        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
+        return $this->stockoutmanager;
+    }
 }

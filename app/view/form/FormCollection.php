@@ -23,6 +23,11 @@ class FormCollection {
                                 ,protected EnterNewPasswordForm $enternewpasswordform
                                 ,protected MenuitemForm $menuitemform
                                 ,protected ConfirmCodeForm $ConfirmCodeForm
+                                ,protected StockCategoryForm $stockcategoryform
+                                ,protected StockForm $stockform
+                                ,protected StocktakeForm $stocktakeform
+                                ,protected DeliveryForm $deliveryform
+                                ,protected StockoutForm $stockoutform
                                 // ,protected SessionListForm $SessionList
                             ){
         if ($this->trace ) { echo "Enter ".__METHOD__."<br>\n"; }
@@ -86,5 +91,20 @@ class FormCollection {
     }
     public function SessionForm() {
         return $this->sessionform;
+    }
+    public function StockCategoryForm() {
+        return $this->stockcategoryform;
+    }
+    public function StockForm() {
+        return $this->stockform;
+    }
+    public function StocktakeForm() {
+        return $this->stocktakeform;
+    }
+    public function DeliveryForm() {
+        return $this->deliveryform;
+    }
+    public function StockoutForm() {
+        return $this->stockoutform;
     }
 }

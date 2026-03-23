@@ -101,8 +101,13 @@ class RequestProcessController {
                 case "reportform":      $success = $this->processCRUDform($this->managercollection->ReportManager(),$errormessage,$trace); break;
                 case "pageform":        $success = $this->processCRUDform($this->managercollection->PageManager(),$errormessage,$trace); break;
                 case "actionform":      $success = $this->processCRUDform($this->managercollection->ActionManager(),$errormessage,$trace); break;
-                case "configform":      $success = $this->processCRUDform($this->managercollection->ConfigManager(),$errormessage,$trace); break;
-                case "sessionform":     $success = $this->processCRUDform($this->managercollection->SessionManager(),$errormessage,$trace); break;
+                case "configform":           $success = $this->processCRUDform($this->managercollection->ConfigManager(),$errormessage,$trace); break;
+                case "sessionform":          $success = $this->processCRUDform($this->managercollection->SessionManager(),$errormessage,$trace); break;
+                case "stockcategoryform":    $success = $this->processCRUDform($this->managercollection->StockCategoryManager(),$errormessage,$trace); break;
+                case "stockform":            $success = $this->processCRUDform($this->managercollection->StockManager(),$errormessage,$trace); break;
+                case "stocktakeform":        $success = $this->processCRUDform($this->managercollection->StocktakeManager(),$errormessage,$trace); break;
+                case "deliveryform":         $success = $this->processCRUDform($this->managercollection->DeliveryManager(),$errormessage,$trace); break;
+                case "stockoutform":         $success = $this->processCRUDform($this->managercollection->StockoutManager(),$errormessage,$trace); break;
                 default :               $errormessage = 'No FORM recognised. $_POST = '.implode(",",$this->requestdata);
                                         $success = false;
             }
