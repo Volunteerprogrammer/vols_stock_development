@@ -94,6 +94,10 @@ class ViewController {
                     $this->form->init($this->session,[],"",false,[],[]);
                     $output = "<div id='attendancedata'>".$this->form->rendersessionreport($data,$formdata)."</div>"; 
                     break;
+            case "stockitemlocation_getstock":
+                    $this->form = $this->forms->LocationForm();
+                    $output = $this->form->rendertargetstable($data);
+                    break;
             case "stockevent_getstock":
                     $event_type = $formdata["event_type"] ?? '';
                     $this->form = $this->getStockEventForm($event_type);
@@ -281,6 +285,7 @@ class ViewController {
             case $c2v($mm::STOCKLEVELREPORTPAGE)  :$success = $this->prepare_stocklevelreport_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::DAMAGEDSTOCKPAGE)      :$success = $this->prepare_stockmovement_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::STOCKUSAGEREPORTPAGE) :$success = $this->prepare_stockusagereport_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::LOCATIONPAGE)        :$success = $this->prepare_location_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::STOCKCLIENTPAGE)     :$success = $this->prepare_std_body($user_id,"name",$errormessage,$trace); break;
             case $c2v($mm::STOCKTAKEEVENTPAGE)  :
             case $c2v($mm::DELIVERYEVENTPAGE)   :
@@ -510,6 +515,31 @@ class ViewController {
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
         return true;
      }
+    private function prepare_location_body($user_id, &$errormessage, $trace=false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        try {
+            $locations = $categories = $parents = [];
+            $numrows = 0;
+            $success = $this->manager->getallrecords($locations, "name", $parents, $numrows, false, false);
+            if ($success) {
+                $catmgr = $this->mgrs->StockCategoryManager();
+                $catmgr->init($this->session);
+                $catmgr->getallrecords($categories, "Name", $parents, $numrows, false, false);
+                $this->form->init($this->session, $locations, $parents, false, $categories);
+                $this->bodysection = $this->bodies->standardbody();
+                $this->bodysection->init($this->session, $this->form, $this->manager->getname(), "", $errormessage);
+            } else {
+                $errormessage = __METHOD__ . " failed to get locations.";
+                return false;
+            }
+        } catch (\Exception $e) {
+            $errormessage = __METHOD__ . ": " . $e->getMessage();
+            if ($this->trace) { echo gtab(-1)."Leave ".__METHOD__."...<br>$errormessage<br>"; }
+            return false;
+        }
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
+        return true;
+    }
     private function prepare_task_body($user_id,&$errormessage,$trace=false) {
         if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
         try {

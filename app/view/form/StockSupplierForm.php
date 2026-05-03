@@ -49,22 +49,23 @@ class StockSupplierForm extends \fw\view\form\StdCRUDForm {
         if (!empty($this->parents)) {
             $formfields .= $this->component->rendersectionheading("Categories supplied");
             $this->component->setwidths(35, 60, 5);
+            $oddeven = 'vols-row-odd';
             foreach ($this->parents as $cat) {
                 $fieldname = "link_stockcategory".$cat["id"];
                 $formfields .= $this->component->buildcheckboxrow(
-                    $fieldname,         // field name
-                    $cat["id"],         // value
-                    "",                 // default
-                    true,               // enabled
-                    $fn++,              // fnum
-                    $cat["Name"],       // label
-                    '',                 // hint
+                    $fieldname,
+                    $cat["id"],
+                    "",
+                    true,
+                    $fn++,
+                    $cat["Name"],
+                    '',
                     false, false, false, false,
-                    'vols-tablerow',    // row class
-                    []                  // row data
+                    'vols-tablerow ' . $oddeven,
+                    []
                 );
-                // Hidden field ensures unchecked boxes appear in POST as false
                 $hiddencheckboxes .= '<input type="hidden" name="'.$fieldname.'" value="false" />';
+                $oddeven = ($oddeven === 'vols-row-odd') ? 'vols-row-even' : 'vols-row-odd';
             }
         }
 

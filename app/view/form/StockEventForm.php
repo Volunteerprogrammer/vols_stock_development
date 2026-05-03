@@ -51,18 +51,21 @@ abstract class StockEventForm extends \fw\view\form\Form {
         if (empty($rows)) {
             return '<tr><td colspan="99" class="se-empty">No stock items found.</td></tr>';
         }
-        $html = '';
+        $html    = '';
         $lastcat = null;
+        $n       = 0;
         foreach ($rows as $row) {
-            // Insert a category heading row when the category changes.
             $cat = $row['category_name'] ?? '';
             if ($cat !== $lastcat) {
                 $html .= '<tr class="se-category-heading"><td colspan="99">'
                        . htmlspecialchars($cat ?: '(No category)')
                        . '</td></tr>';
                 $lastcat = $cat;
+                $n = 0;
             }
-            $html .= $this->renderstockrow($row);
+            $oddeven = ($n % 2 === 0) ? ' vols-row-odd' : ' vols-row-even';
+            $html .= str_replace('class="se-stock-row"', 'class="se-stock-row' . $oddeven . '"', $this->renderstockrow($row));
+            $n++;
         }
         return $html;
     }
@@ -124,8 +127,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
     private function renderdigitpad(): string {
         $html  = '<div id="se-digitpad" class="se-digitpad">';
         $html .= '<div id="se-action-buttons" class="se-action-buttons">';
-        $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="closestockevent()">Close Event</button>';
-        $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="cancelstockevent()">Cancel Event</button>';
+        $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="closestockevent()">Close ' . htmlspecialchars($this->event_label) . '</button>';
+        $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="cancelstockevent()">Cancel ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '</div>';
         $html .= '<div class="se-pad-display">';
         $html .= '<input type="text" id="se-pad-display" readonly tabindex="-1">';
