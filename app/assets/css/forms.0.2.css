@@ -1685,6 +1685,42 @@ input
 }
 
 /* ============================================================
+   Location page — target quantities table
+   ============================================================ */
+
+.loc-targets-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+}
+.loc-targets-table th,
+.loc-targets-table td {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border-color, #ccc);
+    vertical-align: middle;
+}
+.loc-targets-table thead th {
+    background: var(--table-header-bg, #e8e8e8);
+    font-weight: 600;
+    white-space: nowrap;
+}
+.loc-tgt-cat   { width: 28%; }
+.loc-tgt-name  { width: 52%; }
+.loc-tgt-qty   { width: 20%; text-align: center; }
+.loc-target-input {
+    width: 4.5rem;
+    text-align: right;
+    font-size: 0.95rem;
+    padding: 0.2rem 0.3rem;
+}
+.loc-tgt-empty {
+    padding: 0.5rem;
+    font-style: italic;
+    color: #666;
+}
+
+/* ============================================================
    Stock level report page
    ============================================================ */
 

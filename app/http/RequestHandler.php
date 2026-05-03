@@ -175,6 +175,17 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $success  = $this->manager->cancelevent($event_id, $errormsg);
                             $output   = json_encode(['success' => $success, 'error' => $errormsg]);
                             break;
+                        case "stockitemlocation_getstock":
+                            $this->manager = $this->managercollection->LocationManager();
+                            $this->manager->init($this->session);
+                            $d           = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $location_id = $d["location_id"] ?? 0;
+                            $results     = [];
+                            $numrows     = 0;
+                            $this->manager->getstockwithtargets($location_id, $results, $numrows);
+                            $this->viewcontroller->init($this->session, $this->managercollection, $this->errorhandler, $trace);
+                            $output = $this->viewcontroller->processajaxrequest("stockitemlocation_getstock", $d, $results, $errormessage, $trace);
+                            break;
                         case "stockevent_getstock":
                             $this->manager = $this->managercollection->StockEventManager();
                             $this->manager->init($this->session);
