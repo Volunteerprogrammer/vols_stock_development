@@ -433,7 +433,7 @@ class UserManager extends \fw\controller\manager\StdManager
                         $errormessage  = "Failed sending security code: ".$response;
                     } 
                 } else {
-                    $errormessage  = $numrows == 1?"There are multiple volunteers with that email. Call Reception please.":"";
+                    $errormessage  = $numrows > 1 ? "There are multiple volunteers with that email. Call Reception please." : "Email address not found.";
                     $success = false;
                     $this->clear();
                 }
