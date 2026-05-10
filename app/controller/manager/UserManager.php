@@ -458,7 +458,6 @@ class UserManager extends \fw\controller\manager\StdManager
         $errormessage = $query = "";
         if (strlen($code)) {
             $success = $this->securitytable->selectononefield("code",$code,$records,$numrows,false,false);
-        // lib::v($emailaddr,$records,$numrows);
             if ($success) {  // does not mean user exists, just no errors were encountered 
                 if ($numrows == 1) {
                     $now = new \DateTime();
