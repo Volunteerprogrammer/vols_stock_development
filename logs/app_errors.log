@@ -1,2 +1,481 @@
-===== START at 26-03-24 17:20:03 2cvo8sadjssvo8t1d904fb29r4
-===== START at 26-03-24 17:20:04 2cvo8sadjssvo8t1d904fb29r4
+===== START at 26-05-05 23:43:44 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-05 23:43:44')
+===== START at 26-05-05 23:47:10 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-05 23:47:15')
+
+START SQL error at 26-05-05 23:47:15==============================
+1449 The user specified as a definer ('sarum964_root'@'144.6.77.193') does not exist
+
+mysqli_sql_exception: The user specified as a definer ('sarum964_root'@'144.6.77.193') does not exist in D:\xampp\htdocs\vols\vendor\fw\database\MySqlDB.php:236
+Stack trace:
+#0 D:\xampp\htdocs\vols\vendor\fw\database\MySqlDB.php(236): mysqli->query('UPDATE client S...')
+#1 D:\xampp\htdocs\vols\vendor\fw\database\table\MySQLTable.php(80): database\MySqlDB->dbquery('UPDATE client S...', NULL, NULL, '', 1, false, NULL, false)
+#2 D:\xampp\htdocs\vols\vendor\fw\controller\manager\StdManager.php(75): fw\database\table\MySQLTable->update(' `id` = '1165',...', ' `id`= '1165'', NULL, '', false, NULL, false)
+#3 D:\xampp\htdocs\vols\app\controller\RequestProcessController.php(134): fw\controller\manager\StdManager->update('', false)
+#4 D:\xampp\htdocs\vols\app\controller\RequestProcessController.php(97): app\controller\RequestProcessController->processCRUDform(Object(app\controller\manager\ClientManager), '', false)
+#5 D:\xampp\htdocs\vols\app\http\RequestHandler.php(219): app\controller\RequestProcessController->processformdata('', false)
+#6 D:\xampp\htdocs\vols\app\app.php(19): app\http\RequestHandler->processrequest(false)
+#7 D:\xampp\htdocs\vols\index.php(19): app\App->go(false)
+#8 {main}
+
+ : UPDATE client SET  `id` = '1165', `given_name` = 'Adrian', `family_name` = 'Eastwood', `email` = 'rafadriangi@gmail.com', `phone` = '0403043438', `address_street` = '2/11 Pyke Street', `address_street2` = '', `address_townsuburb` = 'Woodend', `address_state` = 'VIC', `address_postcode` = '3442', `residence` = 'Rent', `gender` = 'MALE', `month_of_birth` = '12', `year_of_birth` = '1961', `interpreter` = '', `language` = 'English', `country_of_birth` = 'Australia', `aborigine_TSislander` = '', `represented_by` = '', `carer_name` = '', `concession_card` = '', `dietary` = '', `comments` = '', `office_comments` = '', `has_read_tandc` = '1', `tandc_signature` = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAACWCAYAAAAonXpvAAAM+ElEQVR4Aezcu44sORkH8F5YrkJAAAlICJGQkZHBC5AhkUPKOxBBSAwPQEqCeAYQCRkJCQEBpCBx3dXe/B0dn/XprZ6pm6tc9m9VNeWuqfps/9zT/+mZOfuxm/8IECBAgACBywsI9MsvoQkQIECAAIHbrW6gEyZAgAABAgQOERDohzDrhAABAgQI1BW4cqDXlVGdAAECBAhcSECgX2ixDJUAAQIECDwSEOiPZJwnQIAAAQIXEhDoF1osQyVAgAABAo8EBPojmbrnVSdAgAABArsKCPRdORUjQIAAAQLnCAj0c9zr9qo6AQIECAwnINCHW3ITJkCAAIEeBQR6j6tad06qEyBAgECDAgK9wUUxJAIECBAgsFRAoC8Vc31dAdUJECBAYJWAQF/F5iYCBAgQINCWgEBvaz2MZj+Bd1Kp99JebtoECBDoVkCgd7u0Q08swvzjSeCNtL+f9ha3/6ZB+YYjIdgIENhHQKDv46hKGwIR5BHgEebliOJc+bhOe37VCPLPpMtb/oYjDc9GgMCVBAT6lVbLWB8JXCXIY/wR5hHk0c57a99w5HE5EiBwIQGBfqHFMtRJgQjz+3fkEZixl8/vCNLJAgeejOCOceUu43FuPze+fJ0jAQIEJgXKF7zJC5wk0LBAhGAZ5hGWsZdDzqF5f768pnY7xpnHkfuK8ZRff/E4f86RAAECiwXKF5TFN7uBwIkCEZBlCJbtclgRpvlx3JPbRx2jz3Js/08dl4//kx7nrRxrPnfMUS8ECFxeQKBffgmbmcAXDxxJhGTZXRmQ5flov5k+vJv2vB0VmhHcU+OMP4bLY4nj5+LDy/2peby8xIEAAQLTAgJ92sXZZQK/TZf/I+33AZZO7brF78vLPqI9JwQj1OPaGMyc6+O6LXt80/CpokCE+1P99v4uvaDQJECgloBAryU7Vt3vFdPNwVmc2qUZYV7+vjz6WfL8jZDNA4l7c3vvY/RThne079+V3/fpXfq9iMcECCwWWPKCuLi4GwjsJBAhWYZ5hOTS5268S6/9o/f4RiHGlqddtvO5R8e936X/JXUUezp0vpkeAQIvBJa+KL64yQcCdwIRlhFmd6d3eRhhXgZj2V7aQYwz37OlTq5RHsv5R3tp/XiXHvdFzaX3xj3lHmbfSCdi/3M61t6+njr4UdptBAicKCDQT8TX9bMCEXBluJXtZ29+cEGNd+kxztxdtNd+Xf07F0nHqJMOi7e4r3T65uIKy2/4Q7rl52nvcTMnApcRWPvCc5kJGuhlBSKY8uCjXYZUPr/mGO/So17cGzXjd/PRXrO/lW7KtVLzFu0tX1OfT0X+lfa8xTvt3H7u+Nd0QfSfDi+2R+0Xn9z5w5dTvS+l/TtptxEgcJLAlhefk4as2wEE7sNo7+dpWa/83fxc2hhf7J8sbohwL+sWn1rUjFDPN8Q3HLn91DF+6vC14oL4RiDG8qfiXIyveLhL88epyj/Tng1/l9q2JQKuJbCjQHzR71hOqYEFIkTy9H+SGyuOZZ0IzVrP0QjBPLyyz3zu/hiBGOOJ/f5zEbyfvj+54fFUH4/KxbWlUYwlB+y3ipvim4//FY+3NGN945/i/TIV+ULaY/tVfLATIHCeQPlCcN4o9NyDQPwoO8/jp7mx4hiBlG+r+fwsxxt9RjBOBXsO8gjEPK58jPtiz4/3OpbznhpT9PO39CHGnA6vtqmx/PHVZ2+3+Kaj/Gv64lOzmjnIf5auLv+d/W/S4x+m3daWgNEMJlC+cAw2ddOtKDAVLHO6KwNqbY05/eRr4l36fZ/xuNzvgzw+F2OLPdepeZzqJ8L8K0WneUzFqVfNb6fW79Oet8+mRly/Zr8P8vgRe4zv+6mmjQCBkwUE+skL0Fn3ERJrp1S+E91SZ0n/b6aL42sg/jDuuT7fTtdGeMX1qVl9ezSeOF+G+d/TSJ4bU/yxWhnq6ZZNWw7y726q4uZrCxh9cwLPvRA0N2ADalqgDOX4g6klg42wzNcf/bz8ROo4+owxPNrLHzGny6tvMZ7cSYR42MYxn4tjjPWr0ZixR6jH9XvsgnwGuEsIHC1Qvmgc3bf++hOId7x5Vr/IjRnHMqgicGbcMsQlj1ziPKchngLDTtLEVwgI9BVobpklMDdw4p1nLhi/085tx9tt6uvzjQQzdT6dthEgMLKAF4aRV7/O3OPd49zK8bvrCKi4Pu4r3+HHOfvtFj7lfvMfAQIbBTq9XaB3urAnTqt8x/3U79EjzPO/l47hei6Ggp0AAQIrBbyIroRz20OB8l32o9+j34d5vAN9WNAnCBAgcCGB04Yq0E+jH6LjqaAW5kMsvUkSIHC0gEA/WnyM/uL34VMzFeZTKs4RIEBgrsAT1wn0J3B8arVA+Xv0H7ysIsxfQjgQIECghoBAr6GqZvl79F8njgj48g/gpn4Uny6zESBAgMBagR0CfW3X7utcoPyxexngZbtzAtMjQIDAcQIC/Tjr0XqK59b9/yhGmI/2LDBfAgQOE4gX3cM6W9ORey4tED96jxDP+6UnY/AECBBoWUCgt7w6xkaAAAECBGYKDB7oM5VcRoAAAQIEGhcQ6I0vkOERIECAAIE5AgJ9jtLKa9xGgAABAgSOEhDoR0nrhwABAgQIVBQQ6BVx65ZWnQABAgQIfCgg0D+00CJAgAABApcVEOiXXbq6A1edAAECBK4lINCvtV5GS4AAAQIEJgUE+iSLk3UFVCdAgACBvQUE+t6i6hEgQIAAgRMEBPoJ6LqsK6A6AQIERhQQ6COuujkTIECAQHcCAr27JTWhugKqEyBAoE0Bgd7muhgVAQIECBBYJCDQF3G5mEBdAdUJECCwVkCgr5VzHwECBAgQaEhAoDe0GIZCoK6A6gQI9Cwg0HteXXMjQIAAgWEEBPowS22iBOoKqE6AwLkCAv1cf70TIECAAIFdBAT6LoyKECBQV0B1AgSeExDozwn5PAECBAgQuICAQL/AIhkiAQJ1BVQn0IOAQO9hFc2BAAECBIYXEOjDPwUAECBQV0B1AscICPRjnPVCgAABAgSqCgj0qryKEyBAoK6A6gSygEDPEo4ECBAgQODCAgL9wotn6AQIEKgroPqVBAT6lVbLWAkQIECAwAMBgf4AxmkCBAgQqCug+r4CAn1fT9UIECBAgMApAgL9FHadEiBAgEBdgfGqC/Tx1tyMCRAgQKBDAYHe4aKaEgECBAjUFWixukBvcVWMiQABAgQILBQQ6AvBXE6AAAECBOoKrKsu0Ne5uYsAAQIECDQlINCbWg6DIUCAAAEC6wTmBvq66u4iQIAAAQIEDhEQ6Icw64QAAQIECNQVaCPQ685RdQIECBAg0L2AQO9+iU2QAAECBEYQGCHQR1hHcyRAgACBwQUE+uBPANMnQIAAgT4EBPrWdXQ/AQIECBBoQECgN7AIhkCAAAECBLYKCPStgnXvV50AAQIECMwSEOizmFxEgAABAgTaFhDoba9P3dGpToAAAQLdCAj0bpbSRAgQIEBgZAGBPvLq15276gQIECBwoIBAPxBbVwQIECBAoJaAQK8lq25dAdUJECBA4DUBgf4ahwcECBAgQOCaAgL9mutm1HUFVCdAgMDlBAT65ZbMgAkQIECAwEcFBPpHTZwhUFdAdQIECFQQEOgVUJUkQIAAAQJHCwj0o8X1R6CugOoECAwqINAHXXjTJkCAAIG+BAR6X+tpNgTqCqhOgECzAgK92aUxMAIECBAgMF9AoM+3ciUBAnUFVCdAYIOAQN+A51YCBAgQINCKgEBvZSWMgwCBugKqE+hcQKB3vsCmR4AAAQJjCAj0MdbZLAkQqCugOoHTBQT66UtgAAQIECBAYLuAQN9uqAIBAgTqCqhOYIaAQJ+B5BICBAgQINC6gEBvfYWMjwABAnUFVO9EQKB3spCmQYAAAQJjCwj0sdff7AkQIFBXQPXDBAT6YdQ6IkCAAAEC9QQEej1blQkQIECgroDqhYBALzA0CRAgQIDAVQUE+lVXzrgJECBAoK7AxaoL9IstmOESIECAAIEpAYE+peIcAQIECBCoK7B7dYG+O6mCBAgQIEDgeAGBfry5HgkQIECAwO4CrwX67tUVJECAAAECBA4REOiHMOuEAAECBAjUFTgw0OtORHUCBAgQIDCygEAfefXNnQABAgS6Eegm0LtZERMhQIAAAQIrBAT6CjS3ECBAgACB1gQE+qwVcREBAgQIEGhbQKC3vT5GR4AAAQIEZgkI9FlMdS9SnQABAgQIbBUQ6FsF3U+AAAECBBoQEOgNLELdIahOgAABAiMICPQRVtkcCRAgQKB7AYHe/RLXnaDqBAgQINCGgEBvYx2MggABAgQIbBIQ6Jv43FxXQHUCBAgQmCsg0OdKuY4AAQIECDQsINAbXhxDqyugOgECBHoSEOg9raa5ECBAgMCwAgJ92KU38boCqhMgQOBYgQ8AAAD///hYJiMAAAAGSURBVAMAte/DLZt4mqMAAAAASUVORK5CYII=', `modified_by` = 10 WHERE  `id`= '1165'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+INSERT INTO email (senddate, status, email, response) VALUES ('2026-05-05 23:47:16', 'Bad Request', '{\"To\":[{\"Email\":\"david.thomas@elliott-thomas.com.au; amandak@woodendnh.org.au\",\"Name\":\"Support\"}],\"Subject\":\"FW database error\",\"TextPart\":\"SQL error on query:\\nUPDATE client SET  `id` = \'1165\', `given_name` = \'Adrian\', `family_name` = \'Eastwood\', `email` = \'rafadriangi@gmail.com\', `phone` = \'0403043438\', `address_street` = \'2\\/11 Pyke Street\', `address_street2` = \'\', `address_townsuburb` = \'Woodend\', `address_state` = \'VIC\', `address_postcode` = \'3442\', `residence` = \'Rent\', `gender` = \'MALE\', `month_of_birth` = \'12\', `year_of_birth` = \'1961\', `interpreter` = \'\', `language` = \'English\', `country_of_birth` = \'Australia\', `aborigine_TSislander` = \'\', `represented_by` = \'\', `carer_name` = \'\', `concession_card` = \'\', `dietary` = \'\', `comments` = \'\', `office_comments` = \'\', `has_read_tandc` = \'1\', `tandc_signature` = \'data:image\\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAACWCAYAAAAonXpvAAAM+ElEQVR4Aezcu44sORkH8F5YrkJAAAlICJGQkZHBC5AhkUPKOxBBSAwPQEqCeAYQCRkJCQEBpCBx3dXe\\/B0dn\\/XprZ6pm6tc9m9VNeWuqfps\\/9zT\\/+mZOfuxm\\/8IECBAgACBywsI9MsvoQkQIECAAIHbrW6gEyZAgAABAgQOERDohzDrhAABAgQI1BW4cqDXlVGdAAECBAhcSECgX2ixDJUAAQIECDwSEOiPZJwnQIAAAQIXEhDoF1osQyVAgAABAo8EBPojmbrnVSdAgAABArsKCPRdORUjQIAAAQLnCAj0c9zr9qo6AQIECAwnINCHW3ITJkCAAIEeBQR6j6tad06qEyBAgECDAgK9wUUxJAIECBAgsFRAoC8Vc31dAdUJECBAYJWAQF\\/F5iYCBAgQINCWgEBvaz2MZj+Bd1Kp99JebtoECBDoVkCgd7u0Q08swvzjSeCNtL+f9ha3\\/6ZB+YYjIdgIENhHQKDv46hKGwIR5BHgEebliOJc+bhOe37VCPLPpMtb\\/oYjDc9GgMCVBAT6lVbLWB8JXCXIY\\/wR5hHk0c57a99w5HE5EiBwIQGBfqHFMtRJgQjz+3fkEZixl8\\/vCNLJAgeejOCOceUu43FuPze+fJ0jAQIEJgXKF7zJC5wk0LBAhGAZ5hGWsZdDzqF5f768pnY7xpnHkfuK8ZRff\\/E4f86RAAECiwXKF5TFN7uBwIkCEZBlCJbtclgRpvlx3JPbRx2jz3Js\\/08dl4\\/\\/kx7nrRxrPnfMUS8ECFxeQKBffgmbmcAXDxxJhGTZXRmQ5flov5k+vJv2vB0VmhHcU+OMP4bLY4nj5+LDy\\/2peby8xIEAAQLTAgJ92sXZZQK\\/TZf\\/I+33AZZO7brF78vLPqI9JwQj1OPaGMyc6+O6LXt80\\/CpokCE+1P99v4uvaDQJECgloBAryU7Vt3vFdPNwVmc2qUZYV7+vjz6WfL8jZDNA4l7c3vvY\\/RThne079+V3\\/fpXfq9iMcECCwWWPKCuLi4GwjsJBAhWYZ5hOTS5268S6\\/9o\\/f4RiHGlqddtvO5R8e936X\\/JXUUezp0vpkeAQIvBJa+KL64yQcCdwIRlhFmd6d3eRhhXgZj2V7aQYwz37OlTq5RHsv5R3tp\\/XiXHvdFzaX3xj3lHmbfSCdi\\/3M61t6+njr4UdptBAicKCDQT8TX9bMCEXBluJXtZ29+cEGNd+kxztxdtNd+Xf07F0nHqJMOi7e4r3T65uIKy2\\/4Q7rl52nvcTMnApcRWPvCc5kJGuhlBSKY8uCjXYZUPr\\/mGO\\/So17cGzXjd\\/PRXrO\\/lW7KtVLzFu0tX1OfT0X+lfa8xTvt3H7u+Nd0QfSfDi+2R+0Xn9z5w5dTvS+l\\/TtptxEgcJLAlhefk4as2wEE7sNo7+dpWa\\/83fxc2hhf7J8sbohwL+sWn1rUjFDPN8Q3HLn91DF+6vC14oL4RiDG8qfiXIyveLhL88epyj\\/Tng1\\/l9q2JQKuJbCjQHzR71hOqYEFIkTy9H+SGyuOZZ0IzVrP0QjBPLyyz3zu\\/hiBGOOJ\\/f5zEbyfvj+54fFUH4\\/KxbWlUYwlB+y3ipvim4\\/\\/FY+3NGN945\\/i\\/TIV+ULaY\\/tVfLATIHCeQPlCcN4o9NyDQPwoO8\\/jp7mx4hiBlG+r+fwsxxt9RjBOBXsO8gjEPK58jPtiz4\\/3OpbznhpT9PO39CHGnA6vtqmx\\/PHVZ2+3+Kaj\\/Gv64lOzmjnIf5auLv+d\\/W\\/S4x+m3daWgNEMJlC+cAw2ddOtKDAVLHO6KwNqbY05\\/eRr4l36fZ\\/xuNzvgzw+F2OLPdepeZzqJ8L8K0WneUzFqVfNb6fW79Oet8+mRly\\/Zr8P8vgRe4zv+6mmjQCBkwUE+skL0Fn3ERJrp1S+E91SZ0n\\/b6aL42sg\\/jDuuT7fTtdGeMX1qVl9ezSeOF+G+d\\/TSJ4bU\\/yxWhnq6ZZNWw7y726q4uZrCxh9cwLPvRA0N2ADalqgDOX4g6klg42wzNcf\\/bz8ROo4+owxPNrLHzGny6tvMZ7cSYR42MYxn4tjjPWr0ZixR6jH9XvsgnwGuEsIHC1Qvmgc3bf++hOId7x5Vr\\/IjRnHMqgicGbcMsQlj1ziPKchngLDTtLEVwgI9BVobpklMDdw4p1nLhi\\/085tx9tt6uvzjQQzdT6dthEgMLKAF4aRV7\\/O3OPd49zK8bvrCKi4Pu4r3+HHOfvtFj7lfvMfAQIbBTq9XaB3urAnTqt8x\\/3U79EjzPO\\/l47hei6Ggp0AAQIrBbyIroRz20OB8l32o9+j34d5vAN9WNAnCBAgcCGB04Yq0E+jH6LjqaAW5kMsvUkSIHC0gEA\\/WnyM\\/uL34VMzFeZTKs4RIEBgrsAT1wn0J3B8arVA+Xv0H7ysIsxfQjgQIECghoBAr6GqZvl79F8njgj48g\\/gpn4Uny6zESBAgMBagR0CfW3X7utcoPyxexngZbtzAtMjQIDAcQIC\\/Tjr0XqK59b9\\/yhGmI\\/2LDBfAgQOE4gX3cM6W9ORey4tED96jxDP+6UnY\\/AECBBoWUCgt7w6xkaAAAECBGYKDB7oM5VcRoAAAQIEGhcQ6I0vkOERIECAAIE5AgJ9jtLKa9xGgAABAgSOEhDoR0nrhwABAgQIVBQQ6BVx65ZWnQABAgQIfCgg0D+00CJAgAABApcVEOiXXbq6A1edAAECBK4lINCvtV5GS4AAAQIEJgUE+iSLk3UFVCdAgACBvQUE+t6i6hEgQIAAgRMEBPoJ6LqsK6A6AQIERhQQ6COuujkTIECAQHcCAr27JTWhugKqEyBAoE0Bgd7muhgVAQIECBBYJCDQF3G5mEBdAdUJECCwVkCgr5VzHwECBAgQaEhAoDe0GIZCoK6A6gQI9Cwg0HteXXMjQIAAgWEEBPowS22iBOoKqE6AwLkCAv1cf70TIECAAIFdBAT6LoyKECBQV0B1AgSeExDozwn5PAECBAgQuICAQL\\/AIhkiAQJ1BVQn0IOAQO9hFc2BAAECBIYXEOjDPwUAECBQV0B1AscICPRjnPVCgAABAgSqCgj0qryKEyBAoK6A6gSygEDPEo4ECBAgQODCAgL9wotn6AQIEKgroPqVBAT6lVbLWAkQIECAwAMBgf4AxmkCBAgQqCug+r4CAn1fT9UIECBAgMApAgL9FHadEiBAgEBdgfGqC\\/Tx1tyMCRAgQKBDAYHe4aKaEgECBAjUFWixukBvcVWMiQABAgQILBQQ6AvBXE6AAAECBOoKrKsu0Ne5uYsAAQIECDQlINCbWg6DIUCAAAEC6wTmBvq66u4iQIAAAQIEDhEQ6Icw64QAAQIECNQVaCPQ685RdQIECBAg0L2AQO9+iU2QAAECBEYQGCHQR1hHcyRAgACBwQUE+uBPANMnQIAAgT4EBPrWdXQ\\/AQIECBBoQECgN7AIhkCAAAECBLYKCPStgnXvV50AAQIECMwSEOizmFxEgAABAgTaFhDoba9P3dGpToAAAQLdCAj0bpbSRAgQIEBgZAGBPvLq15276gQIECBwoIBAPxBbVwQIECBAoJaAQK8lq25dAdUJECBA4DUBgf4ahwcECBAgQOCaAgL9mutm1HUFVCdAgMDlBAT65ZbMgAkQIECAwEcFBPpHTZwhUFdAdQIECFQQEOgVUJUkQIAAAQJHCwj0o8X1R6CugOoECAwqINAHXXjTJkCAAIG+BAR6X+tpNgTqCqhOgECzAgK92aUxMAIECBAgMF9AoM+3ciUBAnUFVCdAYIOAQN+A51YCBAgQINCKgEBvZSWMgwCBugKqE+hcQKB3vsCmR4AAAQJjCAj0MdbZLAkQqCugOoHTBQT66UtgAAQIECBAYLuAQN9uqAIBAgTqCqhOYIaAQJ+B5BICBAgQINC6gEBvfYWMjwABAnUFVO9EQKB3spCmQYAAAQJjCwj0sdff7AkQIFBXQPXDBAT6YdQ6IkCAAAEC9QQEej1blQkQIECgroDqhYBALzA0CRAgQIDAVQUE+lVXzrgJECBAoK7AxaoL9IstmOESIECAAIEpAYE+peIcAQIECBCoK7B7dYG+O6mCBAgQIEDgeAGBfry5HgkQIECAwO4CrwX67tUVJECAAAECBA4REOiHMOuEAAECBAjUFTgw0OtORHUCBAgQIDCygEAfefXNnQABAgS6Eegm0LtZERMhQIAAAQIrBAT6CjS3ECBAgACB1gQE+qwVcREBAgQIEGhbQKC3vT5GR4AAAQIEZgkI9FlMdS9SnQABAgQIbBUQ6FsF3U+AAAECBBoQEOgNLELdIahOgAABAiMICPQRVtkcCRAgQKB7AYHe\\/RLXnaDqBAgQINCGgEBvYx2MggABAgQIbBIQ6Jv43FxXQHUCBAgQmCsg0OdKuY4AAQIECDQsINAbXhxDqyugOgECBHoSEOg9raa5ECBAgMCwAgJ92KU38boCqhMgQOBYgQ8AAAD\\/\\/\\/hYJiMAAAAGSURBVAMAte\\/DLZt4mqMAAAAASUVORK5CYII=\', `modified_by` = 10 WHERE  `id`= \'1165\'\\n\\n1449 The user specified as a definer (\'sarum964_root\'@\'144.6.77.193\') does not exist\\n\\nmysqli_sql_exception: The user specified as a definer (\'sarum964_root\'@\'144.6.77.193\') does not exist in D:\\\\xampp\\\\htdocs\\\\vols\\\\vendor\\\\fw\\\\database\\\\MySqlDB.php:236\\nStack trace:\\n#0 D:\\\\xampp\\\\htdocs\\\\vols\\\\vendor\\\\fw\\\\database\\\\MySqlDB.php(236): mysqli->query(\'UPDATE client S...\')\\n#1 D:\\\\xampp\\\\htdocs\\\\vols\\\\vendor\\\\fw\\\\database\\\\table\\\\MySQLTable.php(80): database\\\\MySqlDB->dbquery(\'UPDATE client S...\', NULL, NULL, \'\', 1, false, NULL, false)\\n#2 D:\\\\xampp\\\\htdocs\\\\vols\\\\vendor\\\\fw\\\\controller\\\\manager\\\\StdManager.php(75): fw\\\\database\\\\table\\\\MySQLTable->update(\' `id` = \'1165\',...\', \' `id`= \'1165\'\', NULL, \'\', false, NULL, false)\\n#3 D:\\\\xampp\\\\htdocs\\\\vols\\\\app\\\\controller\\\\RequestProcessController.php(134): fw\\\\controller\\\\manager\\\\StdManager->update(\'\', false)\\n#4 D:\\\\xampp\\\\htdocs\\\\vols\\\\app\\\\controller\\\\RequestProcessController.php(97): app\\\\controller\\\\RequestProcessController->processCRUDform(Object(app\\\\controller\\\\manager\\\\ClientManager), \'\', false)\\n#5 D:\\\\xampp\\\\htdocs\\\\vols\\\\app\\\\http\\\\RequestHandler.php(219): app\\\\controller\\\\RequestProcessController->processformdata(\'\', false)\\n#6 D:\\\\xampp\\\\htdocs\\\\vols\\\\app\\\\app.php(19): app\\\\http\\\\RequestHandler->processrequest(false)\\n#7 D:\\\\xampp\\\\htdocs\\\\vols\\\\index.php(19): app\\\\App->go(false)\\n#8 {main}\\n\\n\",\"From\":{\"Email\":\"volunteersadmin@woodendnh.org.au\",\"Name\":\"Volunteers Admin \"}}', '<pre>array(1) {\n  [0]=>\n  object(Mailjet\\Response)#22 (5) {\n    [\"status\":\"Mailjet\\Response\":private]=>\n    int(400)\n    [\"success\":\"Mailjet\\Response\":private]=>\n    bool(false)\n    [\"body\":\"Mailjet\\Response\":private]=>\n    array(1) {\n      [\"Messages\"]=>\n      array(1) {\n        [0]=>\n        array(2) {\n          [\"Status\"]=>\n          string(5) \"error\"\n          [\"Errors\"]=>\n          array(1) {\n            [0]=>\n            array(5) {\n              [\"ErrorIdentifier\"]=>\n              string(36) \"6344b85f-fb71-411c-b78c-4421955f810e\"\n              [\"ErrorCode\"]=>\n              string(7) \"mj-0013\"\n              [\"StatusCode\"]=>\n              int(400)\n              [\"ErrorMessage\"]=>\n              string(91) \"\"david.thomas@elliott-thomas.com.au; amandak@woodendnh.org.au\" is an invalid email address.\"\n              [\"ErrorRelatedTo\"]=>\n              array(1) {\n                [0]=>\n                string(11) \"To[0].Email\"\n              }\n            }\n          }\n        }\n      }\n    }\n    [\"rawResponse\":\"Mailjet\\Response\":private]=>\n    object(GuzzleHttp\\Psr7\\Response)#69 (6) {\n      [\"reasonPhrase\":\"GuzzleHttp\\Psr7\\Response\":private]=>\n      string(11) \"Bad Request\"\n      [\"statusCode\":\"GuzzleHttp\\Psr7\\Response\":private]=>\n      int(400)\n      [\"headers\":\"GuzzleHttp\\Psr7\\Response\":private]=>\n      array(4) {\n        [\"content-length\"]=>\n        array(1) {\n          [0]=>\n          string(3) \"286\"\n        }\n        [\"content-type\"]=>\n        array(1) {\n          [0]=>\n          string(31) \"application/json; charset=UTF-8\"\n        }\n        [\"x-mj-request-guid\"]=>\n        array(1) {\n          [0]=>\n          string(36) \"4e08b4af-bcbc-40a5-83b1-bcb317a50307\"\n        }\n        [\"date\"]=>\n        array(1) {\n          [0]=>\n          string(29) \"Tue, 05 May 2026 13:47:15 GMT\"\n        }\n      }\n      [\"headerNames\":\"GuzzleHttp\\Psr7\\Response\":private]=>\n      array(4) {\n        [\"content-length\"]=>\n        string(14) \"content-length\"\n        [\"content-type\"]=>\n        string(12) \"content-type\"\n        [\"x-mj-request-guid\"]=>\n        string(17) \"x-mj-request-guid\"\n        [\"date\"]=>\n        string(4) \"date\"\n      }\n      [\"protocol\":\"GuzzleHttp\\Psr7\\Response\":private]=>\n      string(3) \"1.1\"\n      [\"stream\":\"GuzzleHttp\\Psr7\\Response\":private]=>\n      object(GuzzleHttp\\Psr7\\Stream)#65 (7) {\n        [\"stream\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        resource(185) of type (stream)\n        [\"size\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        int(286)\n        [\"seekable\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        bool(true)\n        [\"readable\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        bool(true)\n        [\"writable\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        bool(true)\n        [\"uri\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        string(10) \"php://temp\"\n        [\"customMetadata\":\"GuzzleHttp\\Psr7\\Stream\":private]=>\n        array(0) {\n        }\n      }\n    }\n    [\"request\":\"Mailjet\\Response\":private]=>\n    object(Mailjet\\Request)#5 (8) {\n      [\"method\":\"Mailjet\\Request\":private]=>\n      string(4) \"POST\"\n      [\"url\":\"Mailjet\\Request\":private]=>\n      string(33) \"https://api.mailjet.com/v3.1/send\"\n      [\"filters\":\"Mailjet\\Request\":private]=>\n      array(0) {\n      }\n      [\"body\":\"Mailjet\\Request\":private]=>\n      array(1) {\n        [\"Messages\"]=>\n        array(1) {\n          [0]=>\n          array(4) {\n            [\"To\"]=>\n            array(1) {\n              [0]=>\n              array(2) {\n                [\"Email\"]=>\n                string(60) \"david.thomas@elliott-thomas.com.au; amandak@woodendnh.org.au\"\n                [\"Name\"]=>\n                string(7) \"Support\"\n              }\n            }\n            [\"Subject\"]=>\n            string(17) \"FW database error\"\n            [\"TextPart\"]=>\n            string(6565) \"SQL error on query:\nUPDATE client SET  `id` = \'1165\', `given_name` = \'Adrian\', `family_name` = \'Eastwood\', `email` = \'rafadriangi@gmail.com\', `phone` = \'0403043438\', `address_street` = \'2/11 Pyke Street\', `address_street2` = \'\', `address_townsuburb` = \'Woodend\', `address_state` = \'VIC\', `address_postcode` = \'3442\', `residence` = \'Rent\', `gender` = \'MALE\', `month_of_birth` = \'12\', `year_of_birth` = \'1961\', `interpreter` = \'\', `language` = \'English\', `country_of_birth` = \'Australia\', `aborigine_TSislander` = \'\', `represented_by` = \'\', `carer_name` = \'\', `concession_card` = \'\', `dietary` = \'\', `comments` = \'\', `office_comments` = \'\', `has_read_tandc` = \'1\', `tandc_signature` = \'data:image/png;base64,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\', `modified_by` = 10 WHERE  `id`= \'1165\'\n\n1449 The user specified as a definer (\'sarum964_root\'@\'144.6.77.193\') does not exist\n\nmysqli_sql_exception: The user specified as a definer (\'sarum964_root\'@\'144.6.77.193\') does not exist in D:\\xampp\\htdocs\\vols\\vendor\\fw\\database\\MySqlDB.php:236\nStack trace:\n#0 D:\\xampp\\htdocs\\vols\\vendor\\fw\\database\\MySqlDB.php(236): mysqli->query(\'UPDATE client S...\')\n#1 D:\\xampp\\htdocs\\vols\\vendor\\fw\\database\\table\\MySQLTable.php(80): database\\MySqlDB->dbquery(\'UPDATE client S...\', NULL, NULL, \'\', 1, false, NULL, false)\n#2 D:\\xampp\\htdocs\\vols\\vendor\\fw\\controller\\manager\\StdManager.php(75): fw\\database\\table\\MySQLTable->update(\' `id` = \'1165\',...\', \' `id`= \'1165\'\', NULL, \'\', false, NULL, false)\n#3 D:\\xampp\\htdocs\\vols\\app\\controller\\RequestProcessController.php(134): fw\\controller\\manager\\StdManager->update(\'\', false)\n#4 D:\\xampp\\htdocs\\vols\\app\\controller\\RequestProcessController.php(97): app\\controller\\RequestProcessController->processCRUDform(Object(app\\controller\\manager\\ClientManager), \'\', false)\n#5 D:\\xampp\\htdocs\\vols\\app\\http\\RequestHandler.php(219): app\\controller\\RequestProcessController->processformdata(\'\', false)\n#6 D:\\xampp\\htdocs\\vols\\app\\app.php(19): app\\http\\RequestHandler->processrequest(false)\n#7 D:\\xampp\\htdocs\\vols\\index.php(19): app\\App->go(false)\n#8 {main}\n\n\"\n            [\"From\"]=>\n            array(2) {\n              [\"Email\"]=>\n              string(32) \"volunteersadmin@woodendnh.org.au\"\n              [\"Name\"]=>\n              string(17) \"Volunteers Admin \"\n            }\n          }\n        }\n      }\n      [\"auth\":\"Mailjet\\Request\":private]=>\n      array(2) {\n        [0]=>\n        string(32) \"661cb40c6bf287365ef2d301b39240bf\"\n        [1]=>\n        string(32) \"c2d3aab8e42a8441dda8c6b38b53f79c\"\n      }\n      [\"type\":\"Mailjet\\Request\":private]=>\n      string(16) \"application/json\"\n      [\"requestOptions\":\"Mailjet\\Request\":private]=>\n      array(2) {\n        [\"timeout\"]=>\n        int(15)\n        [\"connect_timeout\"]=>\n        int(2)\n      }\n      ')
+===== START at 26-05-05 23:47:16 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-05 23:47:16')
+===== START at 26-05-06 00:00:35 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:00:41')
+===== START at 26-05-06 00:00:41 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:00:41')
+===== START at 26-05-06 00:00:52 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '406', '', '', '26-05-06 00:00:52')
+===== START at 26-05-06 00:00:59 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:00:59')
+===== START at 26-05-06 00:00:59 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:00:59')
+===== START at 26-05-06 00:01:12 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:01:12')
+===== START at 26-05-06 00:01:12 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:01:12')
+===== START at 26-05-06 00:01:26 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:01:26')
+===== START at 26-05-06 00:01:26 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:01:26')
+===== START at 26-05-06 00:01:32 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:01:32')
+===== START at 26-05-06 00:01:34 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:01:34')
+===== START at 26-05-06 00:01:36 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:01:36')
+===== START at 26-05-06 00:05:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:05:50')
+===== START at 26-05-06 00:05:55 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:05:55')
+===== START at 26-05-06 00:06:29 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:06:29')
+===== START at 26-05-06 00:06:46 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:06:46')
+===== START at 26-05-06 00:08:28 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:08:34')
+===== START at 26-05-06 00:09:10 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:09:11')
+===== START at 26-05-06 00:09:11 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:09:11')
+===== START at 26-05-06 00:09:36 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:09:36')
+===== START at 26-05-06 00:10:07 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:10:07')
+===== START at 26-05-06 00:10:21 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:10:21')
+===== START at 26-05-06 00:10:21 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:10:21')
+===== START at 26-05-06 00:11:28 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:11:33')
+===== START at 26-05-06 00:11:59 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:11:59')
+===== START at 26-05-06 00:12:03 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:12:03')
+===== START at 26-05-06 00:12:03 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:12:03')
+===== START at 26-05-06 00:12:35 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:12:36')
+===== START at 26-05-06 00:12:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '500', '', '', '26-05-06 00:12:50')
+===== START at 26-05-06 00:12:54 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '331', '', '', '26-05-06 00:12:54')
+===== START at 26-05-06 00:12:54 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 00:12:54')
+===== START at 26-05-06 09:32:47 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:47')
+===== START at 26-05-06 09:32:47 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:47')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:48 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:48')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:49 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:49')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:32:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '0', '', '', '26-05-06 09:32:50')
+===== START at 26-05-06 09:34:57 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '320', '', '', '26-05-06 09:34:58')
+===== START at 26-05-06 09:36:10 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '320', '', '', '26-05-06 09:36:16')
+===== START at 26-05-06 09:38:51 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '320', '', '', '26-05-06 09:38:57')
+INSERT INTO role (name, cellname, rosterindex) VALUES ('Stock -  Storeroom ops', 'Stock -  Storeroom', '1')
+INSERT INTO role_pageaction (pageaction_id, role_id) VALUES ('467', '34')
+===== START at 26-05-06 09:39:06 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:39:06')
+===== START at 26-05-06 09:39:38 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:39:38')
+===== START at 26-05-06 09:40:01 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:40:01')
+===== START at 26-05-06 09:40:19 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:40:19')
+===== START at 26-05-06 09:40:40 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:40:40')
+===== START at 26-05-06 09:41:14 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:41:15')
+===== START at 26-05-06 09:41:20 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:41:20')
+===== START at 26-05-06 09:41:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:41:50')
+===== START at 26-05-06 09:42:30 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:42:30')
+===== START at 26-05-06 09:42:50 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:42:50')
+===== START at 26-05-06 09:43:04 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:43:04')
+===== START at 26-05-06 09:43:10 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:43:10')
+===== START at 26-05-06 09:43:17 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:43:17')
+===== START at 26-05-06 09:43:43 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '320', '', '', '26-05-06 09:43:43')
+===== START at 26-05-06 09:45:45 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '412', '', '', '26-05-06 09:45:46')
+===== START at 26-05-06 09:45:57 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6813', '350', '', '', '26-05-06 09:45:57')
+===== START at 26-05-07 21:13:42 voc1dfisth3bhhcgql2e4pab7t
+INSERT INTO phpsession (user_id, phpsession, isadmin, starttime, last_access, client_ip, timezone, created) VALUES ('0', 'jivpg3veau2oga70t7cmo5l3nt', '0', '26-05-07 21:13:43', '26-05-07 21:13:43', '::1', 'Australia/Melbourne', '26-05-07 21:13:43')
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6816', '1', '', 'Session timeout heading for page 0.\n', '26-05-07 21:13:43')
+===== START at 26-05-07 21:13:48 jivpg3veau2oga70t7cmo5l3nt
+===== START at 26-05-07 21:13:49 jivpg3veau2oga70t7cmo5l3nt
+===== START at 26-05-10 14:03:57 19jmtr6mit0qlallbc7p0kknqo
+INSERT INTO phpsession (user_id, phpsession, isadmin, starttime, last_access, client_ip, timezone, created) VALUES ('0', 'h0gc109hq0hlt2cuach6sp9413', '0', '26-05-10 14:03:57', '26-05-10 14:03:57', '192.168.1.108', 'Australia/Melbourne', '26-05-10 14:03:57')
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6817', '1', '', 'Session timeout heading for page 406.\n', '26-05-10 14:03:57')
+===== START at 26-05-10 14:04:16 h0gc109hq0hlt2cuach6sp9413
+===== START at 26-05-10 14:04:17 h0gc109hq0hlt2cuach6sp9413
+===== START at 26-05-10 14:04:37 h0gc109hq0hlt2cuach6sp9413
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6817', '406', '', '', '26-05-10 14:04:37')
+===== START at 26-05-10 14:04:47 h0gc109hq0hlt2cuach6sp9413
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6817', '412', '', '', '26-05-10 14:04:47')
+===== START at 26-05-10 15:20:00 g2q2aitmh6j0i3t8f5lgj7d882
+INSERT INTO phpsession (user_id, phpsession, isadmin, starttime, last_access, client_ip, timezone, created) VALUES ('0', 'auckunfou96sk0ehdlhsslm8rp', '', '26-05-10 15:20:00', '26-05-10 15:20:00', '192.168.1.100', 'Australia/Melbourne', '26-05-10 15:20:00')
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '1', '', '', '26-05-10 15:20:00')
+===== START at 26-05-10 15:20:14 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 15:20:15 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 15:20:26 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '412', '', '', '26-05-10 15:20:27')
+===== START at 26-05-10 15:20:31 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '0', '', '', '26-05-10 15:20:31')
+===== START at 26-05-10 15:20:36 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '0', '', '', '26-05-10 15:20:36')
+===== START at 26-05-10 15:21:44 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '0', '', '', '26-05-10 15:21:49')
+===== START at 26-05-10 15:24:50 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '331', '', '', '26-05-10 15:24:56')
+===== START at 26-05-10 15:24:56 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '0', '', '', '26-05-10 15:24:56')
+===== START at 26-05-10 15:40:38 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '0', '', '', '26-05-10 15:40:38')
+===== START at 26-05-10 15:51:15 v4ub31jqagesj88d5m3o1chfab
+INSERT INTO phpsession (user_id, phpsession, isadmin, starttime, last_access, client_ip, timezone, created) VALUES ('0', 'dntpfgu271ckgc0cctislub44t', '', '26-05-10 15:51:15', '26-05-10 15:51:15', '192.168.1.105', 'Australia/Melbourne', '26-05-10 15:51:15')
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6819', '1', '', '', '26-05-10 15:51:15')
+===== START at 26-05-10 15:52:12 dntpfgu271ckgc0cctislub44t
+===== START at 26-05-10 15:52:13 dntpfgu271ckgc0cctislub44t
+===== START at 26-05-10 16:08:56 dntpfgu271ckgc0cctislub44t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6819', '414', '', '', '26-05-10 16:09:01')
+===== START at 26-05-10 16:09:01 dntpfgu271ckgc0cctislub44t
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6819', '414', '', '', '26-05-10 16:09:01')
+===== START at 26-05-10 16:16:15 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 16:16:16 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 16:16:29 auckunfou96sk0ehdlhsslm8rp
+INSERT INTO page_access (session_id, page_num, accesstime, notes, created) VALUES ('6818', '1', '', '', '26-05-10 16:16:30')
+===== START at 26-05-10 16:16:44 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 16:16:44 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:43:28 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:43:29 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:43:37 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:43:52 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:43:53 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:44:07 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:44:10 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:45:25 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:45:44 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:45:56 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:46:02 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:47:11 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:51:52 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:52:01 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:53:56 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:54:24 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:58:51 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 17:58:53 auckunfou96sk0ehdlhsslm8rp
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 17:59:23 jivpg3veau2oga70t7cmo5l3nt
+===== START at 26-05-10 17:59:27 8gduggq3b6pr4cvuni140ku4jb
+===== START at 26-05-10 17:59:36 8gduggq3b6pr4cvuni140ku4jb
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:00:20 8gduggq3b6pr4cvuni140ku4jb
+===== START at 26-05-10 18:00:27 8gduggq3b6pr4cvuni140ku4jb
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:01:13 8gduggq3b6pr4cvuni140ku4jb
+===== START at 26-05-10 18:01:34 8gduggq3b6pr4cvuni140ku4jb
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:01:39 8gduggq3b6pr4cvuni140ku4jb
+===== START at 26-05-10 18:01:44 8gduggq3b6pr4cvuni140ku4jb
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:02:49 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:03:16 auckunfou96sk0ehdlhsslm8rp
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:03:58 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:04:15 auckunfou96sk0ehdlhsslm8rp
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:04:50 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:04:58 auckunfou96sk0ehdlhsslm8rp
+Login error: Email address not found. :  User Lookup for password-reset.
+===== START at 26-05-10 18:05:06 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:05:17 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:09:46 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:10:53 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:17 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:18 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:29 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:45 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:53 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:53 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:12:58 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:13:07 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:15:40 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:15:46 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:15:53 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:15:55 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:16:22 auckunfou96sk0ehdlhsslm8rp
+
+START SQL error at 26-05-10 18:16:22==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1341'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1341') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1341'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:23==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1355'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1355') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1355'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:24==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1376'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1376') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1376'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:25==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1390'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1390') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1390'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:26==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1406'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1406') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1406'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:27==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1421'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1421') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1421'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:28==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1480'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1480') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1480'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:29==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1494'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1494') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1494'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:30==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1507'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1507') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1507'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-10 18:16:31==============================
+Query Failed: (42000) SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'session_id1566'' at line 1
+
+(DELETE FROM client_session WHERE `client_id1105' AND `session_id1566') : DELETE FROM client_session WHERE `client_id1105' AND `session_id1566'
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+===== START at 26-05-10 18:16:32 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:10 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:15 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:16 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:16 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:23 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:37 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:39 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:43 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:50 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:50 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:18:54 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:19:05 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:20:02 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:20:07 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:20:12 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:20:25 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-10 18:20:35 auckunfou96sk0ehdlhsslm8rp
+===== START at 26-05-11 17:45:09 f4avqqhrnjvedd5e4vb18o7jr4
+===== START at 26-05-11 17:50:18 8gduggq3b6pr4cvuni140ku4jb
+
+START SQL error at 26-05-11 17:50:21==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(SELECT * FROM `phpsession` WHERE `phpsession` = ?) : SELECT * FROM `phpsession` WHERE `phpsession` = ?
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:24==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:25==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:26==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:27==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:28==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:29==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:30==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:31==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:32==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:33==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:34==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:35==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:36==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:37==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+START SQL error at 26-05-11 17:50:38==============================
+Query Failed: (HY000) SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+
+(INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)) : INSERT INTO email (senddate, status, email, response) VALUES (?, ?, ?, ?)
+END SQL error <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
