@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/sarum964/public_html/versions/stock
+    - /bin/cp -R * $DEPLOYPATH
