@@ -81,7 +81,7 @@ li {
 
 h1{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
+    font-size: 1.6rem;
     font-style:normal;
     font-variant:normal;
     font-weight:normal;
@@ -92,7 +92,7 @@ h1{
  }
 h2{
     font-family: Arial, Helvetica, sans-serif;
-    font-size:15px;
+    font-size:1.5rem;
     font-style:normal;
     font-variant:normal;
     font-weight:normal;
@@ -273,14 +273,14 @@ h2{
 
 .top-nav-font {
     color:#F1f1f1;
-    font-size:14px;
+    font-size:1.4rem;
     font-weight: bold;
     text-decoration:none;
  }
 
 .logged-in-username {
     color:#f1f1f1;
-    font-size:14px;
+    font-size:1.4rem;
     font-weight: bold;
     text-decoration:none;
     
@@ -295,7 +295,7 @@ h2{
     vertical-align: middle;
     color:#fff;
     font-family: Arial, Helvetica, sans-serif;
-    font-size:14px;
+    font-size:1.4rem;
     font-weight: bold;
     text-decoration:none;
     display: block;
@@ -369,12 +369,12 @@ h2{
  }
 
 .content-heading{
-    font-size: 16px;
+    font-size: 1.6rem;
     font-weight:bold;
  }
 
 .content-subheading{
-    font-size:15px;
+    font-size:1.5rem;
  } 
 
 
@@ -382,7 +382,7 @@ h2{
     margin-left:20px;
     margin-top:5px;
     margin-bottom:5px;
-    font-size:14px; 
+    font-size:1.4rem; 
     font-weight:normal;
     clear: both;
  }
@@ -410,19 +410,19 @@ h2{
  }
 
 .content_panel th{
-    font-size:11px;
+    font-size:1.5rem;
     font-weight:bold;
  }
 .content_panel td{
-    font-size:11px;
+    font-size:1.5rem;
  }
 
 .content_panel button{
-    font-size:11px;
+    font-size:1.5rem;
  }
 
 .content_panel_intro_header {
-    font-size:12px;
+    font-size:1.2rem;
     font-weight:bold;
     text-align: center;
     margin-right:60px;
@@ -431,7 +431,7 @@ h2{
     padding:0px;
  }
 .content_panel_intro {
-    font-size:15px;
+    font-size:1.5rem;
     font-style:normal;
     font-variant:normal;
     font-weight:normal;
@@ -445,7 +445,7 @@ h2{
 
 .content_h1{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
+    font-size: 2rem;
     font-style: normal; 
     font-variant: normal;
     font-weight: normal;
@@ -460,7 +460,7 @@ h2{
     padding:0px;
  }
 .content_h2{
-    font-size:12px;
+    font-size:1.2rem;
     font-size-adjust:none;
     font-style:normal;
     font-variant:normal;
@@ -477,7 +477,7 @@ h2{
     margin-left:20px;
     margin-top:5px;
     margin-bottom:5px;
-    font-size:12px; 
+    font-size:1.2rem; 
     font-weight:bold;
     clear: both;
  }
@@ -486,7 +486,7 @@ h2{
 .content-list {
 	text-align: left;
 	font-family: arial, helvetica, sans-serif; 
-	font-size: 14pt;
+	font-size: 1.4rem;
  }
 
 .content_table{
@@ -495,7 +495,7 @@ h2{
 .content_please_note{
     padding-left:50px;
     padding-right:50px;
-    font-size:11px; 
+    font-size:1.1rem; 
     font-weight:bold; 
  }
 
@@ -1155,7 +1155,7 @@ h2{
  }
 
 
-/* from here on I'm not sure ucm uses anything */
+/* pxom here on I'm not sure ucm uses anything */
 
 .search{
     float:right;
@@ -1400,8 +1400,8 @@ input
  }
 #loginfields {
     display: grid;
-    grid-template-columns: 10fr 1fr 16fr;
-    grid-template-rows: 1fr 1fr  2fr;
+    grid-template-columns: 10px 1px 16px;
+    grid-template-rows: 1px 1px  2px;
     margin-bottom: 3rem;
  }
 
@@ -1738,7 +1738,7 @@ input
     border-radius: 4px;
     padding: 0.7rem 1rem;
     margin-bottom: 1rem;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     line-height: 1.4;
     background-color: #e8f4e8;
     border-left: 4px solid #3a7a3a;
@@ -1771,21 +1771,21 @@ input
     padding: 0.3rem 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     min-width: 160px;
 }
 .vols-stockreport-asat {
     padding: 0.3rem 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
 }
 .vols-stockreport-filter-clear {
     padding: 0.3rem 0.7rem;
     background: #e8e8e8;
     border: 1px solid #bbb;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 1.5rem;
     cursor: pointer;
     color: #555;
 }
@@ -1805,7 +1805,7 @@ input
     border: none;
     border-radius: 4px;
     padding: 0.35rem 0.9rem;
-    font-size: 0.85rem;
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
@@ -1832,19 +1832,19 @@ input
 .vols-stockreport-row {
     display: grid;
     /* name | code | st-date | st-qty | deliveries | transfers | adjustments | issues | current */
-    grid-template-columns: 1fr 52px 94px 62px 64px 62px 72px 58px 66px;
+    grid-template-columns: 200fr 52fr 94fr 62fr 64fr 62fr 72fr 58fr 66fr;
     padding: 0.35rem 0.5rem;
-    font-size: 0.9rem;
+    font-size: 1.3rem;
 }
 /* All-locations view: no st-date column */
 .vols-stockreport-table--noloc .vols-stockreport-colheadings,
 .vols-stockreport-table--noloc .vols-stockreport-row {
-    grid-template-columns: 1fr 52px 62px 64px 62px 72px 58px 66px;
+    grid-template-columns: 200fr 52fr 62fr 64fr 62fr 72fr 58fr 66fr;
 }
 
 .vols-stockreport-colheadings {
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 1.3rem;
     line-height: 1.25;
     color: #555;
     border-bottom: 2px solid var(--midgrey, #aaa);
@@ -1858,7 +1858,7 @@ input
     background-color: var(--volscolor2, #d0e8f0);
     padding: 0.35rem 0.6rem;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1.5rem;
     margin-top: 0.6rem;
     border-radius: 3px;
 }
@@ -1873,7 +1873,7 @@ input
 
 .vols-stockreport-col-name   { }
 .vols-stockreport-col-code   { color: #666; font-style: italic; }
-.vols-stockreport-col-stdate { color: #555; font-size: 0.85rem; }
+.vols-stockreport-col-stdate { color: #555; font-size: 1rem; }
 
 .vols-stockreport-col-num {
     text-align: right;
@@ -1907,7 +1907,7 @@ input
     padding: 0.3rem 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
@@ -1917,7 +1917,7 @@ input
 }
 .vols-variancereport-table .vols-stockreport-colheadings,
 .vols-variancereport-table .vols-stockreport-row {
-    grid-template-columns: 1fr 52px 72px 72px 72px;
+    grid-template-columns: 200fr 52fr 72fr 72fr 72fr;
 }
 
 /* Variance cell colours */
@@ -1962,7 +1962,7 @@ input
     color: #fff;
     border: none;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 1.3rem;
     padding: 0.35rem 0.9rem;
     cursor: pointer;
     margin-left: auto;
@@ -1984,7 +1984,7 @@ input
     display: grid;
     grid-template-columns: 9rem 1fr 8rem;
     padding: 0.2rem 0.5rem;
-    font-size: 0.85rem;
+    font-size: 1.3rem;
     color: #555;
     background: #fafafa;
     border-bottom: 1px solid #f0f0f0;
@@ -2023,14 +2023,14 @@ input
 
 .vols-usagereport-label {
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1.5rem;
 }
 
 .vols-usagereport-dateinput {
     border: 1px solid var(--midgrey, #aaa);
     border-radius: 3px;
     padding: 0.3rem 0.5rem;
-    font-size: 0.9rem;
+    font-size: 1.5rem;
 }
 
 .vols-usagereport-genbtn {
@@ -2039,7 +2039,7 @@ input
     border: none;
     border-radius: 4px;
     padding: 0.35rem 0.9rem;
-    font-size: 0.85rem;
+    font-size: 1.3rem;
     cursor: pointer;
 }
 
@@ -2051,7 +2051,7 @@ input
     display: flex;
     align-items: center;
     gap: 1rem;
-    font-size: 0.9rem;
+    font-size: 1.5rem;
     color: #444;
     margin-bottom: 0.8rem;
     flex-wrap: wrap;
@@ -2063,7 +2063,7 @@ input
     border: none;
     border-radius: 4px;
     padding: 0.3rem 0.8rem;
-    font-size: 0.82rem;
+    font-size: 1.5rem;
     cursor: pointer;
     margin-left: auto;
 }
@@ -2079,12 +2079,12 @@ input
 .vols-usagereport-colheadings,
 .vols-usagereport-row {
     display: grid;
-    grid-template-columns: 1fr 80px 100px;
+    grid-template-columns: 200px 80fr 100fr;
 }
 
 .vols-usagereport-colheadings {
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 1.3rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--midgrey, #888);
@@ -2150,7 +2150,7 @@ input
     border-radius: 4px;
     padding: 0.7rem 1rem;
     margin-bottom: 1rem;
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     line-height: 1.4;
 }
 .se-event-header-delivery {
