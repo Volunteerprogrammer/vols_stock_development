@@ -2,5 +2,6 @@
 *.log
 *.json
 *.txt
-\app\config\config.php
+\app\config\*
 .\sql
+*.sql
