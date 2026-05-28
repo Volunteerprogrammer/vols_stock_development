@@ -161,4 +161,21 @@ class StockEventTable extends \fw\database\table\MySQLTable
         if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
         return $success;
     }
+
+    // Returns all globally in-progress stocktake events with location name.
+    // $result is set to the first row (most recent); $numrows is the total count.
+    // Callers use $numrows to distinguish "exactly one" from "multiple".
+    public function getanyinprogressstocktake(&$result, &$numrows, $trace=false) {
+        if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
+        $results = [];
+        $query   = "SELECT se.*, l.name as location1_name"
+                 . " FROM stock_event se"
+                 . " JOIN stock_location l ON se.location1_id = l.id"
+                 . " WHERE se.event = 'stocktake' AND se.status = 'in progress'"
+                 . " ORDER BY se.date_created DESC";
+        $success = $this->query($query, $results, $numrows, $trace);
+        $result  = (!empty($results)) ? $results[0] : [];
+        if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
+        return $success;
+    }
 }

@@ -394,6 +394,7 @@ function loadstock(event_id, category_id, supplier_id) {
         event_type:  event_type
     }), 'stockevent_getstock').then(function(resp) {
         jQuery('#se-stock-table-body').html(resp);
+        jQuery('#se-stock-table-body .se-qty').prop('readonly', true);
         resizestocktable();
         jQuery('.se-qty:visible').first().focus();
     });

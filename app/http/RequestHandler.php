@@ -130,6 +130,14 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $success = $this->manager->createevent($event_type, $location1_id, $location2_id, $supplier_id, $stock_client_id, $event_id, $errormsg);
                             $output = json_encode(['success' => $success, 'event_id' => $event_id, 'error' => $errormsg]);
                             break;
+                        case "stockevent_getanyinprogressstocktake":
+                            $this->manager = $this->managercollection->StockEventManager();
+                            $this->manager->init($this->session);
+                            $result  = [];
+                            $numrows = 0;
+                            $this->manager->getanyinprogressstocktake($result, $numrows);
+                            $output = json_encode(['found' => $numrows > 0, 'count' => $numrows, 'event' => $result]);
+                            break;
                         case "stockevent_getinprogressevent":
                             $this->manager = $this->managercollection->StockEventManager();
                             $this->manager->init($this->session);
@@ -195,6 +203,15 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $this->manager->getstockwithtargets($location_id, $results, $numrows);
                             $this->viewcontroller->init($this->session, $this->managercollection, $this->errorhandler, $trace);
                             $output = $this->viewcontroller->processajaxrequest("stockitemlocation_getstock", $d, $results, $errormessage, $trace);
+                            break;
+                        case "catpos_getpositions":
+                            $this->manager = $this->managercollection->LocationManager();
+                            $this->manager->init($this->session);
+                            $d           = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $location_id = $d["location_id"] ?? 0;
+                            $positions   = [];
+                            $this->manager->getcategorypositions($location_id, $positions);
+                            $output = json_encode(['positions' => $positions]);
                             break;
                         case "stockevent_getstock":
                             $this->manager = $this->managercollection->StockEventManager();

@@ -104,6 +104,41 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '</div>';
         // -----------------------------------------------------------------------
 
+        // ---- Category order section -------------------------------------------
+        $formfields .= $this->component->rendersectionheading('Category order for stocktake');
+        $formfields .= '<div class="loc-catpos-hint">'
+                     . 'Set a position number for each category to control the order in which they appear '
+                     . 'during a stocktake at this location. Categories without a position are listed last, '
+                     . 'alphabetically.'
+                     . '</div>';
+
+        // Build the hidden comma-separated list of category IDs for the save handler.
+        $cat_ids = array_column($this->categories, 'id');
+        $formfields .= '<input type="hidden" name="cat_pos_ids" id="cat_pos_ids" value="'
+                     . htmlspecialchars(implode(',', $cat_ids)) . '">';
+
+        $formfields .= '<div id="loc-catpos-wrapper" style="display:none">';
+        $formfields .= '<table class="vols-table loc-catpos-table">';
+        $formfields .= '<thead><tr>'
+                     . '<th class="loc-catpos-cat">Category</th>'
+                     . '<th class="loc-catpos-pos">Position</th>'
+                     . '</tr></thead><tbody id="loc-catpos-tbody">';
+        foreach ($this->categories as $cat) {
+            $cat_id   = (int)$cat['id'];
+            $cat_name = htmlspecialchars($cat['Name']);
+            $formfields .= '<tr>'
+                         . '<td class="loc-catpos-cat">' . $cat_name . '</td>'
+                         . '<td class="loc-catpos-pos">'
+                         . '<input type="number" name="cat_pos_' . $cat_id . '" id="cat_pos_' . $cat_id . '"'
+                         . ' class="loc-catpos-input" data-cat-id="' . $cat_id . '"'
+                         . ' min="1" step="1" placeholder="">'
+                         . '</td>'
+                         . '</tr>';
+        }
+        $formfields .= '</tbody></table>';
+        $formfields .= '</div>';
+        // -----------------------------------------------------------------------
+
         $this->preparecommontop(false, false, '', $this->locationid);
         return $formfields;
     }
@@ -131,8 +166,10 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
             function loadtargets() {
                 var location_id = jQuery('#hiddenid').val();
                 jQuery('#loc-targets-wrapper').hide();
+                jQuery('#loc-catpos-wrapper').hide();
                 jQuery('#loc-targets-tbody').empty();
                 jQuery('#sil_stock_ids').val('');
+                jQuery('.loc-catpos-input').val('');
                 if (!location_id) return;
                 doServerRequest(0, JSON.stringify({location_id: location_id}), 'stockitemlocation_getstock')
                     .then(function(html) {
@@ -147,6 +184,21 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
                         filtertargetsbycat();
                         jQuery('#loc-targets-wrapper').show();
                     });
+                doServerRequest(0, JSON.stringify({location_id: location_id}), 'catpos_getpositions')
+                    .then(function(resp) {
+                        try {
+                            var r = JSON.parse(resp);
+                            jQuery('.loc-catpos-input').each(function() {
+                                var cat_id = String(jQuery(this).data('cat-id'));
+                                var pos = r.positions && r.positions[cat_id] !== undefined ? r.positions[cat_id] : '';
+                                jQuery(this).val(pos !== '' ? pos : '');
+                            });
+                            if (!jQuery('#editrecord').hasClass('inactive')) {
+                                jQuery('.loc-catpos-input').prop('disabled', true);
+                            }
+                        } catch(ex) { console.error('catpos parse error', ex, resp); }
+                        jQuery('#loc-catpos-wrapper').show();
+                    });
             }
 
             function clearlocations() {
@@ -154,6 +206,8 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
                 jQuery('#sil_stock_ids').val('');
                 jQuery('#loc-targets-wrapper').hide();
                 jQuery('#loc-category-filter').val('');
+                jQuery('.loc-catpos-input').val('');
+                jQuery('#loc-catpos-wrapper').hide();
             }
 
             function filtertargetsbycat() {

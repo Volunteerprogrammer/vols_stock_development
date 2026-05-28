@@ -56,7 +56,28 @@ class StocktakeEventForm extends StockEventForm {
         $extra = <<<'JS'
 
 // ---- StocktakeEventForm-specific JS ----
+
+function resumestocktake(event_id, location_id, location_name) {
+    jQuery('#se-location1').val(location_id);
+    jQuery('#se-event-id').val(event_id);
+    jQuery('#se-location-id').val(location_id);
+    jQuery('#se-start-btn').hide();
+    jQuery('#se-event-controls').show();
+    loadstock(event_id, '');
+}
+
 jQuery(function() {
+    // On page load, if exactly one stocktake is in progress globally, auto-resume it.
+    // With multiple locations allowed to run simultaneously, only auto-select when unambiguous.
+    doServerRequest(0, JSON.stringify({}), 'stockevent_getanyinprogressstocktake').then(function(resp) {
+        try {
+            var r = JSON.parse(resp);
+            if (r.count === 1 && r.event && r.event.id) {
+                resumestocktake(r.event.id, r.event.location1_id, r.event.location1_name);
+            }
+        } catch(ex) { console.error('getanyinprogressstocktake parse error', ex, resp); }
+    });
+
     // Location dropdown change: check for in-progress stocktake at that location.
     jQuery('#se-location1').on('change', function() {
         var loc = jQuery(this).val();
@@ -68,10 +89,7 @@ jQuery(function() {
 
         getinprogressevent('stocktake', loc, null, null, function(r) {
             if (r.found && r.event && r.event.id) {
-                jQuery('#se-event-id').val(r.event.id);
-                jQuery('#se-location-id').val(loc);
-                jQuery('#se-event-controls').show();
-                loadstock(r.event.id, '');
+                resumestocktake(r.event.id, loc, '');
             } else {
                 jQuery('#se-start-btn').show();
             }

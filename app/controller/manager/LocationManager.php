@@ -8,9 +8,10 @@ class LocationManager extends \fw\controller\manager\StdManager
     protected $db;
     protected $linkedobject = "";
     public function __construct(
-        protected \apptable\StockLocationTable     $table,
-        protected \apptable\StockEventTable        $stockeventtable,
-        protected \apptable\StockItemLocationTable $itemlocationtable
+        protected \apptable\StockLocationTable         $table,
+        protected \apptable\StockEventTable            $stockeventtable,
+        protected \apptable\StockItemLocationTable     $itemlocationtable,
+        protected \apptable\StockCategoryLocationTable $categorylocationtable
     ) {
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
     }
@@ -19,6 +20,17 @@ class LocationManager extends \fw\controller\manager\StdManager
         parent::init($session);
         $this->stockeventtable->init($this->db, $this->user_id);
         $this->itemlocationtable->init($this->db, $this->user_id);
+        $this->categorylocationtable->init($this->db, $this->user_id);
+    }
+
+    // Returns {cat_id: position} map for the given location.
+    public function getcategorypositions($location_id, &$positions) {
+        $rows = []; $numrows = 0;
+        $this->categorylocationtable->getpositionsforlocation($location_id, $rows, $numrows);
+        $positions = [];
+        foreach ($rows as $row) {
+            $positions[(int)$row['stock_category_id']] = (int)$row['position'];
+        }
     }
 
     public function getstockwithtargets($location_id, &$results, &$numrows) {
@@ -46,9 +58,10 @@ class LocationManager extends \fw\controller\manager\StdManager
         if (!$success) return false;
 
         $location_id   = $this->requestdata['id'] ?? 0;
-        $stock_ids_str = $this->requestdata['sil_stock_ids'] ?? '';
-        if (empty($stock_ids_str) || !$location_id) return true;
+        if (!$location_id) return true;
 
+        // Save per-item target and minimum quantities.
+        $stock_ids_str = $this->requestdata['sil_stock_ids'] ?? '';
         foreach (array_filter(explode(',', $stock_ids_str)) as $raw) {
             $stock_id = (int)$raw;
             if (!$stock_id) continue;
@@ -56,6 +69,21 @@ class LocationManager extends \fw\controller\manager\StdManager
             $min     = $this->requestdata["min_qty_{$stock_id}"] ?? '';
             $errm    = '';
             $this->setlocationstock($stock_id, $location_id, $target, $min, $errm);
+            if ($errm) $errormessage .= ($errormessage ? '; ' : '') . $errm;
+        }
+
+        // Save category positions.
+        $cat_ids_str = $this->requestdata['cat_pos_ids'] ?? '';
+        foreach (array_filter(explode(',', $cat_ids_str)) as $raw) {
+            $cat_id  = (int)$raw;
+            if (!$cat_id) continue;
+            $pos_str = trim($this->requestdata["cat_pos_{$cat_id}"] ?? '');
+            $errm    = '';
+            if ($pos_str === '') {
+                $this->categorylocationtable->deleteone($cat_id, $location_id, $errm);
+            } else {
+                $this->categorylocationtable->upsert($cat_id, $location_id, (int)$pos_str, $errm);
+            }
             if ($errm) $errormessage .= ($errormessage ? '; ' : '') . $errm;
         }
         return true;

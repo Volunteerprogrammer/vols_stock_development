@@ -78,16 +78,26 @@ class StockMovementTable extends \fw\database\table\MySQLTable
     // left-joined to any existing movement for the given event so the form can show
     // existing values and know whether to INSERT or UPDATE.
     // $supplier_id: if non-empty and category_id is empty, restricts to stock categories supplied by that supplier.
-    public function getstockforevent($event_id, $category_id, &$results, &$numrows, $trace=false, $supplier_id='') {
+    // $location_id: when non-empty, joins stock_category_location to order categories by their
+    //               position at that location (unpositioned categories sort last, then by name).
+    public function getstockforevent($event_id, $category_id, &$results, &$numrows, $trace=false, $supplier_id='', $location_id='') {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
         $params = [$event_id];
         $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
         $query .= " sc.Name as category_name,";
         $query .= " sm.id as movement_id, sm.qty, sm.stock_qoh, sm.location_id";
+        if (!empty($location_id)) {
+            $query .= ", scl.position as category_position";
+        }
         $query .= " FROM stock s";
         $query .= " LEFT JOIN stock_category sc ON s.category_id = sc.id";
         $query .= " LEFT JOIN stock_movement sm";
         $query .= "   ON sm.stock_id = s.id AND sm.stock_event_id = ?";
+        if (!empty($location_id)) {
+            $lid    = (int)$location_id;
+            $query .= " LEFT JOIN stock_category_location scl"
+                    . "   ON scl.stock_category_id = s.category_id AND scl.stock_location_id = {$lid}";
+        }
         if (!empty($category_id)) {
             $query .= " WHERE s.category_id = ?";
             $params[] = $category_id;
@@ -95,7 +105,11 @@ class StockMovementTable extends \fw\database\table\MySQLTable
             $query .= " WHERE s.category_id IN (SELECT stock_category_id FROM stock_supplier_category WHERE stock_supplier_id = ?)";
             $params[] = $supplier_id;
         }
-        $query .= " ORDER BY sc.Name, s.Name";
+        if (!empty($location_id)) {
+            $query .= " ORDER BY CASE WHEN scl.position IS NULL THEN 1 ELSE 0 END, scl.position, sc.Name, s.Name";
+        } else {
+            $query .= " ORDER BY sc.Name, s.Name";
+        }
         $success = $this->query_params($query, $params, $results, $numrows, $trace);
         if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
         return $success;

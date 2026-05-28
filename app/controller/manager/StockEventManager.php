@@ -37,10 +37,10 @@ class StockEventManager extends \fw\controller\manager\StdManager
         if ($this->trace) { echo "Enter ".__METHOD__." type={$event_type}<br>"; }
 
         if ($event_type === 'stocktake') {
-            $numrows = 0;
-            $this->table->hasinprogressstocktake($numrows);
+            $existing = []; $numrows = 0;
+            $this->table->getinprogressevent('stocktake', $location1_id, $existing, $numrows);
             if ($numrows > 0) {
-                $errormessage = "A stocktake is already in progress. Close or cancel it before starting a new one.";
+                $errormessage = "A stocktake is already in progress at this location. Close or cancel it before starting a new one.";
                 return false;
             }
         }
@@ -331,6 +331,11 @@ class StockEventManager extends \fw\controller\manager\StdManager
     // STOCK QUERY  (used by AJAX getstock handler)
     // =========================================================================
 
+    // Returns the globally in-progress stocktake (any location), or an empty array if none.
+    public function getanyinprogressstocktake(&$result, &$numrows) {
+        return $this->table->getanyinprogressstocktake($result, $numrows, $this->trace);
+    }
+
     // Returns all in-progress delivery events — used to enrich the delivery supplier dropdown.
     public function getallinprogressdeliveries(&$results, &$numrows) {
         return $this->table->getallinprogressdeliveries($results, $numrows, $this->trace);
@@ -338,16 +343,20 @@ class StockEventManager extends \fw\controller\manager\StdManager
 
     // Returns stock items for an event, optionally filtered by category or supplier.
     // Transfer events use a dedicated query that includes target_qty and current_qoh.
+    // For all other event types, location1_id is passed so categories are ordered by
+    // their position at that location.
     public function getstockforevent($event_id, $category_id, &$results, &$numrows, $supplier_id='') {
         $ev = []; $evn = 0;
-        if ($this->table->selectonID($event_id, $ev, $evn) && ($ev['event'] ?? '') === 'transfer') {
+        $this->table->selectonID($event_id, $ev, $evn);
+        if (($ev['event'] ?? '') === 'transfer') {
             return $this->movementtable->getstockfortransfer(
                 $event_id, $category_id,
                 $ev['location1_id'] ?? 0, $ev['location2_id'] ?? 0,
                 $results, $numrows, $this->trace
             );
         }
-        return $this->movementtable->getstockforevent($event_id, $category_id, $results, $numrows, $this->trace, $supplier_id);
+        $location_id = $ev['location1_id'] ?? '';
+        return $this->movementtable->getstockforevent($event_id, $category_id, $results, $numrows, $this->trace, $supplier_id, $location_id);
     }
 
     // =========================================================================
