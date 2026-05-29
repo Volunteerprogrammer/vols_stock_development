@@ -2448,6 +2448,56 @@ input
 .se-digit-back:hover {
     background-color: #f8d0cc;
 }
+.se-pad-bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+}
+.se-digit-decimal {
+    background-color: #f0f0f0;
+    border-color: #888;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+.se-digit-decimal:hover,
+.se-digit-decimal:active {
+    background-color: #ddd;
+}
+.se-pad-commit {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+}
+.se-digit-add {
+    background-color: #e6f4ea;
+    color: #1a5c2a;
+    border-color: #3a8a4a;
+    font-size: 1.3rem;
+}
+.se-digit-add:hover, .se-digit-add:active {
+    background-color: #c8eacf;
+}
+.se-digit-replace {
+    background-color: #e8f0fe;
+    color: #1a3a7a;
+    border-color: #3a5abf;
+    font-size: 1.3rem;
+}
+.se-digit-replace:hover, .se-digit-replace:active {
+    background-color: #c8d8fc;
+}
+.se-digit-subtract {
+    background-color: #fdecea;
+    color: #7a1a1a;
+    border-color: #c04040;
+    font-size: 1.3rem;
+}
+.se-digit-subtract:hover, .se-digit-subtract:active {
+    background-color: #f8d0cc;
+}
 .se-pad-nav {
     display: flex;
     gap: 0.4rem;

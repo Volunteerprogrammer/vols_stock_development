@@ -134,16 +134,20 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html .= '<input type="text" id="se-pad-display" readonly tabindex="-1">';
         $html .= '</div>';
         $html .= '<div class="se-pad-keys">';
-        $keys = ['7','8','9','4','5','6','1','2','3','clear','0','back'];
-        foreach ($keys as $k) {
-            if ($k === 'clear') {
-                $html .= '<button type="button" class="se-digit-btn se-digit-clear" data-key="clear" tabindex="-1">CLR</button>';
-            } elseif ($k === 'back') {
-                $html .= '<button type="button" class="se-digit-btn se-digit-back" data-key="back" tabindex="-1">&#9003;</button>';
-            } else {
-                $html .= '<button type="button" class="se-digit-btn" data-key="' . $k . '" tabindex="-1">' . $k . '</button>';
-            }
+        foreach (['7','8','9','4','5','6','1','2','3'] as $k) {
+            $html .= '<button type="button" class="se-digit-btn" data-key="' . $k . '" tabindex="-1">' . $k . '</button>';
         }
+        $html .= '</div>';
+        $html .= '<div class="se-pad-bottom">';
+        $html .= '<button type="button" class="se-digit-btn se-digit-clear"   data-key="clear" tabindex="-1">CLR</button>';
+        $html .= '<button type="button" class="se-digit-btn se-digit-decimal" data-key="."     tabindex="-1">.</button>';
+        $html .= '<button type="button" class="se-digit-btn"                  data-key="0"     tabindex="-1">0</button>';
+        $html .= '<button type="button" class="se-digit-btn se-digit-back"    data-key="back"  tabindex="-1">&#9003;</button>';
+        $html .= '</div>';
+        $html .= '<div class="se-pad-commit">';
+        $html .= '<button type="button" class="se-digit-btn se-digit-add"      data-key="add"      tabindex="-1">ADD</button>';
+        $html .= '<button type="button" class="se-digit-btn se-digit-replace"  data-key="replace"  tabindex="-1">REPLACE</button>';
+        $html .= '<button type="button" class="se-digit-btn se-digit-subtract" data-key="subtract" tabindex="-1">SUBTRACT</button>';
         $html .= '</div>';
         $html .= '<div class="se-pad-nav">';
         $html .= '<button type="button" class="se-digit-btn se-digit-prev" data-key="prev" tabindex="-1">&#9166; Prev</button>';
@@ -231,10 +235,10 @@ abstract class StockEventForm extends \fw\view\form\Form {
         }, 1500);
     }
 
-    // Track which qty input is active (for digit pad).
+    // Track which qty input is active (for digit pad); clear pad ready for new entry.
     jQuery(document).on('focus', '.se-qty', function() {
         $activeInput = jQuery(this);
-        jQuery('#se-pad-display').val(jQuery(this).val());
+        jQuery('#se-pad-display').val('');
         jQuery('#se-stock-table-body tr').css('background-color', '');
         jQuery(this).closest('tr').css('background-color', '#fff176');
     });
@@ -253,15 +257,17 @@ abstract class StockEventForm extends \fw\view\form\Form {
 
     function handlepadkey(btn) {
         if (!$activeInput) return;
-        var key = jQuery(btn).data('key');
-        var cur = String($activeInput.val());
+        var key    = jQuery(btn).data('key');
+        var padVal = String(jQuery('#se-pad-display').val() || '');
+
         if (key === 'clear') {
-            $activeInput.val('');
+            jQuery('#se-pad-display').val('');
         } else if (key === 'back') {
-            $activeInput.val(cur.slice(0, -1));
+            jQuery('#se-pad-display').val(padVal.slice(0, -1));
         } else if (key === 'next') {
             clearTimeout(saveTimer);
             savemovement($activeInput);
+            jQuery('#se-pad-display').val('');
             var $inputs = jQuery('.se-qty:visible');
             var $next   = $inputs.eq($inputs.index($activeInput[0]) + 1);
             if ($next.length) { $next.focus(); } else { $activeInput.blur(); }
@@ -269,17 +275,43 @@ abstract class StockEventForm extends \fw\view\form\Form {
         } else if (key === 'prev') {
             clearTimeout(saveTimer);
             savemovement($activeInput);
+            jQuery('#se-pad-display').val('');
             var $inputs = jQuery('.se-qty:visible');
             var idx     = $inputs.index($activeInput[0]);
             var $prev   = idx > 0 ? $inputs.eq(idx - 1) : jQuery();
             if ($prev.length) { $prev.focus(); } else { $activeInput.blur(); }
             return;
+        } else if (key === 'add') {
+            var current = parseFloat($activeInput.val() || '0') || 0;
+            var padNum  = parseFloat(padVal || '0')  || 0;
+            $activeInput.val(String(Math.round((current + padNum) * 10) / 10));
+            jQuery('#se-pad-display').val('');
+            schedulesave();
+        } else if (key === 'replace') {
+            $activeInput.val(padVal === '' ? '' : String(parseFloat(padVal) || 0));
+            jQuery('#se-pad-display').val('');
+            schedulesave();
+        } else if (key === 'subtract') {
+            var current = parseFloat($activeInput.val() || '0') || 0;
+            var padNum  = parseFloat(padVal || '0')  || 0;
+            $activeInput.val(String(Math.max(0, Math.round((current - padNum) * 10) / 10)));
+            jQuery('#se-pad-display').val('');
+            schedulesave();
+        } else if (key === '.') {
+            if (padVal.indexOf('.') === -1) {
+                jQuery('#se-pad-display').val(padVal === '' ? '0.' : padVal + '.');
+            }
         } else if (/^[0-9]$/.test(key)) {
-            var raw = (cur === '' || cur === '0') ? key : cur + key;
-            $activeInput.val(String(parseInt(raw, 10)));
+            if (padVal.indexOf('.') !== -1) {
+                var decParts = padVal.split('.');
+                if (decParts[1].length < 1) {
+                    jQuery('#se-pad-display').val(padVal + key);
+                }
+            } else {
+                var raw = (padVal === '' || padVal === '0') ? key : padVal + key;
+                jQuery('#se-pad-display').val(String(parseInt(raw, 10)));
+            }
         }
-        jQuery('#se-pad-display').val($activeInput.val());
-        schedulesave();
     }
 
     jQuery(document).on('touchstart', '.se-digit-btn', function(e) {
