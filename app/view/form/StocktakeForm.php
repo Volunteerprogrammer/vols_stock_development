@@ -81,23 +81,21 @@ class StocktakeForm extends \fw\view\form\StdCRUDForm {
     }
 
     public function formscript() {
-        // NOTE: the base class wraps this output in <script>...</script> tags
+        $formname = $this->formname;
         $script  = "jQuery(function () {\n";
-        $script .= <<<JS
-            jQuery("#savestocktake").on("click", function() {
-                let hasEntry = false;
-                jQuery(".vols-stocktake-qty").each(function() {
-                    if (jQuery(this).val() !== '') { hasEntry = true; }
-                });
-                if (!hasEntry) {
-                    alert("Please enter at least one stock count before saving.");
-                    return false;
-                }
-                jQuery("#action").val("stocktake");
-                jQuery("#hiddenid").val("0");
-                jQuery("#{$this->formname}").trigger("submit");
-            });
-        JS;
+        $script .= "    jQuery('#savestocktake').on('click', function() {\n";
+        $script .= "        var hasEntry = false;\n";
+        $script .= "        jQuery('.vols-stocktake-qty').each(function() {\n";
+        $script .= "            if (jQuery(this).val() !== '') { hasEntry = true; }\n";
+        $script .= "        });\n";
+        $script .= "        if (!hasEntry) {\n";
+        $script .= "            alert('Please enter at least one stock count before saving.');\n";
+        $script .= "            return false;\n";
+        $script .= "        }\n";
+        $script .= "        jQuery('#action').val('stocktake');\n";
+        $script .= "        jQuery('#hiddenid').val('0');\n";
+        $script .= "        jQuery('#{$formname}').trigger('submit');\n";
+        $script .= "    });\n";
         $script .= "});\n";
         $script .= "function formhaserrors() { return 0; }\n";
         $script .= "function displayselectedrecord() {}\n";

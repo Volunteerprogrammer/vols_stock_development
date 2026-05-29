@@ -235,6 +235,15 @@ abstract class StockEventForm extends \fw\view\form\Form {
     jQuery(document).on('focus', '.se-qty', function() {
         $activeInput = jQuery(this);
         jQuery('#se-pad-display').val(jQuery(this).val());
+        jQuery('#se-stock-table-body tr').css('background-color', '');
+        jQuery(this).closest('tr').css('background-color', '#fff176');
+    });
+
+    // Tap/click anywhere on a stock row to focus its qty input.
+    jQuery(document).on('click', '.se-stock-row', function(e) {
+        if (!jQuery(e.target).is('input')) {
+            jQuery(this).find('.se-qty').focus();
+        }
     });
 
     // Digit pad key press.
