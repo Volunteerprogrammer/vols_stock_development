@@ -2471,31 +2471,31 @@ input
     gap: 0.4rem;
     margin-top: 0.4rem;
 }
-.se-digit-add {
+.se-digit-btn.se-digit-add {
     background-color: #e6f4ea;
     color: #1a5c2a;
     border-color: #3a8a4a;
-    font-size: 1.3rem;
+    font-size: 4.8rem;
 }
-.se-digit-add:hover, .se-digit-add:active {
+.se-digit-btn.se-digit-add:hover, .se-digit-btn.se-digit-add:active {
     background-color: #c8eacf;
 }
-.se-digit-replace {
+.se-digit-btn.se-digit-replace {
     background-color: #e8f0fe;
     color: #1a3a7a;
     border-color: #3a5abf;
     font-size: 1.3rem;
 }
-.se-digit-replace:hover, .se-digit-replace:active {
+.se-digit-btn.se-digit-replace:hover, .se-digit-btn.se-digit-replace:active {
     background-color: #c8d8fc;
 }
-.se-digit-subtract {
+.se-digit-btn.se-digit-subtract {
     background-color: #fdecea;
     color: #7a1a1a;
     border-color: #c04040;
-    font-size: 1.3rem;
+    font-size: 4.8rem;
 }
-.se-digit-subtract:hover, .se-digit-subtract:active {
+.se-digit-btn.se-digit-subtract:hover, .se-digit-btn.se-digit-subtract:active {
     background-color: #f8d0cc;
 }
 .se-pad-nav {
