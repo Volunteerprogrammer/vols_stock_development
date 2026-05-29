@@ -145,9 +145,9 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html .= '<button type="button" class="se-digit-btn se-digit-back"    data-key="back"  tabindex="-1">&#9003;</button>';
         $html .= '</div>';
         $html .= '<div class="se-pad-commit">';
-        $html .= '<button type="button" class="se-digit-btn se-digit-add"      data-key="add"      tabindex="-1">ADD</button>';
+        $html .= '<button type="button" class="se-digit-btn se-digit-add"      data-key="add"      tabindex="-1">+</button>';
         $html .= '<button type="button" class="se-digit-btn se-digit-replace"  data-key="replace"  tabindex="-1">REPLACE</button>';
-        $html .= '<button type="button" class="se-digit-btn se-digit-subtract" data-key="subtract" tabindex="-1">SUBTRACT</button>';
+        $html .= '<button type="button" class="se-digit-btn se-digit-subtract" data-key="subtract" tabindex="-1">-</button>';
         $html .= '</div>';
         $html .= '<div class="se-pad-nav">';
         $html .= '<button type="button" class="se-digit-btn se-digit-prev" data-key="prev" tabindex="-1">&#9166; Prev</button>';

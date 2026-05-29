@@ -375,12 +375,12 @@ class StockEventManager extends \fw\controller\manager\StdManager
             return false;
         }
 
-        // Block if a stocktake was closed after this event was created
+        // Block if a stocktake for the same location was closed after this event was created
         $st_results = [];
         $st_numrows = 0;
         $this->table->query_params(
-            "SELECT id FROM stock_event WHERE event = 'stocktake' AND status = 'closed' AND date_closed > ?",
-            [$event['date_created']], $st_results, $st_numrows
+            "SELECT id FROM stock_event WHERE event = 'stocktake' AND status = 'closed' AND location1_id = ? AND date_closed > ?",
+            [$event['location1_id'], $event['date_created']], $st_results, $st_numrows
         );
         if ($st_numrows > 0) {
             $errormessage = "This event cannot be cancelled: a stocktake was completed after it was created.";
