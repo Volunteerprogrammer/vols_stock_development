@@ -73,7 +73,7 @@ class RoleManager extends \fw\controller\manager\StdManager {
     public function getpageswithactions(&$pages,&$numrows=0,$orderby="",$trace=false){
         // called from viewcontroller
         $pages = array();
-        $success = $this->pagetable->select("id,menutext","(pagetype = 2 OR pagetype = 3)",'','',"pagetype,menutext",0,$pages,$numrows,false,false);
+        $success = $this->pagetable->select("id,menutext","(pagetype <> 1)",'','',"menutext",0,$pages,$numrows,false,false);
         return $success;
      }
  }

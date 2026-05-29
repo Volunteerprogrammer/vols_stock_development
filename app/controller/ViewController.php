@@ -537,7 +537,7 @@ class ViewController {
         }
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
         return true;
-    }
+     }
     private function prepare_task_body($user_id,&$errormessage,$trace=false) {
         if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
         try {
