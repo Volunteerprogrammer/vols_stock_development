@@ -122,8 +122,8 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<div class="vols-stockreport-colheadings">';
             $formfields .= '<div class="vols-stockreport-col-name">Item</div>';
             $formfields .= '<div class="vols-stockreport-col-code">Code</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">Stocktake<br>Qty</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">Calculated<br>Level</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">System<br>Quantity</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">Stocktake<br>Count</div>';
             $formfields .= '<div class="vols-stockreport-col-num">Variance</div>';
             $formfields .= '</div>';
 
@@ -145,8 +145,8 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
                 $formfields .= '<div class="vols-stockreport-row">';
                 $formfields .= '<div class="vols-stockreport-col-name">'  . $name  . '</div>';
                 $formfields .= '<div class="vols-stockreport-col-code">'  . $code  . '</div>';
-                $formfields .= '<div class="vols-stockreport-col-num">'   . $stqty . '</div>';
                 $formfields .= '<div class="vols-stockreport-col-num">'   . $level . '</div>';
+                $formfields .= '<div class="vols-stockreport-col-num">'   . $stqty . '</div>';
                 $formfields .= '<div class="vols-stockreport-col-num' . $vclass . '">' . $vsign . '</div>';
                 $formfields .= '</div>';
             }
@@ -163,7 +163,7 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
         return "function formhaserrors() { return 0; }\n"
              . "function displayselectedrecord() {}\n"
              . "function downloadVarianceCSV() {\n"
-             . "    var rows = [['Category','Item','Code','Stocktake Qty','Calculated Level','Variance']];\n"
+             . "    var rows = [['Category','Item','Code','System Quantity','Stocktake Count','Variance']];\n"
              . "    for (var i = 0; i < varianceReportData.length; i++) {\n"
              . "        var r = varianceReportData[i];\n"
              . "        rows.push([r.category, r.name, r.code, r.stqty, r.level, r.variance]);\n"
