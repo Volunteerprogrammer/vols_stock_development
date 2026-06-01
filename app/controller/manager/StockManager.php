@@ -11,7 +11,8 @@ class StockManager extends \fw\controller\manager\StdManager
         protected \apptable\StockTable              $table,
         protected \apptable\StockCategoryTable      $categorytable,
         protected \apptable\StockLocationTable      $locationtable,
-        protected \apptable\StockItemLocationTable  $stockitemlocationtable
+        protected \apptable\StockItemLocationTable  $stockitemlocationtable,
+        protected \apptable\StockMovementTable      $movementtable
     ) {
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
     }
@@ -21,6 +22,7 @@ class StockManager extends \fw\controller\manager\StdManager
         $this->categorytable->init($this->db);
         $this->locationtable->init($this->db, $this->user_id);
         $this->stockitemlocationtable->init($this->db, $this->user_id);
+        $this->movementtable->init($this->db);
     }
 
     public function getallrecords(&$datafields, $orderby, &$parents, &$numrows, $withlock=false, $trace=false) {
@@ -67,6 +69,10 @@ class StockManager extends \fw\controller\manager\StdManager
     public function insert(&$id="0", &$errormessage="", $trace=false) {
         $success = parent::insert($id, $errormessage, $trace);
         return $success && $this->savetargetqtys($id, $errormessage);
+    }
+
+    public function getmovements($stock_id, &$results, &$numrows, $trace=false) {
+        return $this->movementtable->getmovementsforitem($stock_id, $results, $numrows, $trace);
     }
 
     private function savetargetqtys($stock_id, &$errormessage) {

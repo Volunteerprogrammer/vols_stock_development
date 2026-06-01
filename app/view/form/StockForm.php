@@ -80,6 +80,19 @@ class StockForm extends \fw\view\form\StdCRUDForm {
             }
         }
 
+        $alllocations = $this->parents['locations'] ?? [];
+        $formfields  .= $this->component->rendersectionheading("Stock Movements");
+        $formfields  .= '<div class="vols-stockmovements-filter">';
+        $formfields  .= '<label class="vols-stockmovements-filter-label" for="mov_location_id">Location:</label>';
+        $formfields  .= '<select id="mov_location_id" class="vols-stockmovements-locselect" onchange="filterStockMovements(this.value)">';
+        $formfields  .= '<option value="">All locations</option>';
+        foreach ($alllocations as $loc) {
+            $formfields .= '<option value="' . (int)$loc['id'] . '">' . htmlspecialchars($loc['name']) . '</option>';
+        }
+        $formfields .= '</select>';
+        $formfields .= '</div>';
+        $formfields .= '<div id="stock-movements-container"></div>';
+
         $this->preparecommontop(false, false, '', $this->stockid);
         return $formfields;
     }
@@ -93,8 +106,8 @@ class StockForm extends \fw\view\form\StdCRUDForm {
             true,   // updatefields
             false,  // inclmulti
             '',     // postajaxscript
-            '',     // postupdatescript
-            '',     // postclearfieldsscript
+            'loadStockMovements(selectedid);',  // postloadfieldsscript
+            'clearStockMovements();',           // postclearfieldsscript
             false,  // trace
             '',     // multisubmit
             ''      // presavescript
@@ -117,6 +130,68 @@ class StockForm extends \fw\view\form\StdCRUDForm {
                 return errors;
             }
             function displayselectedrecord() {}
+            (function() {
+                var _orig = disableallinputstatus;
+                disableallinputstatus = function(disabled) {
+                    _orig(disabled);
+                    jQuery('#mov_location_id').prop('disabled', false);
+                };
+            })();
+            function loadStockMovements(stockId) {
+                if (!stockId || stockId == 0) { clearStockMovements(); return; }
+                jQuery('#stock-movements-container').html('<div class="vols-stockmovements-empty">Loading…</div>');
+                doServerRequest(stockId, '{}', 'stock_getmovements').then(function(response) {
+                    try {
+                        renderMovementsTable(JSON.parse(response));
+                    } catch(e) {
+                        jQuery('#stock-movements-container').html('<div class="vols-stockmovements-empty">Could not load movements.</div>');
+                    }
+                });
+            }
+            function clearStockMovements() {
+                jQuery('#stock-movements-container').html('');
+                jQuery('#mov_location_id').val('');
+            }
+            function renderMovementsTable(movements) {
+                if (!movements || movements.length === 0) {
+                    jQuery('#stock-movements-container').html('<div class="vols-stockmovements-empty">No movement history for this item.</div>');
+                    return;
+                }
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                var html = '<div class="vols-stockmovements-table"><div class="vols-stockmovements-colheadings">'
+                         + '<div class="vols-stockmovements-col-date">Date / Time</div>'
+                         + '<div class="vols-stockmovements-col-type">Type</div>'
+                         + '<div class="vols-stockmovements-col-loc">Location</div>'
+                         + '<div class="vols-stockmovements-col-qty">Qty</div>'
+                         + '</div>';
+                for (var i = 0; i < movements.length; i++) {
+                    var m = movements[i];
+                    var d = new Date(m.movement_date.replace(' ', 'T'));
+                    var hh = String(d.getHours()).padStart(2, '0');
+                    var mm = String(d.getMinutes()).padStart(2, '0');
+                    var dateStr = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ' ' + hh + ':' + mm;
+                    var label = m.event.charAt(0).toUpperCase() + m.event.slice(1);
+                    var rawQty = (m.event === 'stocktake' && m.stock_qoh !== null) ? parseFloat(m.stock_qoh) : parseFloat(m.qty);
+                    var qty = isNaN(rawQty) ? parseFloat(m.qty) : rawQty;
+                    var qtyStr = (qty % 1 === 0) ? qty.toString() : qty.toFixed(1);
+                    var loc = m.location_name || '—';
+                    html += '<div class="vols-stockmovements-row" data-loc-id="' + (m.location_id || 0) + '">'
+                          + '<div class="vols-stockmovements-col-date">' + dateStr + '</div>'
+                          + '<div class="vols-stockmovements-col-type"><span class="vols-stockmov-' + m.event + '">' + label + '</span></div>'
+                          + '<div class="vols-stockmovements-col-loc">' + loc + '</div>'
+                          + '<div class="vols-stockmovements-col-qty">' + qtyStr + '</div>'
+                          + '</div>';
+                }
+                html += '</div>';
+                jQuery('#stock-movements-container').html(html);
+                var currentLoc = jQuery('#mov_location_id').val();
+                if (currentLoc) { filterStockMovements(currentLoc); }
+            }
+            function filterStockMovements(locId) {
+                jQuery('.vols-stockmovements-row').each(function() {
+                    jQuery(this).toggle(!locId || String(jQuery(this).data('loc-id')) === String(locId));
+                });
+            }
         JS;
         return $script;
     }

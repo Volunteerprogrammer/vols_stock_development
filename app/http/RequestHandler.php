@@ -231,6 +231,14 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $this->viewcontroller->init($this->session, $this->managercollection, $this->errorhandler, $trace);
                             $output = $this->viewcontroller->processajaxrequest("client_getsignature", $d, [], $errormessage, $trace);
                             break;
+                        case "stock_getmovements":
+                            $this->manager = $this->managercollection->StockManager();
+                            $this->manager->init($this->session);
+                            $stock_id  = (int)($this->requestdata["id"] ?? 0);
+                            $movements = []; $mov_n = 0;
+                            $this->manager->getmovements($stock_id, $movements, $mov_n);
+                            $output = json_encode($movements);
+                            break;
                         default: $output = "Unknown request action: ".$action;
                     }
                 } else {
