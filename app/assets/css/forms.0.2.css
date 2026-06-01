@@ -1953,7 +1953,7 @@ input
 }
 .vols-variancereport-table .vols-stockreport-colheadings,
 .vols-variancereport-table .vols-stockreport-row {
-    grid-template-columns: 200fr 52fr 72fr 72fr 72fr;
+    grid-template-columns: 150fr 35fr 72fr 72fr 72fr;
 }
 
 /* Variance cell colours */

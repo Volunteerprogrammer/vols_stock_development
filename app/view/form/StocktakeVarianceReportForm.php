@@ -122,8 +122,8 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<div class="vols-stockreport-colheadings">';
             $formfields .= '<div class="vols-stockreport-col-name">Item</div>';
             $formfields .= '<div class="vols-stockreport-col-code">Code</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">System<br>Quantity</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">Stocktake<br>Count</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">System Quantity</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">Stocktake Count</div>';
             $formfields .= '<div class="vols-stockreport-col-num">Variance</div>';
             $formfields .= '</div>';
 
