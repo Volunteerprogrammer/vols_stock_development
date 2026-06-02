@@ -53,7 +53,8 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         if (!empty($alllocations)) {
             $formfields .= $this->component->rendersectionheading(
                 "Stock levels by location",
-                subheading: "Set target qty, minimum qty, and stocktake position for each location. Position orders items within their category during a stocktake — items without a position follow alphabetically."
+                subheading: "Set target qty, minimum qty, and stocktake position for each location. Position orders items within their category during a stocktake — items without a position follow alphabetically.",
+                inputgroup: "stocklevelsloc"
             );
             $this->component->setwidths(30, 65, 5);
             $n = count($alllocations);
@@ -71,7 +72,8 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         }
 
         $alllocations = $this->parents['locations'] ?? [];
-        $formfields  .= $this->component->rendersectionheading("Stock Movements");
+        $formfields  .= $this->component->rendersectionheading("Stock Movements", inputgroup: "stockmovements");
+        $formfields  .= '<div class="childcontainer stockmovements grouped">';
         $formfields  .= '<div class="vols-stockmovements-filter">';
         $formfields  .= '<label class="vols-stockmovements-filter-label" for="mov_location_id">Location:</label>';
         $formfields  .= '<select id="mov_location_id" class="vols-stockmovements-locselect" onchange="filterStockMovements(this.value)">';
@@ -82,6 +84,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '</select>';
         $formfields .= '</div>';
         $formfields .= '<div id="stock-movements-container"></div>';
+        $formfields .= '</div>'; // childcontainer stockmovements
 
         $this->preparecommontop(false, false, '', $this->stockid);
         return $formfields;

@@ -61,7 +61,7 @@ class StockSupplierForm extends \fw\view\form\StdCRUDForm {
         $fn = 3;
         $hiddencheckboxes = '';
         if (!empty($stockcats)) {
-            $formfields .= $this->component->rendersectionheading("Categories supplied");
+            $formfields .= $this->component->rendersectionheading("Categories supplied", inputgroup: "categoriessupplied");
             $this->component->setwidths(35, 60, 5);
             $oddeven = 'vols-row-odd';
             foreach ($stockcats as $cat) {

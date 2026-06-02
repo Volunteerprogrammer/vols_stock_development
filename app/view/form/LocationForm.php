@@ -87,9 +87,11 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
         $catselector = '<select id="loc-category-filter" class="vols-form-select nondatainput">'
                      . $catoptionshtml . '</select>';
         $formfields .= $this->component->rendersectionheading(
-            'Target quantities &nbsp;&mdash;&nbsp; ' . $catselector
+            'Target quantities &nbsp;&mdash;&nbsp; ' . $catselector,
+            inputgroup: "targetqtys"
         );
 
+        $formfields .= '<div class="childcontainer targetqtys grouped">';
         $formfields .= '<input type="hidden" name="sil_stock_ids" id="sil_stock_ids" value="">';
         $formfields .= '<div id="loc-targets-wrapper" style="display:none">';
         $formfields .= '<table class="vols-table loc-targets-table">';
@@ -102,10 +104,12 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '<tbody id="loc-targets-tbody"></tbody>';
         $formfields .= '</table>';
         $formfields .= '</div>';
+        $formfields .= '</div>'; // childcontainer targetqtys
         // -----------------------------------------------------------------------
 
         // ---- Category order section -------------------------------------------
-        $formfields .= $this->component->rendersectionheading('Category order for stocktake');
+        $formfields .= $this->component->rendersectionheading('Category order for stocktake', inputgroup: "catorder");
+        $formfields .= '<div class="childcontainer catorder grouped">';
         $formfields .= '<div class="loc-catpos-hint">'
                      . 'Set a position number for each category to control the order in which they appear '
                      . 'during a stocktake at this location. Categories without a position are listed last, '
@@ -136,7 +140,8 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
                          . '</tr>';
         }
         $formfields .= '</tbody></table>';
-        $formfields .= '</div>';
+        $formfields .= '</div>'; // loc-catpos-wrapper
+        $formfields .= '</div>'; // childcontainer catorder
         // -----------------------------------------------------------------------
 
         $this->preparecommontop(false, false, '', $this->locationid);
