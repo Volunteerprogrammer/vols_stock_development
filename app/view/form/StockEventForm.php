@@ -229,26 +229,36 @@ abstract class StockEventForm extends \fw\view\form\Form {
     var saveTimer    = null;
     var audioCtx     = null;
 
-    function playtaptone() {
+    // Called inside a user-gesture handler (focus or touchstart) to create and
+    // unlock the AudioContext so the first keypad beep plays without delay.
+    function unlockAudioCtx() {
         try {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            function playbeep() {
-                var osc  = audioCtx.createOscillator();
-                var gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.value = 600;
-                gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.12);
-            }
             if (audioCtx.state !== 'running') {
-                audioCtx.resume().then(playbeep);
-            } else {
-                playbeep();
+                // A silent one-sample buffer is the reliable iOS unlock trick.
+                var buf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+                var src = audioCtx.createBufferSource();
+                src.buffer = buf;
+                src.connect(audioCtx.destination);
+                src.start(0);
+                audioCtx.resume();
             }
+        } catch(e) {}
+    }
+
+    function playtaptone() {
+        try {
+            if (!audioCtx || audioCtx.state !== 'running') return;
+            var osc  = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.12);
         } catch(e) {}
     }
 
@@ -260,11 +270,14 @@ abstract class StockEventForm extends \fw\view\form\Form {
     }
 
     // Track which qty input is active (for digit pad); clear pad ready for new entry.
+    // Also unlock the AudioContext here — this focus fires inside a user gesture
+    // (row tap), so the context is running before the first keypad press.
     jQuery(document).on('focus', '.se-qty', function() {
         $activeInput = jQuery(this);
         jQuery('#se-pad-display').val('');
         jQuery('#se-stock-table-body tr').css('background-color', '');
         jQuery(this).closest('tr').css('background-color', '#fff176');
+        unlockAudioCtx();
     });
 
     // Tap/click anywhere on a stock row to focus its qty input.
