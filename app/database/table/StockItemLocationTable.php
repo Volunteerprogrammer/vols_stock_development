@@ -7,17 +7,19 @@ class StockItemLocationTable extends \fw\database\table\MySQLTable
     public function init($db, $user_id="null") {
         parent::init($db, $user_id);
         $this->fields = array(
-            "id"                => "",
-            "stock_id"          => "",
-            "stock_location_id" => "",
-            "target_qty"        => "",
-            "minimum_qty"       => null,
+            "id"                  => "",
+            "stock_id"            => "",
+            "stock_location_id"   => "",
+            "target_qty"          => "",
+            "minimum_qty"         => null,
+            "stocktake_position"  => null,
         );
     }
 
     public function clear() {
         parent::clear();
-        $this->fields['minimum_qty'] = null;
+        $this->fields['minimum_qty']        = null;
+        $this->fields['stocktake_position'] = null;
     }
 
     public function upsert($stock_id, $stock_location_id, $target_qty, &$errormessage="") {
@@ -29,14 +31,15 @@ class StockItemLocationTable extends \fw\database\table\MySQLTable
         return $this->execute_params($sql, [(int)$stock_id, (int)$stock_location_id], $result, $numrows, $errormessage, 1);
     }
 
-    public function upsertboth($stock_id, $stock_location_id, $target_qty, $minimum_qty, &$errormessage="") {
+    public function upsertboth($stock_id, $stock_location_id, $target_qty, $minimum_qty, $stocktake_position=null, &$errormessage="") {
         // target_qty is NOT NULL in the schema; null means "preserve existing, or 0 for new rows"
-        $ins_tqty = ($target_qty  !== null) ? (int)$target_qty  : 0;
-        $upd_tqty = ($target_qty  !== null) ? 'target_qty = ' . (int)$target_qty : 'target_qty = target_qty';
-        $mqty_sql = ($minimum_qty !== null) ? (string)(int)$minimum_qty : 'NULL';
-        $sql = "INSERT INTO stock_item_location (stock_id, stock_location_id, target_qty, minimum_qty)"
-             . " VALUES (?, ?, {$ins_tqty}, {$mqty_sql})"
-             . " ON DUPLICATE KEY UPDATE {$upd_tqty}, minimum_qty = {$mqty_sql}";
+        $ins_tqty = ($target_qty        !== null) ? (int)$target_qty        : 0;
+        $upd_tqty = ($target_qty        !== null) ? 'target_qty = ' . (int)$target_qty : 'target_qty = target_qty';
+        $mqty_sql = ($minimum_qty       !== null) ? (string)(int)$minimum_qty       : 'NULL';
+        $spos_sql = ($stocktake_position !== null) ? (string)(int)$stocktake_position : 'NULL';
+        $sql = "INSERT INTO stock_item_location (stock_id, stock_location_id, target_qty, minimum_qty, stocktake_position)"
+             . " VALUES (?, ?, {$ins_tqty}, {$mqty_sql}, {$spos_sql})"
+             . " ON DUPLICATE KEY UPDATE {$upd_tqty}, minimum_qty = {$mqty_sql}, stocktake_position = {$spos_sql}";
         $result = null; $numrows = 0;
         return $this->execute_params($sql, [(int)$stock_id, (int)$stock_location_id], $result, $numrows, $errormessage, 1);
     }

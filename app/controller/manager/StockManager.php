@@ -41,8 +41,9 @@ class StockManager extends \fw\controller\manager\StdManager
             $qtyindex = [];
             foreach ($allqtys as $q) {
                 $qtyindex[$q['stock_id']][$q['stock_location_id']] = [
-                    'target_qty'       => $q['target_qty'],
-                    'minimum_qty' => $q['minimum_qty'],
+                    'target_qty'         => $q['target_qty'],
+                    'minimum_qty'        => $q['minimum_qty'],
+                    'stocktake_position' => $q['stocktake_position'],
                 ];
             }
             foreach ($datafields as &$row) {
@@ -51,6 +52,9 @@ class StockManager extends \fw\controller\manager\StdManager
                 }
                 foreach ($alllocations as $loc) {
                     $row['min_qty_' . $loc['id']] = $qtyindex[$row['id']][$loc['id']]['minimum_qty'] ?? '';
+                }
+                foreach ($alllocations as $loc) {
+                    $row['stkpos_' . $loc['id']] = $qtyindex[$row['id']][$loc['id']]['stocktake_position'] ?? '';
                 }
             }
             unset($row);
@@ -86,12 +90,17 @@ class StockManager extends \fw\controller\manager\StdManager
                 $loc_id = substr($key, 8);
                 if (!ctype_digit($loc_id)) continue;
                 $loc_vals[$loc_id]['mqty'] = trim($value);
+            } elseif (substr($key, 0, 7) === 'stkpos_') {
+                $loc_id = substr($key, 7);
+                if (!ctype_digit($loc_id)) continue;
+                $loc_vals[$loc_id]['spos'] = trim($value);
             }
         }
         foreach ($loc_vals as $loc_id => $vals) {
             $tqty = $vals['tqty'] ?? '';
             $mqty = $vals['mqty'] ?? '';
-            if ($tqty === '' && $mqty === '') {
+            $spos = $vals['spos'] ?? '';
+            if ($tqty === '' && $mqty === '' && $spos === '') {
                 $result = null; $numrows = 0; $em = '';
                 $this->stockitemlocationtable->execute_params(
                     "DELETE FROM stock_item_location WHERE stock_id = ? AND stock_location_id = ?",
@@ -100,7 +109,8 @@ class StockManager extends \fw\controller\manager\StdManager
             } else {
                 $tval = ($tqty !== '') ? (int)$tqty : null;
                 $mval = ($mqty !== '') ? (int)$mqty : null;
-                if (!$this->stockitemlocationtable->upsertboth($stock_id, $loc_id, $tval, $mval, $errormessage)) {
+                $sval = ($spos !== '') ? (int)$spos : null;
+                if (!$this->stockitemlocationtable->upsertboth($stock_id, $loc_id, $tval, $mval, $sval, $errormessage)) {
                     return false;
                 }
             }

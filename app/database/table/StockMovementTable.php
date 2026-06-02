@@ -78,8 +78,8 @@ class StockMovementTable extends \fw\database\table\MySQLTable
     // left-joined to any existing movement for the given event so the form can show
     // existing values and know whether to INSERT or UPDATE.
     // $supplier_id: if non-empty and category_id is empty, restricts to stock categories supplied by that supplier.
-    // $location_id: when non-empty, joins stock_category_location to order categories by their
-    //               position at that location (unpositioned categories sort last, then by name).
+    // $location_id: when non-empty, joins stock_category_location (category order) and stock_item_location
+    //               (item order within category). Unpositioned entries sort last, then by name.
     public function getstockforevent($event_id, $category_id, &$results, &$numrows, $trace=false, $supplier_id='', $location_id='') {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
         $params = [$event_id];
@@ -87,7 +87,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $query .= " sc.Name as category_name,";
         $query .= " sm.id as movement_id, sm.qty, sm.stock_qoh, sm.location_id";
         if (!empty($location_id)) {
-            $query .= ", scl.position as category_position";
+            $query .= ", scl.position as category_position, sil.stocktake_position";
         }
         $query .= " FROM stock s";
         $query .= " LEFT JOIN stock_category sc ON s.category_id = sc.id";
@@ -97,6 +97,8 @@ class StockMovementTable extends \fw\database\table\MySQLTable
             $lid    = (int)$location_id;
             $query .= " LEFT JOIN stock_category_location scl"
                     . "   ON scl.stock_category_id = s.category_id AND scl.stock_location_id = {$lid}";
+            $query .= " LEFT JOIN stock_item_location sil"
+                    . "   ON sil.stock_id = s.id AND sil.stock_location_id = {$lid}";
         }
         if (!empty($category_id)) {
             $query .= " WHERE s.category_id = ?";
@@ -106,7 +108,8 @@ class StockMovementTable extends \fw\database\table\MySQLTable
             $params[] = $supplier_id;
         }
         if (!empty($location_id)) {
-            $query .= " ORDER BY CASE WHEN scl.position IS NULL THEN 1 ELSE 0 END, scl.position, sc.Name, s.Name";
+            $query .= " ORDER BY CASE WHEN scl.position IS NULL THEN 1 ELSE 0 END, scl.position, sc.Name,"
+                    . " CASE WHEN sil.stocktake_position IS NULL THEN 1 ELSE 0 END, sil.stocktake_position, s.Name";
         } else {
             $query .= " ORDER BY sc.Name, s.Name";
         }

@@ -51,33 +51,23 @@ class StockForm extends \fw\view\form\StdCRUDForm {
 
         $alllocations = $this->parents['locations'] ?? [];
         if (!empty($alllocations)) {
-            $formfields .= $this->component->rendersectionheading("Target stock levels by location");
-            $fn = 4;
-            foreach ($alllocations as $loc) {
-                $formfields .= $this->component->buildinputrow(
-                    "target_qty_" . $loc['id'],
-                    $fn++,
-                    "",
-                    $loc['name'],
-                    "Leave blank for no target",
-                    6, 9,
-                    false, '', '',
-                    false, false, '', 1, '', 'number'
+            $formfields .= $this->component->rendersectionheading(
+                "Stock levels by location",
+                subheading: "Set target qty, minimum qty, and stocktake position for each location. Position orders items within their category during a stocktake — items without a position follow alphabetically."
+            );
+            $this->component->setwidths(30, 65, 5);
+            $n = count($alllocations);
+            foreach ($alllocations as $i => $loc) {
+                $tgt = $this->component->rendertextinput("target_qty_" . $loc['id'], 5, 5, '', false, '', '', '', 4 + $i,           false, false, false, 1, '', '');
+                $min = $this->component->rendertextinput("min_qty_"    . $loc['id'], 5, 5, '', false, '', '', '', 4 + $n + $i,       false, false, false, 1, '', '');
+                $pos = $this->component->rendertextinput("stkpos_"     . $loc['id'], 5, 5, '', false, '', '', '', 4 + 2 * $n + $i,   false, false, false, 1, '', '');
+                $locfields = 'target &nbsp;' . $tgt . ' &nbsp;&nbsp; min &nbsp;' . $min . ' &nbsp;&nbsp; position &nbsp;' . $pos;
+                $formfields .= $this->component->renderformrow(
+                    "loc_row_" . $loc['id'], "", $loc['name'], false,
+                    "", "", "", $locfields
                 );
             }
-            $formfields .= $this->component->rendersectionheading("Minimum Qty by Location");
-            foreach ($alllocations as $loc) {
-                $formfields .= $this->component->buildinputrow(
-                    "min_qty_" . $loc['id'],
-                    $fn++,
-                    "",
-                    $loc['name'],
-                    "Leave blank for no minimum",
-                    6, 9,
-                    false, '', '',
-                    false, false, '', 1, '', 'number'
-                );
-            }
+            $this->component->setwidths(30, 40, 30);
         }
 
         $alllocations = $this->parents['locations'] ?? [];

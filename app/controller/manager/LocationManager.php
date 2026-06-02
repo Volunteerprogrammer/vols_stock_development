@@ -50,7 +50,7 @@ class LocationManager extends \fw\controller\manager\StdManager
         if ($tqty === null && $mqty === null) {
             return $this->itemlocationtable->deletebystock($stock_id, $location_id, $errormessage);
         }
-        return $this->itemlocationtable->upsertboth($stock_id, $location_id, $tqty, $mqty, $errormessage);
+        return $this->itemlocationtable->upsertboth($stock_id, $location_id, $tqty, $mqty, null, $errormessage);
     }
 
     public function update(&$errormessage="", $trace=false) {
