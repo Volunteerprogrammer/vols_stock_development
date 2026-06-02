@@ -227,6 +227,24 @@ abstract class StockEventForm extends \fw\view\form\Form {
 (function() {
     var $activeInput = null;
     var saveTimer    = null;
+    var audioCtx     = null;
+
+    function playtaptone() {
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            var osc  = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = 880;
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.07);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.07);
+        } catch(e) {}
+    }
 
     function schedulesave() {
         clearTimeout(saveTimer);
@@ -317,9 +335,11 @@ abstract class StockEventForm extends \fw\view\form\Form {
     jQuery(document).on('touchstart', '.se-digit-btn', function(e) {
         e.preventDefault();
         lastPadTouch = Date.now();
+        playtaptone();
         handlepadkey(this);
     }).on('click', '.se-digit-btn', function() {
         if (Date.now() - lastPadTouch < 500) return;
+        playtaptone();
         handlepadkey(this);
     });
 
