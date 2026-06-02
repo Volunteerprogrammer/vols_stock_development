@@ -238,11 +238,11 @@ abstract class StockEventForm extends \fw\view\form\Form {
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'sine';
-            osc.frequency.value = 880;
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.07);
+            osc.frequency.value = 600;
+            gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
             osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 0.07);
+            osc.stop(audioCtx.currentTime + 0.12);
         } catch(e) {}
     }
 
