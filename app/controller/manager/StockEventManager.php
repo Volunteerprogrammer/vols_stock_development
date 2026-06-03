@@ -175,7 +175,7 @@ class StockEventManager extends \fw\controller\manager\StdManager
 
     // Closes the event identified by $event_id.
     // Applies type-specific pre-close logic before setting status = 'closed'.
-    public function closeevent($event_id, &$errormessage) {
+    public function closeevent($event_id, $create_issue = true, &$errormessage = '') {
         if ($this->trace) { echo "Enter ".__METHOD__." event={$event_id}<br>"; }
 
         $event   = [];
@@ -205,9 +205,10 @@ class StockEventManager extends \fw\controller\manager\StdManager
             );
         }
 
-        // For stocktakes at uncontrolled-issues locations: generate variance issue and cancel.
+        // For stocktakes at uncontrolled-issues locations: generate variance issue.
+        // Only when the operator confirmed this is an end-of-session stocktake.
         if ($success && $event['event'] === 'stocktake') {
-            $success = $this->postclosestocktakeifuncontrolled($event, $errormessage);
+            $success = $this->postclosestocktakeifuncontrolled($event, $create_issue, $errormessage);
         }
 
         if ($this->trace) { echo "Leave ".__METHOD__." OK={$success}<br>"; }
@@ -272,8 +273,13 @@ class StockEventManager extends \fw\controller\manager\StdManager
     // The stocktake remains closed as the new baseline; the issue sits just before
     // it in the timeline, capturing the untracked consumption.
     // If all variances are zero, no issue event is created.
-    private function postclosestocktakeifuncontrolled($event, &$errormessage) {
+    private function postclosestocktakeifuncontrolled($event, $create_issue, &$errormessage) {
         if ($this->trace) { echo "Enter ".__METHOD__." event={$event['id']}<br>"; }
+
+        if (!$create_issue) {
+            if ($this->trace) { echo "Leave ".__METHOD__." (operator chose not to create issues event)<br>"; }
+            return true;
+        }
 
         $loc = []; $loc_n = 0;
         $this->locationtable->selectonID($event['location1_id'], $loc, $loc_n);

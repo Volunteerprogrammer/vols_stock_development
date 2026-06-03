@@ -57,6 +57,42 @@ class StocktakeEventForm extends StockEventForm {
 
 // ---- StocktakeEventForm-specific JS ----
 
+// Override the base closestockevent() so that for uncontrolled-issues locations
+// the operator is asked whether this is an end-of-session stocktake before the
+// variance issues event is created.
+function closestockevent() {
+    if (!confirm('Close this stocktake? This will finalise all entries.')) return;
+    var event_id       = jQuery('#se-event-id').val();
+    var isUncontrolled = jQuery('#se-location1 option:selected').data('uncontrolled') == 1;
+
+    function doclose(createIssue) {
+        doServerRequest(0, JSON.stringify({ event_id: event_id, create_issue: createIssue }), 'stockevent_closeevent').then(function(resp) {
+            try {
+                var r = JSON.parse(resp);
+                if (r.success) { location.reload(); } else { alert('Cannot close: ' + r.error); }
+            } catch(ex) { console.error(ex, resp); }
+        });
+    }
+
+    if (!isUncontrolled) {
+        doclose(1);
+        return;
+    }
+
+    // Use jQuery UI dialog (already loaded) so we can label the buttons Yes / No.
+    jQuery('<div>')
+        .html("<p>Is this an <strong>End of Foodbank Session</strong> stocktake?</p>")
+        .dialog({
+            title:  'End of Session?',
+            modal:  true,
+            width:  500,
+            buttons: {
+                'Yes': function() { jQuery(this).dialog('close'); doclose(1); },
+                'No':  function() { jQuery(this).dialog('close'); doclose(0); }
+            }
+        });
+}
+
 function resumestocktake(event_id, location_id, location_name) {
     jQuery('#se-location1').val(location_id);
     jQuery('#se-event-id').val(event_id);

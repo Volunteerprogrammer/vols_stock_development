@@ -178,11 +178,12 @@ class RequestHandler   // extends \fw\http\RequestHandler
                         case "stockevent_closeevent":
                             $this->manager = $this->managercollection->StockEventManager();
                             $this->manager->init($this->session);
-                            $d        = json_decode($this->requestdata["thedata"] ?? '{}', true);
-                            $event_id = $d["event_id"] ?? 0;
-                            $errormsg = '';
-                            $success  = $this->manager->closeevent($event_id, $errormsg);
-                            $output   = json_encode(['success' => $success, 'error' => $errormsg]);
+                            $d            = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $event_id     = $d["event_id"] ?? 0;
+                            $create_issue = isset($d["create_issue"]) ? (bool)$d["create_issue"] : true;
+                            $errormsg     = '';
+                            $success      = $this->manager->closeevent($event_id, $create_issue, $errormsg);
+                            $output       = json_encode(['success' => $success, 'error' => $errormsg]);
                             break;
                         case "stockevent_cancelevent":
                             $this->manager = $this->managercollection->StockEventManager();

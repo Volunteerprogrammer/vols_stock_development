@@ -90,7 +90,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html .= '<select id="' . $id . '" name="' . $id . '"' . ($class ? ' class="' . $class . '"' : '') . '>';
         $html .= '<option value="">-- Select --</option>';
         foreach ($this->locations as $loc) {
-            $html .= '<option value="' . (int)$loc['id'] . '">'
+            $uncontrolled = !empty($loc['uncontrolled_issues']) ? ' data-uncontrolled="1"' : '';
+            $html .= '<option value="' . (int)$loc['id'] . '"' . $uncontrolled . '>'
                    . htmlspecialchars($loc['name']) . '</option>';
         }
         $html .= '</select>';
