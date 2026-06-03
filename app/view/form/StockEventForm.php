@@ -127,8 +127,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
     private function renderdigitpad(): string {
         $html  = '<div id="se-digitpad" class="se-digitpad">';
         $html .= '<div id="se-action-buttons" class="se-action-buttons">';
-        $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="closestockevent()">Close ' . htmlspecialchars($this->event_label) . '</button>';
-        $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="cancelstockevent()">Cancel ' . htmlspecialchars($this->event_label) . '</button>';
+        $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="setTimeout(closestockevent,80)">Close ' . htmlspecialchars($this->event_label) . '</button>';
+        $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="setTimeout(cancelstockevent,80)">Cancel ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '</div>';
         $html .= '<div class="se-pad-display">';
         $html .= '<input type="text" id="se-pad-display" readonly tabindex="-1">';
@@ -228,37 +228,57 @@ abstract class StockEventForm extends \fw\view\form\Form {
     var $activeInput = null;
     var saveTimer    = null;
     var audioCtx     = null;
+    var keepAliveOsc = null;
 
-    // Called inside a user-gesture handler (focus or touchstart) to create and
-    // unlock the AudioContext so the first keypad beep plays without delay.
+    // Start an 18 kHz oscillator at -40 dB: above audible range but non-zero,
+    // which keeps Chrome from auto-suspending the context between taps.
+    function startKeepalive() {
+        if (keepAliveOsc || !audioCtx || audioCtx.state !== 'running') return;
+        try {
+            var g = audioCtx.createGain();
+            g.gain.value = 0.01;
+            g.connect(audioCtx.destination);
+            keepAliveOsc = audioCtx.createOscillator();
+            keepAliveOsc.frequency.value = 18000;
+            keepAliveOsc.connect(g);
+            keepAliveOsc.start();
+        } catch(e) {}
+    }
+
     function unlockAudioCtx() {
         try {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                audioCtx.onstatechange = function() {
+                    if (audioCtx.state === 'running') startKeepalive();
+                };
+            }
             if (audioCtx.state !== 'running') {
-                // A silent one-sample buffer is the reliable iOS unlock trick.
                 var buf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
                 var src = audioCtx.createBufferSource();
-                src.buffer = buf;
-                src.connect(audioCtx.destination);
-                src.start(0);
+                src.buffer = buf; src.connect(audioCtx.destination); src.start(0);
                 audioCtx.resume();
+            } else {
+                startKeepalive();
             }
         } catch(e) {}
     }
 
     function playtaptone() {
         try {
-            if (!audioCtx || audioCtx.state !== 'running') return;
-            var osc  = audioCtx.createOscillator();
-            var gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.type = 'sine';
-            osc.frequency.value = 1000;
-            gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 0.05);
+            if (!audioCtx) return;
+            function playbeep() {
+                var osc  = audioCtx.createOscillator();
+                var gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'sine'; osc.frequency.value = 1000;
+                var t = audioCtx.currentTime;
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+                osc.start(t); osc.stop(t + 0.05);
+            }
+            if (audioCtx.state === 'running') { playbeep(); }
+            else { audioCtx.resume().then(playbeep); }
         } catch(e) {}
     }
 
@@ -269,9 +289,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
         }, 1500);
     }
 
-    // Track which qty input is active (for digit pad); clear pad ready for new entry.
-    // Also unlock the AudioContext here — this focus fires inside a user gesture
-    // (row tap), so the context is running before the first keypad press.
+    // Track which qty input is active; unlock audio on focus (fires within gesture).
     jQuery(document).on('focus', '.se-qty', function() {
         $activeInput = jQuery(this);
         jQuery('#se-pad-display').val('');
@@ -280,11 +298,19 @@ abstract class StockEventForm extends \fw\view\form\Form {
         unlockAudioCtx();
     });
 
-    // Tap/click anywhere on a stock row to focus its qty input.
-    jQuery(document).on('click', '.se-stock-row', function(e) {
+    // Row tap: unlock audio on touchstart (earliest possible gesture signal).
+    jQuery(document).on('touchstart', '.se-stock-row', function() {
+        unlockAudioCtx();
+    }).on('click', '.se-stock-row', function(e) {
         if (!jQuery(e.target).is('input')) {
             jQuery(this).find('.se-qty').focus();
         }
+    });
+
+    // Desktop: mousedown fires before click, giving resume() a head start so
+    // the context is running by the time playtaptone() is called.
+    jQuery(document).on('mousedown', '.se-digit-btn, #se-close-btn, #se-cancel-btn', function() {
+        unlockAudioCtx();
     });
 
     // Digit pad key press.
@@ -354,12 +380,22 @@ abstract class StockEventForm extends \fw\view\form\Form {
     jQuery(document).on('touchstart', '.se-digit-btn', function(e) {
         e.preventDefault();
         lastPadTouch = Date.now();
+        unlockAudioCtx();
         playtaptone();
         handlepadkey(this);
     }).on('click', '.se-digit-btn', function() {
         if (Date.now() - lastPadTouch < 500) return;
         playtaptone();
         handlepadkey(this);
+    });
+
+    jQuery(document).on('touchstart', '#se-close-btn, #se-cancel-btn', function() {
+        lastPadTouch = Date.now();
+        unlockAudioCtx();
+        playtaptone();
+    }).on('click', '#se-close-btn, #se-cancel-btn', function() {
+        if (Date.now() - lastPadTouch < 500) return;
+        playtaptone();
     });
 
     // Immediate save when a qty field loses focus (cancels any pending debounce).
@@ -476,7 +512,6 @@ function loadstock(event_id, category_id, supplier_id) {
         jQuery('#se-stock-table-body').html(resp);
         jQuery('#se-stock-table-body .se-qty').prop('readonly', true);
         resizestocktable();
-        jQuery('.se-qty:visible').first().focus();
     });
 }
 
