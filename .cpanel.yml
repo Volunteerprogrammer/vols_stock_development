@@ -4,5 +4,6 @@ deployment:
     - export DEPLOYPATH=/home/sarum964/public_html/versions/stock/
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/rsync -avz --exclude '.git*' --exclude '.cpanel.yml' --exclude 'vendor/mailjet/' ./ $DEPLOYPATH
+    - /bin/chmod 755 $DEPLOYPATH
     - /bin/find $DEPLOYPATH -type d -exec /bin/chmod 755 {} \;
     - /bin/find $DEPLOYPATH -type f -exec /bin/chmod 644 {} \;
