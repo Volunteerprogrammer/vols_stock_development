@@ -608,10 +608,10 @@ class RosterForm extends \fw\view\form\Form {
                         if (DateisValid(from) && DateisValid(until)) {
                             const today = Date.now();
                             if (today > from || today > until) {
-                                alert("Please select a date range in the future.");
-                                jQuery("#extend").addClass("inactive"); 
+                                jQuery.volsdialog('OKMSG', 'Please select a date range in the future.', undefined, undefined, 'Validation');
+                                jQuery("#extend").addClass("inactive");
                             } else if (until < from ) {
-                                alert("Your start date is after your finish date.");
+                                jQuery.volsdialog('OKMSG', 'Your start date is after your finish date.', undefined, undefined, 'Validation');
                                 jQuery("#extend").addClass("inactive");
                             } else { 
                                 jQuery("#extend").removeClass("inactive");

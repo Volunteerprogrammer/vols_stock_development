@@ -90,7 +90,7 @@ class TransferEventForm extends StockEventForm {
         if (loc1 === loc2) {
             sameLocTimer = setTimeout(function() {
                 if (jQuery('#se-location1').val() === jQuery('#se-location2').val()) {
-                    alert('From and To locations must be different.');
+                    jQuery.volsdialog('OKMSG', 'From and To locations must be different.', undefined, undefined, 'Location Error');
                     jQuery('#se-location2').val('');
                 }
             }, 500);
@@ -115,10 +115,10 @@ class TransferEventForm extends StockEventForm {
         clearTimeout(sameLocTimer);
         var loc1 = jQuery('#se-location1').val();
         var loc2 = jQuery('#se-location2').val();
-        if (!loc1) { alert('Please select a From location.'); return; }
-        if (!loc2) { alert('Please select a To location.'); return; }
+        if (!loc1) { jQuery.volsdialog('OKMSG', 'Please select a From location.', undefined, undefined, 'Select Location'); return; }
+        if (!loc2) { jQuery.volsdialog('OKMSG', 'Please select a To location.', undefined, undefined, 'Select Location'); return; }
         if (loc1 === loc2) {
-            alert('From and To locations must be different.');
+            jQuery.volsdialog('OKMSG', 'From and To locations must be different.', undefined, undefined, 'Location Error');
             jQuery('#se-location2').val('');
             return;
         }

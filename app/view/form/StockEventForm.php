@@ -485,7 +485,7 @@ function savemovement($input) {
                 $row.addClass('se-saved');
                 setTimeout(function() { $row.removeClass('se-saved'); }, 1000);
             } else {
-                alert('Error saving: ' + r.error);
+                jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Error saving');
             }
         } catch(ex) { console.error('savemovement parse error', ex, resp); }
     });
@@ -517,25 +517,35 @@ function loadstock(event_id, category_id, supplier_id) {
 }
 
 function closestockevent() {
-    if (!confirm('Close this event? This will finalise all entries.')) return;
-    var event_id = jQuery('#se-event-id').val();
-    doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_closeevent').then(function(resp) {
-        try {
-            var r = JSON.parse(resp);
-            if (r.success) { location.reload(); } else { alert('Cannot close: ' + r.error); }
-        } catch(ex) { console.error(ex, resp); }
-    });
+    jQuery.volsdialog('YESNO', 'Close this event? This will finalise all entries.',
+        function() {
+            var event_id = jQuery('#se-event-id').val();
+            doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_closeevent').then(function(resp) {
+                try {
+                    var r = JSON.parse(resp);
+                    if (r.success) { location.reload(); }
+                    else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot close event'); }
+                } catch(ex) { console.error(ex, resp); }
+            });
+        },
+        undefined, 'Close Event?'
+    );
 }
 
 function cancelstockevent() {
-    if (!confirm('Cancel this event? All entries will be deleted.')) return;
-    var event_id = jQuery('#se-event-id').val();
-    doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_cancelevent').then(function(resp) {
-        try {
-            var r = JSON.parse(resp);
-            if (r.success) { location.reload(); } else { alert('Cannot cancel: ' + r.error); }
-        } catch(ex) { console.error(ex, resp); }
-    });
+    jQuery.volsdialog('YESNO', 'Cancel this event? All entries will be deleted.',
+        function() {
+            var event_id = jQuery('#se-event-id').val();
+            doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_cancelevent').then(function(resp) {
+                try {
+                    var r = JSON.parse(resp);
+                    if (r.success) { location.reload(); }
+                    else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot cancel event'); }
+                } catch(ex) { console.error(ex, resp); }
+            });
+        },
+        undefined, 'Cancel Event?'
+    );
 }
 
 function createstockevent(event_type, location1_id, location2_id, supplier_id, stock_client_id, onSuccess) {
@@ -553,7 +563,7 @@ function createstockevent(event_type, location1_id, location2_id, supplier_id, s
                 jQuery('#se-event-controls').show();
                 if (typeof onSuccess === 'function') onSuccess(r.event_id);
             } else {
-                alert('Cannot start event: ' + r.error);
+                jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot start event');
             }
         } catch(ex) { console.error(ex, resp); }
     });

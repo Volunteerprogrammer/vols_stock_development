@@ -352,9 +352,9 @@ class AttendanceReportForm extends \fw\view\form\Form {
                         const fd        = new Date(fromdatestr);
                         const td        = new Date(todatestr);
                         if (!(isDateValid(fromdatestr) && isDateValid(todatestr))) {
-                            alert("Not a valid date.") 
+                            jQuery.volsdialog('OKMSG', 'Not a valid date.', undefined, undefined, 'Validation');
                         } else if (fd > td) {
-                            alert("Dates in incorrect order.") 
+                            jQuery.volsdialog('OKMSG', 'Dates in incorrect order.', undefined, undefined, 'Validation');
                         } else {
                             // if OK send request
                             vols.cursor.wait();

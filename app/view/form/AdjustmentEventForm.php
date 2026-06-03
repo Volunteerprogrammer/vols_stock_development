@@ -78,7 +78,7 @@ jQuery(function() {
 
     jQuery('#se-start-btn').on('click', function() {
         var loc = jQuery('#se-location1').val();
-        if (!loc) { alert('Please select a location first.'); return; }
+        if (!loc) { jQuery.volsdialog('OKMSG', 'Please select a location first.', undefined, undefined, 'Select Location'); return; }
         jQuery('#se-start-btn').hide();
         createstockevent('adjustment', loc, null, null, null, function(event_id) {
             jQuery('#se-location-id').val(loc);

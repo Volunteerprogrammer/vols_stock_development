@@ -89,7 +89,7 @@ class StocktakeForm extends \fw\view\form\StdCRUDForm {
         $script .= "            if (jQuery(this).val() !== '') { hasEntry = true; }\n";
         $script .= "        });\n";
         $script .= "        if (!hasEntry) {\n";
-        $script .= "            alert('Please enter at least one stock count before saving.');\n";
+        $script .= "            jQuery.volsdialog('OKMSG', 'Please enter at least one stock count before saving.', undefined, undefined, 'Validation');\n";
         $script .= "            return false;\n";
         $script .= "        }\n";
         $script .= "        jQuery('#action').val('stocktake');\n";

@@ -136,9 +136,10 @@ class UserProfileForm extends \fw\view\form\StdCRUDForm {
                     return false;
                 });
                 jQuery("#resetbutton").on( "click", function(event) {
-                    if (confirm("Any changes you have made will be lost. Proceed?")) {
-                        loaddataintoform ()
-                    } 
+                    jQuery.volsdialog('YESNO', 'Any changes you have made will be lost. Proceed?',
+                        function() { loaddataintoform(); },
+                        undefined, 'Confirm Reset'
+                    );
                 });  
             });
             function phonevalidates(phoneNumber) {

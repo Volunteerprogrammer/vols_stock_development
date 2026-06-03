@@ -167,8 +167,8 @@ class DeliveryEventForm extends StockEventForm {
     jQuery('#se-start-btn').on('click', function() {
         var loc = jQuery('#se-location1').val();
         var sup = jQuery('#se-supplier').val();
-        if (!loc) { alert('Please select a receiving location.'); return; }
-        if (!sup) { alert('Please select a supplier.'); return; }
+        if (!loc) { jQuery.volsdialog('OKMSG', 'Please select a receiving location.', undefined, undefined, 'Select Location'); return; }
+        if (!sup) { jQuery.volsdialog('OKMSG', 'Please select a supplier.', undefined, undefined, 'Select Supplier'); return; }
         jQuery('#se-start-btn').hide();
         createstockevent('delivery', loc, null, sup, null, function(event_id) {
             jQuery('#se-location-id').val(loc);
