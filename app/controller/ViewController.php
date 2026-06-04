@@ -54,20 +54,25 @@ class ViewController {
         $this->rights = $this->usermanager->getuserrights();
         // lib::pr(__METHOD__,$this->user_id,$this->isadmin,$this->rights);
         // $rights is an array of "pagenumber||actioncode" owned by this user
-        if ($this->pagenum == $this->session->homepage()) { 
+        if ($this->pagenum == $this->session->homepage()) {
             if ($this->isadmin) {
                 // lib::pr($this->config["app"]);
                 $this->pagenum = $this->config["app"]["HOMEPAGE"];
             } else {
-                // this means we have to find the default page for this user, from their rights 
+                // this means we have to find the default page for this user, from their rights
                 // rights have the format "[pagenum]||[actioncode]"
-                // we go for the lowest numbered page
-                sort($this->rights);
-                // lib::pr($this->session->getuserid(),$this->rights);     
-                $first = array_key_exists(0,$this->rights) ? $this->rights[0]: 0;
-                $this->pagenum = substr($first,0,strpos($first,"||"));
+                $home_page = $this->usermanager->getuser_home_page();
+                if ($home_page && array_filter($this->rights, fn($r) => str_starts_with($r, $home_page."||"))) {
+                    $this->pagenum = $home_page;
+                } else {
+                    // fall back to lowest numbered page
+                    sort($this->rights);
+                    // lib::pr($this->session->getuserid(),$this->rights);
+                    $first = array_key_exists(0,$this->rights) ? $this->rights[0]: 0;
+                    $this->pagenum = substr($first,0,strpos($first,"||"));
+                }
             }
-            $this->session->putpagenum($this->pagenum,'' ); 
+            $this->session->putpagenum($this->pagenum,'' );
         }
         $this->orderby = "";
         $this->headsection->init($this->session,$this->pagenum,$this->targetpage);

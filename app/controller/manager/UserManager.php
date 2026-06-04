@@ -21,6 +21,7 @@ class UserManager extends \fw\controller\manager\StdManager
     protected $name = "User";
     protected $linkedobject = "role";
     protected $user_menu_number;
+    protected $user_home_page;
 
     public    function __construct(protected \apptable\UserTable $table,
                                 protected \apptable\UserRoleTable $userroletable,
@@ -51,7 +52,8 @@ class UserManager extends \fw\controller\manager\StdManager
         $success = $this->table->selectonID($id,$userfields,$numrows,false,false);
         if ($success) {
             $isadmin  = $userfields["isadmin"];
-            $this->user_menu_number = $userfields["menu_number"]; 
+            $this->user_menu_number = $userfields["menu_number"];
+            $this->user_home_page   = $userfields["home_page"] ?? "";
             $this->isadmin  = $isadmin;
             $success = $success && $this->loadlinkedobjects($id,$roles,$numrows,false);
         }
@@ -102,7 +104,7 @@ class UserManager extends \fw\controller\manager\StdManager
     public    function getallrecords(&$datafields,$orderby,&$parents,&$numrows,$withlock=false, $trace=false) { 
         // we are overloading the parent's version because we do not want to load all User fields (e.g. password)
         if ($this->trace   || $trace) { echo "Enter ".__METHOD__."<br>"; }
-        $fieldselection = "id,given_name,family_name,display_name,email,mobile,username,menu_number,receives_stock_alerts";
+        $fieldselection = "id,given_name,family_name,display_name,email,mobile,username,menu_number,receives_stock_alerts,home_page";
         $whereclause = " `isadmin` = 0 ";
         $success = $this->table->select($fieldselection,$whereclause,"","","given_name,family_name",0,$datafields,$numrows,$trace);
         $success = $this->getparents($parents,false);  // IN THE SUBCLASS
@@ -131,7 +133,8 @@ class UserManager extends \fw\controller\manager\StdManager
                         $errormessage  = $errormessage == ""?"Failed adding user to session ($loginname).":$errormessage;
                     } else {
                         $this->setrightsforuser($user["id"],$numrows,$trace);
-                        $this->user_menu_number = $user["menu_number"]; 
+                        $this->user_menu_number = $user["menu_number"];
+                        $this->user_home_page   = $user["home_page"] ?? "";
                         $userfields = $user;
                     } 
                 } else {
@@ -203,6 +206,10 @@ class UserManager extends \fw\controller\manager\StdManager
     public    function getuser_menu_number()     {
         if ($this->trace) { echo gtab()."Visit ".__METHOD__."  $this->user_menu_number<br>"; }
         return $this->user_menu_number;
+     }
+    public    function getuser_home_page()     {
+        if ($this->trace) { echo gtab()."Visit ".__METHOD__."  $this->user_home_page<br>"; }
+        return $this->user_home_page;
      }
     public    function loadlinkedobjects($user_id,&$userroles,$numrows,$trace=false){
         // load all the userrole records for this user into the userrole table obj then load the roles

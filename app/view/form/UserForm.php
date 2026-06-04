@@ -61,6 +61,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
                                 ,"mobile"=>""
                                 ,"username"=>""
                                 ,"menu_number"=>""
+                                ,"home_page"=>""
                             );
      }
     protected function addtonames($user){
@@ -79,6 +80,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
         if (!$this->singlerecord) {
             $formfields .= $this->component->buildinputrow("username",6,$this->fields["username"],'Username','username',20,64,false,0,"It is strongly advised not to change this once it is in use.");
             $formfields .= $this->component->buildinputrow("menu_number",7,$this->fields["menu_number"],'Menu Number','Menu number',3,3,false,0,"Use '0' for standard users. '1' is used for session attendance logging volunteers.");
+            $formfields .= $this->component->buildinputrow("home_page",9,$this->fields["home_page"],'Home Page','Home page',5,5,false,0,"Page number to load after login. Leave blank to use the default (lowest-numbered page from user's roles).");
             $this->component->setwidths(40, 10, 50);
             $formfields .= $this->component->rendersectionheading("Notifications");
             $formfields .= '<input type="hidden" name="receives_stock_alerts" value="0">';
@@ -88,7 +90,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
         $this->component->setwidths(40, 55, 5);
         if (!$this->singlerecord) {
             if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
-                $fn = 9;
+                $fn = 10;
 // =============================================================================================
                 $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"","lefttext"=>"","leftscript"=>""];
                 $heading = "<span id='statustextspan'>ALL</span> Roles";

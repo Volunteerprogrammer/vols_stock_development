@@ -16,6 +16,7 @@ class UserTable extends \fw\database\table\MySQLTable
 			"mobile"=>"",
 			"username"=>"",
 			"receives_stock_alerts"=>"",
+			"home_page"=>"",
 			"password"=>"",
 			"isadmin"=>"",
 			"hide_my_account"=>"",
