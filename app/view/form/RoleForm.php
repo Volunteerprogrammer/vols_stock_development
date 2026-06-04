@@ -70,7 +70,7 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
         $formfields  .= $this->component->buildinputrow("rosterindex",3,"",'Session cell position','rosterindex',5,5,true,hint:"Sets the order of the cells for different Roles in a session.");
         $fn = 4;
 // =============================================================================================
-        $pagedata = array_combine(array_column($this->pages,"id"),array_column($this->pages,"menutext"));
+        $pagedata = array_combine(array_column($this->pages,"id"),array_column($this->pages,"name"));
         $pageselector = $this->component->renderdropdown("childselector",1,$buildoptionlist,false,false,false,false,$pagedata,'21',false,'vols-form-select nondatainput','',false);
         $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show LINKED","rightdata"=>" data-state='all'","leftid"=>"","lefttext"=>"","leftscript"=>""];
         $buildoptionlist = '';

@@ -102,7 +102,7 @@ class UserManager extends \fw\controller\manager\StdManager
     public    function getallrecords(&$datafields,$orderby,&$parents,&$numrows,$withlock=false, $trace=false) { 
         // we are overloading the parent's version because we do not want to load all User fields (e.g. password)
         if ($this->trace   || $trace) { echo "Enter ".__METHOD__."<br>"; }
-        $fieldselection = "id,given_name,family_name,display_name,email,mobile,username,receives_stock_alerts";
+        $fieldselection = "id,given_name,family_name,display_name,email,mobile,username,menu_number,receives_stock_alerts";
         $whereclause = " `isadmin` = 0 ";
         $success = $this->table->select($fieldselection,$whereclause,"","","given_name,family_name",0,$datafields,$numrows,$trace);
         $success = $this->getparents($parents,false);  // IN THE SUBCLASS
