@@ -82,13 +82,13 @@ class UserForm extends \fw\view\form\StdCRUDForm {
             $this->component->setwidths(40, 10, 50);
             $formfields .= $this->component->rendersectionheading("Notifications");
             $formfields .= '<input type="hidden" name="receives_stock_alerts" value="0">';
-            $formfields .= $this->component->buildcheckboxrow("receives_stock_alerts","1","",false,7,"Receives stock alerts","Receives email alerts when stock falls below minimum levels.",false,false,false,false);
+            $formfields .= $this->component->buildcheckboxrow("receives_stock_alerts","1","",false,8,"Receives stock alerts","Receives email alerts when stock falls below minimum levels.",false,false,false,false);
         }
         $hiddencheckboxes = '';
         $this->component->setwidths(40, 55, 5);
         if (!$this->singlerecord) {
             if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
-                $fn = 8;
+                $fn = 9;
 // =============================================================================================
                 $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"","lefttext"=>"","leftscript"=>""];
                 $heading = "<span id='statustextspan'>ALL</span> Roles";
