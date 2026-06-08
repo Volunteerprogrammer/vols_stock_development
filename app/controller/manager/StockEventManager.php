@@ -95,6 +95,11 @@ class StockEventManager extends \fw\controller\manager\StdManager
 
         $movement_id = (int)$movement_id;
 
+        if ($value !== '' && $value !== null && (float)$value < 0) {
+            $errormessage = "Quantity cannot be negative.";
+            return false;
+        }
+
         // If movement_id is 0, look up whether one already exists — this handles
         // concurrent saves (explicit + blur) and the page-reload resume case.
         if ($movement_id === 0) {

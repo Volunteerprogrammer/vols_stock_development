@@ -43,7 +43,7 @@ class StocktakeManager extends \fw\controller\manager\StdManager
         $success = true;
         $saved = 0;
         foreach ($data as $key => $value) {
-            if (substr($key, 0, 4) === 'qty_' && $value !== '' && $value !== null) {
+            if (substr($key, 0, 4) === 'qty_' && $value !== '' && $value !== null && (float)$value >= 0) {
                 $stock_id = (int)substr($key, 4);
                 $unit     = $data["unit_{$stock_id}"] ?? '';
                 $unit_qty = $data["unit_qty_{$stock_id}"] ?? 1;

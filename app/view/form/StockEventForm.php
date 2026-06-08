@@ -358,9 +358,17 @@ abstract class StockEventForm extends \fw\view\form\Form {
         } else if (key === 'subtract') {
             var current = parseFloat($activeInput.val() || '0') || 0;
             var padNum  = parseFloat(padVal || '0')  || 0;
-            $activeInput.val(String(Math.max(0, Math.round((current - padNum) * 10) / 10)));
-            jQuery('#se-pad-display').val('');
-            schedulesave();
+            var result  = Math.round((current - padNum) * 10) / 10;
+            if (result < 0) {
+                jQuery('#se-pad-display').val('');
+                jQuery.volsdialog('OKMSG',
+                    'Subtracting ' + padNum + ' from ' + current + ' would give a negative quantity — please recheck the amount.',
+                    undefined, undefined, 'Cannot subtract');
+            } else {
+                $activeInput.val(String(result));
+                jQuery('#se-pad-display').val('');
+                schedulesave();
+            }
         } else if (key === '.') {
             if (padVal.indexOf('.') === -1) {
                 jQuery('#se-pad-display').val(padVal === '' ? '0.' : padVal + '.');
@@ -468,6 +476,7 @@ function savemovement($input) {
     var location_id = jQuery('#se-location-id').val();
     var event_type  = jQuery('#se-event-type').val();
     if (!stock_id || !event_id) return;
+    if (value !== '' && parseFloat(value) < 0) { $input.val('0'); value = '0'; }
     if (value === '' && !parseInt(movement_id)) return;
     doServerRequest(0, JSON.stringify({
         stock_id:    stock_id,

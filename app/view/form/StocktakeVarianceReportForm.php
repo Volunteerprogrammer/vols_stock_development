@@ -166,7 +166,7 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
              . "    var rows = [['Category','Item','Code','System Quantity','Stocktake Count','Variance']];\n"
              . "    for (var i = 0; i < varianceReportData.length; i++) {\n"
              . "        var r = varianceReportData[i];\n"
-             . "        rows.push([r.category, r.name, r.code, r.stqty, r.level, r.variance]);\n"
+             . "        rows.push([r.category, r.name, r.code, r.level, r.stqty, r.variance]);\n"
              . "    }\n"
              . "    var csv = rows.map(function(row) {\n"
              . "        return row.map(function(v) {\n"
