@@ -88,8 +88,8 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<option value="">-- Select a stocktake --</option>';
             foreach ($stocktakes as $st) {
                 $sel  = ((string)$st['id'] === (string)$event_id) ? ' selected' : '';
-                $dt   = \DateTime::createFromFormat('Y-m-d H:i:s', $st['date_created']);
-                $disp = $dt ? $dt->format('D, j M Y \a\t H:i') : htmlspecialchars($st['date_created']);
+                $dt   = \DateTime::createFromFormat('Y-m-d H:i:s', $st['date_closed']);
+                $disp = $dt ? $dt->format('D, j M Y \a\t H:i') : htmlspecialchars($st['date_closed']);
                 $formfields .= '<option value="' . (int)$st['id'] . '"' . $sel . '>'
                              . htmlspecialchars($disp) . '</option>';
             }

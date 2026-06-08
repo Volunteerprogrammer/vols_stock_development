@@ -102,12 +102,12 @@ class StockEventTable extends \fw\database\table\MySQLTable
     // Returns all closed stocktake events for a given location, newest first.
     public function getclosedstocktakesforlocation($location_id, &$results, &$numrows, $trace=false) {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
-        $query  = "SELECT se.id, se.date_created";
+        $query  = "SELECT se.id, se.date_created, se.date_closed";
         $query .= " FROM stock_event se";
         $query .= " WHERE se.event = 'stocktake'";
         $query .= " AND se.status = 'closed'";
         $query .= " AND se.location1_id = ?";
-        $query .= " ORDER BY se.date_created DESC";
+        $query .= " ORDER BY se.date_closed DESC";
         $success = $this->query_params($query, [$location_id], $results, $numrows, $trace);
         if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
         return $success;
