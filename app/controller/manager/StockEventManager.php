@@ -43,6 +43,16 @@ class StockEventManager extends \fw\controller\manager\StdManager
                 $errormessage = "A stocktake is already in progress at this location. Close or cancel it before starting a new one.";
                 return false;
             }
+        } else {
+            // For all other event types, block if a stocktake is in progress at any relevant location.
+            foreach (array_filter([$location1_id, $location2_id]) as $loc_id) {
+                $stnum = 0;
+                $this->table->hasinprogressstocktakeatlocation($loc_id, $stnum);
+                if ($stnum > 0) {
+                    $errormessage = "A stocktake is in progress at this location — other transactions cannot be recorded until it is closed.";
+                    return false;
+                }
+            }
         }
 
         $this->table->clear();
@@ -95,7 +105,8 @@ class StockEventManager extends \fw\controller\manager\StdManager
 
         $movement_id = (int)$movement_id;
 
-        if ($value !== '' && $value !== null && (float)$value < 0) {
+        // Reject negatives for all types except adjustment (where negative = reduction)
+        if ($value !== '' && $value !== null && (float)$value < 0 && $event_type !== 'adjustment') {
             $errormessage = "Quantity cannot be negative.";
             return false;
         }
@@ -120,6 +131,31 @@ class StockEventManager extends \fw\controller\manager\StdManager
             $location_id = ($event_type === 'transfer')
                 ? ($ev['location2_id'] ?? 0)
                 : ($ev['location1_id'] ?? 0);
+        }
+
+        // QOH guard: negative adjustment must not take location stock below zero
+        if ($event_type === 'adjustment' && $value !== '' && $value !== null && (float)$value < 0) {
+            $qoh = 0;
+            $this->calculateqoh($stock_id, $location_id, $qoh);
+            if ($qoh + (float)$value < 0) {
+                $errormessage = "This adjustment would take the stock below zero — current quantity is {$qoh}.";
+                return false;
+            }
+        }
+
+        // QOH guard: transfer quantity must not exceed FROM location stock
+        if ($event_type === 'transfer' && $value !== '' && $value !== null && (float)$value > 0) {
+            $ev = []; $evn = 0;
+            $this->table->selectonID($event_id, $ev, $evn);
+            $from_id = (int)($ev['location1_id'] ?? 0);
+            if ($from_id) {
+                $from_qoh = 0;
+                $this->calculateqoh($stock_id, $from_id, $from_qoh);
+                if ($from_qoh - (float)$value < 0) {
+                    $errormessage = "Transfer quantity exceeds available stock at source — current quantity is {$from_qoh}.";
+                    return false;
+                }
+            }
         }
 
         if ($movement_id > 0) {

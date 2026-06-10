@@ -2332,8 +2332,8 @@ input
     text-align: left;
     padding: 0.5rem 0.6rem;
     background-color: var(--volscolor2, #cadee2);
+    font-size: 1.6rem;
     font-weight: bold;
-    font-size: 1.2rem;
     color: var(--midgrey, #555);
     border-bottom: 2px solid #aaa;
     white-space: normal;
@@ -2371,6 +2371,33 @@ input
 .se-td-qty {
     padding: 0.4rem 0.6rem;
     text-align: left;
+}
+.se-qty-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.se-log-btn {
+    position: relative;
+    font-size: 1.1rem;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    background: #f4f4f4;
+    color: #666;
+    cursor: pointer;
+    flex-shrink: 0;
+    touch-action: manipulation;
+}
+.se-log-btn::before {
+    content: '';
+    position: absolute;
+    inset: -1rem -4rem -1rem -8rem;
+}
+.se-log-btn:active {
+    background: #ddd;
 }
 .se-qty {
     width: 7rem;

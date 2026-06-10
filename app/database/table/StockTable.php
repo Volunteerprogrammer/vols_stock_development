@@ -26,7 +26,7 @@ class StockTable extends \fw\database\table\MySQLTable
 
         $ev_rows = []; $ev_n = 0;
         $this->query(
-            "SELECT se.date_created, se.location1_id"
+            "SELECT se.date_closed, se.location1_id"
             . " FROM stock_event se"
             . " WHERE se.id = {$eid} AND se.event = 'stocktake' AND se.status = 'closed'",
             $ev_rows, $ev_n, $trace
@@ -38,7 +38,9 @@ class StockTable extends \fw\database\table\MySQLTable
         }
 
         $location_id = $ev_rows[0]['location1_id'];
-        $as_at       = date('Y-m-d H:i:s', strtotime($ev_rows[0]['date_created']) - 60);
+        // Subtract 1 second so the stocktake's own closing movements are excluded
+        // from the baseline — we want the system level immediately before close.
+        $as_at       = date('Y-m-d H:i:s', strtotime($ev_rows[0]['date_closed']) - 1);
 
         $levels = []; $levels_n = 0;
         $this->getstockwithlevels($levels, $levels_n, $location_id, $as_at, $trace);
@@ -83,9 +85,9 @@ class StockTable extends \fw\database\table\MySQLTable
     // When empty, runs the per-location calculation independently for every location
     // that has stock movements and sums the results — each location uses its own
     // last-stocktake baseline without conflating baselines across locations.
-    // $as_at: MySQL datetime 'YYYY-MM-DD HH:MM:SS'. When set, any event with
-    // date_created after this time is ignored and the stocktake search works
-    // backwards from this time rather than from now.
+    // $as_at: MySQL datetime 'YYYY-MM-DD HH:MM:SS'. When set, any event closed
+    // after this time is ignored and the stocktake search works backwards from
+    // this time rather than from now.
     // $location_id is an integer ID — cast and embedded directly across correlated subqueries.
     public function getstockwithlevels(&$results, &$numrows, $location_id='', $as_at='', $trace=false) {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
@@ -162,28 +164,28 @@ class StockTable extends \fw\database\table\MySQLTable
         $loc_st = " AND sm_st.location_id = {$lid}";
         $loc_mv = " AND {alias}.location_id = {$lid}";
 
-        // When an as_at cutoff is supplied, ignore any event created after that time.
+        // When an as_at cutoff is supplied, ignore any event closed after that time.
         // $as_at comes from date() and is safe to embed directly.
-        $as_at_st_cond = $as_at ? " AND se_x.date_created <= '{$as_at}'" : '';
+        $as_at_st_cond = $as_at ? " AND se_x.date_closed <= '{$as_at}'" : '';
 
         // Correlated subquery: id of the most recent closed stocktake for this stock item at this location
-        // (at or before as_at when supplied).
+        // (closed at or before as_at when supplied).
         $last_st_id =
             "(SELECT se_x.id"
             . " FROM stock_movement sm_x"
             . " JOIN stock_event se_x ON sm_x.stock_event_id = se_x.id"
             . " WHERE sm_x.stock_id = s.id{$loc_x}"
             . "   AND se_x.event = 'stocktake' AND se_x.status = 'closed'{$as_at_st_cond}"
-            . " ORDER BY se_x.date_created DESC LIMIT 1)";
+            . " ORDER BY se_x.date_closed DESC LIMIT 1)";
 
-        // Correlated subquery: date_created of that event.
+        // Correlated subquery: date_closed of that event.
         $last_st_date =
-            "(SELECT se_x.date_created"
+            "(SELECT se_x.date_closed"
             . " FROM stock_movement sm_x"
             . " JOIN stock_event se_x ON sm_x.stock_event_id = se_x.id"
             . " WHERE sm_x.stock_id = s.id{$loc_x}"
             . "   AND se_x.event = 'stocktake' AND se_x.status = 'closed'{$as_at_st_cond}"
-            . " ORDER BY se_x.date_created DESC LIMIT 1)";
+            . " ORDER BY se_x.date_closed DESC LIMIT 1)";
 
         // Sum of actual counts (stock_qoh) from the most recent stocktake.
         $st_qty =
@@ -207,9 +209,9 @@ class StockTable extends \fw\database\table\MySQLTable
             . str_replace('{alias}', $alias, $loc_mv)
             . "   AND se_{$alias}.event = '{$event_type}'"
             . "   AND se_{$alias}.status = 'closed'"
-            . ($as_at ? "   AND se_{$alias}.date_created <= '{$as_at}'" : "")
+            . ($as_at ? "   AND se_{$alias}.date_closed <= '{$as_at}'" : "")
             . "   AND ({$last_st_id} IS NULL"
-            . "        OR se_{$alias}.date_created > {$last_st_date}))"
+            . "        OR se_{$alias}.date_closed > {$last_st_date}))"
             . ", 0)";
 
         $deliv = $sum_since('sm_d', 'delivery');

@@ -97,15 +97,17 @@ class TransferEventForm extends StockEventForm {
             return;
         }
 
-        getinprogressevent('transfer', loc1, loc2, null, function(r) {
-            if (r.found && r.event && r.event.id) {
-                jQuery('#se-event-id').val(r.event.id);
-                jQuery('#se-location-id').val(loc2);
-                jQuery('#se-event-controls').show();
-                loadstock(r.event.id, '');
-            } else {
-                jQuery('#se-start-btn').show();
-            }
+        checknostocktakeinprogress([loc1, loc2], function() {
+            getinprogressevent('transfer', loc1, loc2, null, function(r) {
+                if (r.found && r.event && r.event.id) {
+                    jQuery('#se-event-id').val(r.event.id);
+                    jQuery('#se-location-id').val(loc2);
+                    jQuery('#se-event-controls').show();
+                    loadstock(r.event.id, '');
+                } else {
+                    jQuery('#se-start-btn').show();
+                }
+            });
         });
     }
 

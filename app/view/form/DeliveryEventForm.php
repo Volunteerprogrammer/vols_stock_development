@@ -146,15 +146,17 @@ class DeliveryEventForm extends StockEventForm {
         jQuery('#se-location-id').val('');
         if (!loc || !sup) return;
 
-        var event_id = parseInt(jQuery('#se-supplier option:selected').data('event-id') || '0');
-        if (event_id > 0) {
-            jQuery('#se-event-id').val(event_id);
-            jQuery('#se-location-id').val(loc);
-            jQuery('#se-event-controls').show();
-            loadstock(event_id, '', '');
-        } else {
-            jQuery('#se-start-btn').show();
-        }
+        checknostocktakeinprogress([loc], function() {
+            var event_id = parseInt(jQuery('#se-supplier option:selected').data('event-id') || '0');
+            if (event_id > 0) {
+                jQuery('#se-event-id').val(event_id);
+                jQuery('#se-location-id').val(loc);
+                jQuery('#se-event-controls').show();
+                loadstock(event_id, '', '');
+            } else {
+                jQuery('#se-start-btn').show();
+            }
+        });
     }
 
     jQuery(document).on('change', '#se-location1', checkdeliveryselections);

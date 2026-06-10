@@ -108,7 +108,9 @@ class MenuManager  extends \fw\controller\manager\StdManager
         if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>";lib::v($curpage,$rights,$isadmin,$menunumber); }
         $script = "";
         // $this->table->selectall($menuitems,$numrows,"menucode",false);
-        $this->table->selectononefield("menu_number",$menunumber,$menuitems,$numrows,false,false,"menucode");
+// lib::pr($rights,trim($menunumber));
+        $this->table->selectononefield("menu_number",trim($menunumber),$menuitems,$numrows,false,false,"menucode");
+// lib::pr($menuitems);
         $menucodes = $menu = $holdmenu = $holdmenuitems =  [];
         $arrow = "<span class='submenuarrow'>&lt;</span>";
         $noarrow = "<span class='submenuarrow'>&nbsp;</span>";
@@ -124,6 +126,7 @@ class MenuManager  extends \fw\controller\manager\StdManager
                 }
             }
         }
+// lib::pr($menucodes);
         $menuitems = $holdmenuitems;
         // remove any menu items that point to a submenu that contains no items
         reset($menucodes);
@@ -152,6 +155,7 @@ class MenuManager  extends \fw\controller\manager\StdManager
        // build HTML for each menu item
         $holdmenu = [];
         $this->menuitems = $menuitems;
+// lib::pr($menuitems);
         foreach ($menuitems as $key => $item) {
             $pagenum = $item["page_number"];
             // first determine which menu contains this item
@@ -190,7 +194,7 @@ class MenuManager  extends \fw\controller\manager\StdManager
             }
         }
         // now build the HTML
-// lib::pr($menu);
+
         $menuout  = <<<HTML
                         <div id='menubutton' class='clickable menu nouppercase'>
                             Menu

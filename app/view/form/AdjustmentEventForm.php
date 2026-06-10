@@ -64,15 +64,17 @@ jQuery(function() {
         jQuery('#se-location-id').val('');
         if (!loc) return;
 
-        getinprogressevent('adjustment', loc, null, null, function(r) {
-            if (r.found && r.event && r.event.id) {
-                jQuery('#se-event-id').val(r.event.id);
-                jQuery('#se-location-id').val(loc);
-                jQuery('#se-event-controls').show();
-                loadstock(r.event.id, '');
-            } else {
-                jQuery('#se-start-btn').show();
-            }
+        checknostocktakeinprogress([loc], function() {
+            getinprogressevent('adjustment', loc, null, null, function(r) {
+                if (r.found && r.event && r.event.id) {
+                    jQuery('#se-event-id').val(r.event.id);
+                    jQuery('#se-location-id').val(loc);
+                    jQuery('#se-event-controls').show();
+                    loadstock(r.event.id, '');
+                } else {
+                    jQuery('#se-start-btn').show();
+                }
+            });
         });
     });
 

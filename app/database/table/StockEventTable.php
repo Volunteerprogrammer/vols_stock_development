@@ -162,6 +162,19 @@ class StockEventTable extends \fw\database\table\MySQLTable
         return $success;
     }
 
+    // Checks whether a stocktake is currently in progress at a specific location.
+    // Used to block other event types from starting at the same location.
+    public function hasinprogressstocktakeatlocation($location_id, &$numrows, $trace=false) {
+        if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
+        $results = [];
+        $success = $this->query_params(
+            "SELECT id FROM stock_event WHERE event = 'stocktake' AND status = 'in progress' AND location1_id = ?",
+            [$location_id], $results, $numrows, $trace
+        );
+        if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
+        return $success;
+    }
+
     // Returns all globally in-progress stocktake events with location name.
     // $result is set to the first row (most recent); $numrows is the total count.
     // Callers use $numrows to distinguish "exactly one" from "multiple".

@@ -225,6 +225,40 @@ abstract class StockEventForm extends \fw\view\form\Form {
     // =========================================================================
     public function formscript(): string {
         return <<<'JS'
+var componentLog = {};
+
+// Checks whether any of the given location IDs has an in-progress stocktake.
+// Calls callback() if clear; shows a dialog and does NOT call callback if blocked.
+function checknostocktakeinprogress(locationIds, callback) {
+    var locs      = locationIds.filter(Boolean);
+    if (!locs.length) { callback(); return; }
+    var remaining = locs.length;
+    var blocked   = false;
+    locs.forEach(function(locId) {
+        getinprogressevent('stocktake', locId, null, null, function(r) {
+            if (r.found) blocked = true;
+            if (--remaining === 0) {
+                if (blocked) {
+                    jQuery.volsdialog('OKMSG',
+                        'A stocktake is currently in progress at this location. Please close the stocktake before recording other transactions.',
+                        function() { jQuery('.se-location-select').val(''); },
+                        undefined, 'Stocktake in Progress');
+                } else {
+                    callback();
+                }
+            }
+        });
+    });
+}
+
+function getbreakdown(stockId) {
+    var log = componentLog[String(stockId)];
+    if (!log || log.length === 0) return null;
+    return log.map(function(e, i) {
+        return i === 0 ? String(e.val) : e.op + ' ' + e.val;
+    }).join(' ');
+}
+
 (function() {
     var $activeInput = null;
     var saveTimer    = null;
@@ -350,16 +384,25 @@ abstract class StockEventForm extends \fw\view\form\Form {
             var padNum  = parseFloat(padVal || '0')  || 0;
             $activeInput.val(String(Math.round((current + padNum) * 10) / 10));
             jQuery('#se-pad-display').val('');
+            if (padNum !== 0) {
+                var sid = String($activeInput.data('stock-id'));
+                if (!componentLog[sid]) componentLog[sid] = current !== 0 ? [{op: null, val: current}] : [];
+                componentLog[sid].push(componentLog[sid].length === 0 ? {op: null, val: padNum} : {op: '+', val: padNum});
+            }
             schedulesave();
         } else if (key === 'replace') {
-            $activeInput.val(padVal === '' ? '' : String(parseFloat(padVal) || 0));
+            var repVal = padVal === '' ? '' : (parseFloat(padVal) || 0);
+            $activeInput.val(repVal === '' ? '' : String(repVal));
             jQuery('#se-pad-display').val('');
+            var sid = String($activeInput.data('stock-id'));
+            componentLog[sid] = (repVal !== '' && repVal !== 0) ? [{op: null, val: repVal}] : [];
             schedulesave();
         } else if (key === 'subtract') {
             var current = parseFloat($activeInput.val() || '0') || 0;
             var padNum  = parseFloat(padVal || '0')  || 0;
-            var result  = Math.round((current - padNum) * 10) / 10;
-            if (result < 0) {
+            var result     = Math.round((current - padNum) * 10) / 10;
+            var eventType  = jQuery('#se-event-type').val();
+            if (result < 0 && eventType !== 'adjustment') {
                 jQuery('#se-pad-display').val('');
                 jQuery.volsdialog('OKMSG',
                     'Subtracting ' + padNum + ' from ' + current + ' would give a negative quantity — please recheck the amount.',
@@ -367,6 +410,11 @@ abstract class StockEventForm extends \fw\view\form\Form {
             } else {
                 $activeInput.val(String(result));
                 jQuery('#se-pad-display').val('');
+                if (padNum !== 0) {
+                    var sid = String($activeInput.data('stock-id'));
+                    if (!componentLog[sid]) componentLog[sid] = current !== 0 ? [{op: null, val: current}] : [];
+                    componentLog[sid].push(componentLog[sid].length === 0 ? {op: null, val: result} : {op: '-', val: padNum});
+                }
                 schedulesave();
             }
         } else if (key === '.') {
@@ -476,7 +524,7 @@ function savemovement($input) {
     var location_id = jQuery('#se-location-id').val();
     var event_type  = jQuery('#se-event-type').val();
     if (!stock_id || !event_id) return;
-    if (value !== '' && parseFloat(value) < 0) { $input.val('0'); value = '0'; }
+    if (value !== '' && parseFloat(value) < 0 && event_type !== 'adjustment') { $input.val('0'); value = '0'; }
     if (value === '' && !parseInt(movement_id)) return;
     doServerRequest(0, JSON.stringify({
         stock_id:    stock_id,
