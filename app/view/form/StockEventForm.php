@@ -580,7 +580,7 @@ function closestockevent() {
             doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_closeevent').then(function(resp) {
                 try {
                     var r = JSON.parse(resp);
-                    if (r.success) { location.reload(); }
+                    if (r.success) { location.replace(location.pathname + location.search); }
                     else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot close event'); }
                 } catch(ex) { console.error(ex, resp); }
             });
@@ -596,7 +596,7 @@ function cancelstockevent() {
             doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_cancelevent').then(function(resp) {
                 try {
                     var r = JSON.parse(resp);
-                    if (r.success) { location.reload(); }
+                    if (r.success) { location.replace(location.pathname + location.search); }
                     else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot cancel event'); }
                 } catch(ex) { console.error(ex, resp); }
             });

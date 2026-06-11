@@ -155,13 +155,13 @@ class HTMLHead extends \fw\view\head\HTMLHead
                     jQuery.ajax({
                         type: "GET",
                         url: "{$this->ajaxurl}",
-                        datatype: "text",
+                        dataType: "text",
+                        cache: false,
                         data: {
                             id: id,
                             thedata: thedata,
                             action_id: target,
-                            ajax: 1,
-                            cache: false
+                            ajax: 1
                         },
                         statusCode: {
                             400: function() {
