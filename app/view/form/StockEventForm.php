@@ -208,7 +208,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
             if (!empty($loc['is_transfer_to_default']))   $defaults['transfer_to']   = (int)$loc['id'];
         }
         $html .= '<div class="vols-form-content se-event-page se-event-' . htmlspecialchars($this->event_type) . '"'
-               . ' data-defaults="' . htmlspecialchars(json_encode($defaults)) . '">';
+               . ' data-defaults="' . htmlspecialchars(json_encode($defaults)) . '"'
+               . ' data-pagenum="' . intval($pagenum) . '">';
         $html .= '<h2 class="vols-form-pageheading">' . htmlspecialchars($this->event_label) . '</h2>';
         $html .= $this->renderbanner();
         $html .= $this->rendereventdefinition();
@@ -573,6 +574,17 @@ function loadstock(event_id, category_id, supplier_id) {
     });
 }
 
+function reloadcurrentpage() {
+    var pn = jQuery('.se-event-page').data('pagenum');
+    if (pn) {
+        jQuery('#menuactionform input[name="p"]').val(pn);
+        jQuery('#menuactionform input[name="pp"]').val('');
+        jQuery('#menuactionform').trigger('submit');
+    } else {
+        location.reload();
+    }
+}
+
 function closestockevent() {
     jQuery.volsdialog('YESNO', 'Close this event? This will finalise all entries.',
         function() {
@@ -580,7 +592,7 @@ function closestockevent() {
             doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_closeevent').then(function(resp) {
                 try {
                     var r = JSON.parse(resp);
-                    if (r.success) { location.replace(location.pathname + location.search); }
+                    if (r.success) { reloadcurrentpage(); }
                     else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot close event'); }
                 } catch(ex) { console.error(ex, resp); }
             });
@@ -596,7 +608,7 @@ function cancelstockevent() {
             doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_cancelevent').then(function(resp) {
                 try {
                     var r = JSON.parse(resp);
-                    if (r.success) { location.replace(location.pathname + location.search); }
+                    if (r.success) { reloadcurrentpage(); }
                     else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot cancel event'); }
                 } catch(ex) { console.error(ex, resp); }
             });

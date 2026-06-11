@@ -87,7 +87,7 @@ function closestockevent() {
         doServerRequest(0, JSON.stringify({ event_id: event_id, create_issue: createIssue }), 'stockevent_closeevent').then(function(resp) {
             try {
                 var r = JSON.parse(resp);
-                if (r.success) { location.reload(); }
+                if (r.success) { reloadcurrentpage(); }
                 else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot close stocktake'); }
             } catch(ex) { console.error(ex, resp); }
         });
