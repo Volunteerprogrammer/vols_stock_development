@@ -127,12 +127,12 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $event_id = (int)$event_id;
         $loc      = (int)$location_id;
 
-        $st_date = "(SELECT se_st2.date_created"
+        $st_date = "(SELECT se_st2.date_closed"
                  . " FROM stock_movement sm_st2"
                  . " JOIN stock_event se_st2 ON sm_st2.stock_event_id = se_st2.id"
                  . " WHERE sm_st2.stock_id = s.id AND sm_st2.location_id = {$loc}"
                  . "   AND se_st2.event = 'stocktake' AND se_st2.status = 'closed'"
-                 . " ORDER BY se_st2.date_created DESC LIMIT 1)";
+                 . " ORDER BY se_st2.date_closed DESC LIMIT 1)";
 
         $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
         $query .= " sc.Name as category_name,";
@@ -143,14 +143,14 @@ class StockMovementTable extends \fw\database\table\MySQLTable
                 . "   JOIN stock_event se_st ON sm_st.stock_event_id = se_st.id"
                 . "   WHERE sm_st.stock_id = s.id AND sm_st.location_id = {$loc}"
                 . "     AND se_st.event = 'stocktake' AND se_st.status = 'closed'"
-                . "   ORDER BY se_st.date_created DESC LIMIT 1), 0)"
+                . "   ORDER BY se_st.date_closed DESC LIMIT 1), 0)"
                 . " + COALESCE((SELECT SUM(CASE se2.event WHEN 'issue' THEN -sm2.qty ELSE sm2.qty END)"
                 . "   FROM stock_movement sm2"
                 . "   JOIN stock_event se2 ON sm2.stock_event_id = se2.id"
                 . "   WHERE sm2.stock_id = s.id AND sm2.location_id = {$loc}"
                 . "     AND se2.event IN ('delivery','transfer','adjustment','issue')"
                 . "     AND se2.status = 'closed'"
-                . "     AND se2.date_created > COALESCE({$st_date}, '1970-01-01 00:00:00')"
+                . "     AND se2.date_closed > COALESCE({$st_date}, '1970-01-01 00:00:00')"
                 . "   ), 0)"
                 . " ) AS calculated_qoh";
         $query .= " FROM stock s";
@@ -183,12 +183,12 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $event_id = (int)$event_id;
         $to_loc   = (int)$to_loc_id;
 
-        $st_date = "(SELECT se_st2.date_created"
+        $st_date = "(SELECT se_st2.date_closed"
                  . " FROM stock_movement sm_st2"
                  . " JOIN stock_event se_st2 ON sm_st2.stock_event_id = se_st2.id"
                  . " WHERE sm_st2.stock_id = s.id AND sm_st2.location_id = {$to_loc}"
                  . "   AND se_st2.event = 'stocktake' AND se_st2.status = 'closed'"
-                 . " ORDER BY se_st2.date_created DESC LIMIT 1)";
+                 . " ORDER BY se_st2.date_closed DESC LIMIT 1)";
 
         $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
         $query .= " sc.Name as category_name,";
@@ -199,14 +199,14 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $query .= "   JOIN stock_event se_st ON sm_st.stock_event_id = se_st.id";
         $query .= "   WHERE sm_st.stock_id = s.id AND sm_st.location_id = {$to_loc}";
         $query .= "     AND se_st.event = 'stocktake' AND se_st.status = 'closed'";
-        $query .= "   ORDER BY se_st.date_created DESC LIMIT 1), 0)";
+        $query .= "   ORDER BY se_st.date_closed DESC LIMIT 1), 0)";
         $query .= " + COALESCE((SELECT SUM(CASE se2.event WHEN 'issue' THEN -sm2.qty ELSE sm2.qty END)";
         $query .= "   FROM stock_movement sm2";
         $query .= "   JOIN stock_event se2 ON sm2.stock_event_id = se2.id";
         $query .= "   WHERE sm2.stock_id = s.id AND sm2.location_id = {$to_loc}";
         $query .= "     AND se2.event IN ('delivery','transfer','adjustment','issue')";
         $query .= "     AND se2.status = 'closed'";
-        $query .= "     AND se2.date_created > COALESCE({$st_date}, '1970-01-01 00:00:00')";
+        $query .= "     AND se2.date_closed > COALESCE({$st_date}, '1970-01-01 00:00:00')";
         $query .= "   ), 0)";
         $query .= " ) AS current_qoh";
         $query .= " FROM stock s";
@@ -245,14 +245,14 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $st_subq .= "       AND se_st.status = 'closed'";
         $st_subq .= "     ORDER BY se_st.date_created DESC LIMIT 1), 0) AS initial_qty,";
         $st_subq .= "  COALESCE(";
-        $st_subq .= "    (SELECT se_st.date_created";
+        $st_subq .= "    (SELECT se_st.date_closed";
         $st_subq .= "     FROM stock_movement sm_st";
         $st_subq .= "     JOIN stock_event se_st ON sm_st.stock_event_id = se_st.id";
         $st_subq .= "     WHERE sm_st.stock_id = {$sid}";
         $st_subq .= "       AND sm_st.location_id = {$lid}";
         $st_subq .= "       AND se_st.event = 'stocktake'";
         $st_subq .= "       AND se_st.status = 'closed'";
-        $st_subq .= "     ORDER BY se_st.date_created DESC LIMIT 1),";
+        $st_subq .= "     ORDER BY se_st.date_closed DESC LIMIT 1),";
         $st_subq .= "    '1970-01-01 00:00:00') AS st_date";
 
         $sum = fn($event_type) =>
@@ -264,7 +264,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
             . "   AND sm.location_id = {$lid}"
             . "   AND se.event = '{$event_type}'"
             . "   AND se.status = 'closed'"
-            . "   AND se.date_created > st.st_date)"
+            . "   AND se.date_closed > st.st_date)"
             . ", 0)";
 
         $query  = "SELECT";
