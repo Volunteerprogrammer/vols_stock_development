@@ -2400,6 +2400,9 @@ input
 .se-log-btn:active {
     background: #ddd;
 }
+#se-event-controls.se-readonly .se-log-btn {
+    display: none;
+}
 .se-qty {
     width: 7rem;
     text-align: right;
