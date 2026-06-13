@@ -159,7 +159,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
                          + '</div>';
                 for (var i = 0; i < movements.length; i++) {
                     var m = movements[i];
-                    var d = new Date(m.movement_date.replace(' ', 'T'));
+                    var d = new Date(m.event_date.replace(' ', 'T'));
                     var hh = String(d.getHours()).padStart(2, '0');
                     var mm = String(d.getMinutes()).padStart(2, '0');
                     var dateStr = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ' ' + hh + ':' + mm;

@@ -299,7 +299,8 @@ class StockMovementTable extends \fw\database\table\MySQLTable
     public function getmovementsforitem($stock_id, &$results, &$numrows, $trace=false) {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
         $sid    = (int)$stock_id;
-        $query  = "SELECT sm.id, sm.qty, sm.stock_qoh, sm.movement_date,";
+        $query  = "SELECT sm.id, sm.qty, sm.stock_qoh,";
+        $query .= " COALESCE(se.date_closed, sm.movement_date) as event_date,";
         $query .= " COALESCE(se.event, 'stocktake') as event,";
         $query .= " COALESCE(sm.location_id, 0) as location_id,";
         $query .= " sl.name as location_name";
@@ -308,7 +309,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $query .= " LEFT JOIN stock_location sl ON sm.location_id = sl.id";
         $query .= " WHERE sm.stock_id = {$sid}";
         $query .= " AND (se.status = 'closed' OR sm.stock_event_id IS NULL)";
-        $query .= " ORDER BY sm.movement_date DESC";
+        $query .= " ORDER BY COALESCE(se.date_closed, sm.movement_date) DESC";
         $success = $this->query($query, $results, $numrows, $trace);
         if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
         return $success;
