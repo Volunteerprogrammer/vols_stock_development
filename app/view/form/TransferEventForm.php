@@ -45,8 +45,8 @@ class TransferEventForm extends StockEventForm {
         $target_qty  = $has_target ? (int)$row['target_qty'] : null;
 
         if ($has_target) {
-            $required  = $target_qty - $current_qoh;
-            $req_class = $required > 0 ? 'se-required-pos' : ($required < 0 ? 'se-required-neg' : 'se-required-zero');
+            $required  = max(0, $target_qty - $current_qoh);
+            $req_class = $required > 0 ? 'se-required-pos' : 'se-required-zero';
             $req_html  = '<span class="se-required ' . $req_class . '">' . $required . '</span>';
             $tgt_html  = $target_qty;
         } else {
