@@ -27,7 +27,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
         $query  = "SELECT sm.id, sm.stock_id, sm.qty, sm.unit, sm.unit_qty,";
         $query .= " sm.movement_date, s.Name as stock_name,";
-        $query .= " se.event, se.status, se.date_created as event_date";
+        $query .= " se.event, se.status, se.date_closed as event_date";
         $query .= " FROM stock_movement sm";
         $query .= " JOIN stock s ON sm.stock_id = s.id";
         $query .= " JOIN stock_event se ON sm.stock_event_id = se.id";
@@ -243,7 +243,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $st_subq .= "       AND sm_st.location_id = {$lid}";
         $st_subq .= "       AND se_st.event = 'stocktake'";
         $st_subq .= "       AND se_st.status = 'closed'";
-        $st_subq .= "     ORDER BY se_st.date_created DESC LIMIT 1), 0) AS initial_qty,";
+        $st_subq .= "     ORDER BY se_st.date_closed DESC LIMIT 1), 0) AS initial_qty,";
         $st_subq .= "  COALESCE(";
         $st_subq .= "    (SELECT se_st.date_closed";
         $st_subq .= "     FROM stock_movement sm_st";

@@ -37,7 +37,7 @@ class DeliveryForm extends \fw\view\form\StdCRUDForm {
     }
 
     protected function addtonames($row) {
-        $date = substr($row["movement_date"] ?? '', 0, 10);
+        $date = substr($row["event_date"] ?? $row["movement_date"] ?? '', 0, 10);
         $this->names[$row["id"]] = "{$date} – {$row['stock_name']} ({$row['qty']} {$row['unit']})";
     }
 

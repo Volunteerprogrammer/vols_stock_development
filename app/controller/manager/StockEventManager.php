@@ -349,7 +349,7 @@ class StockEventManager extends \fw\controller\manager\StdManager
         $this->table->setfield("location1_id", $event['location1_id']);
         $this->table->setfield("date_created", $issue_date);
         $this->table->setfield("status",       "closed");
-        $this->table->setfield("date_closed",  date('Y-m-d H:i:s'));
+        $this->table->setfield("date_closed",  $issue_date);
         if (!$this->table->insert(true, $new_event_id, false, $errormessage)) {
             return false;
         }

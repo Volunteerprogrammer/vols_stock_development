@@ -17,7 +17,7 @@ class StockTable extends \fw\database\table\MySQLTable
     }
 
     // Returns variance data for a single closed stocktake event.
-    // variance = stocktake_qty - (stock level as at event.date_created - 1 minute).
+    // variance = stocktake_qty - (stock level as at event.date_closed - 1 second).
     // Reusable: can be called from any manager that needs variance figures.
     // $event_id is an integer ID — cast and embedded directly across both queries.
     public function getstocktakevariance($event_id, &$results, &$numrows, $trace=false) {

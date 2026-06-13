@@ -29,7 +29,7 @@ class DamagedStockManager extends \fw\controller\manager\StdManager
 
     protected function makenames($trace=false) {
         foreach ($this->alldata as $record) {
-            $date = substr($record["movement_date"] ?? '', 0, 10);
+            $date = substr($record["event_date"] ?? $record["movement_date"] ?? '', 0, 10);
             $this->names[$record["id"]] = "{$date} – {$record['stock_name']} ({$record['qty']} {$record['unit']})";
         }
     }
