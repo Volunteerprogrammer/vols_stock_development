@@ -118,6 +118,60 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         return $success;
     }
 
+    // Returns all stock items for a stocktake event with a calculated_qoh column.
+    // calculated_qoh = QOH from the most recent prior closed stocktake
+    //                + all closed delivery/transfer/adjustment/issue movements since.
+    // This lets the caller warn when a counted value exceeds the system's expectation.
+    public function getstockforstocktake($event_id, $category_id, $location_id, &$results, &$numrows, $trace=false) {
+        if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
+        $event_id = (int)$event_id;
+        $loc      = (int)$location_id;
+
+        $st_date = "(SELECT se_st2.date_created"
+                 . " FROM stock_movement sm_st2"
+                 . " JOIN stock_event se_st2 ON sm_st2.stock_event_id = se_st2.id"
+                 . " WHERE sm_st2.stock_id = s.id AND sm_st2.location_id = {$loc}"
+                 . "   AND se_st2.event = 'stocktake' AND se_st2.status = 'closed'"
+                 . " ORDER BY se_st2.date_created DESC LIMIT 1)";
+
+        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
+        $query .= " sc.Name as category_name,";
+        $query .= " sm.id as movement_id, sm.qty, sm.stock_qoh, sm.location_id,";
+        $query .= " scl.position as category_position, sil.stocktake_position,";
+        $query .= " (COALESCE((SELECT sm_st.stock_qoh"
+                . "   FROM stock_movement sm_st"
+                . "   JOIN stock_event se_st ON sm_st.stock_event_id = se_st.id"
+                . "   WHERE sm_st.stock_id = s.id AND sm_st.location_id = {$loc}"
+                . "     AND se_st.event = 'stocktake' AND se_st.status = 'closed'"
+                . "   ORDER BY se_st.date_created DESC LIMIT 1), 0)"
+                . " + COALESCE((SELECT SUM(CASE se2.event WHEN 'issue' THEN -sm2.qty ELSE sm2.qty END)"
+                . "   FROM stock_movement sm2"
+                . "   JOIN stock_event se2 ON sm2.stock_event_id = se2.id"
+                . "   WHERE sm2.stock_id = s.id AND sm2.location_id = {$loc}"
+                . "     AND se2.event IN ('delivery','transfer','adjustment','issue')"
+                . "     AND se2.status = 'closed'"
+                . "     AND se2.date_created > COALESCE({$st_date}, '1970-01-01 00:00:00')"
+                . "   ), 0)"
+                . " ) AS calculated_qoh";
+        $query .= " FROM stock s";
+        $query .= " LEFT JOIN stock_category sc ON s.category_id = sc.id";
+        $query .= " LEFT JOIN stock_movement sm ON sm.stock_id = s.id AND sm.stock_event_id = {$event_id}";
+        $query .= " LEFT JOIN stock_category_location scl"
+                . "   ON scl.stock_category_id = s.category_id AND scl.stock_location_id = {$loc}";
+        $query .= " LEFT JOIN stock_item_location sil"
+                . "   ON sil.stock_id = s.id AND sil.stock_location_id = {$loc}";
+        $params = [];
+        if (!empty($category_id)) {
+            $query .= " WHERE s.category_id = ?";
+            $params[] = $category_id;
+        }
+        $query .= " ORDER BY CASE WHEN scl.position IS NULL THEN 1 ELSE 0 END, scl.position, sc.Name,"
+                . " CASE WHEN sil.stocktake_position IS NULL THEN 1 ELSE 0 END, sil.stocktake_position, s.Name";
+        $success = $this->query_params($query, $params, $results, $numrows, $trace);
+        if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
+        return $success;
+    }
+
     // Returns all stock items for a transfer event.
     // LEFT JOINs stock_item_location for the TO location to get target_qty.
     // Includes inline correlated QOH for the TO location as current_qoh.

@@ -37,7 +37,9 @@ class StocktakeEventForm extends StockEventForm {
         // stock_qoh is the actual count recorded; null means not yet counted → show empty input
         $value       = ($row['stock_qoh'] !== null && $row['stock_qoh'] !== '') ? (int)$row['stock_qoh'] : '';
 
-        return '<tr class="se-stock-row" data-stock-id="' . $stock_id . '">'
+        $expected = isset($row['calculated_qoh']) ? (int)$row['calculated_qoh'] : '';
+        return '<tr class="se-stock-row" data-stock-id="' . $stock_id . '"'
+             . ($expected !== '' ? ' data-expected="' . $expected . '"' : '') . '>'
              . '<td class="se-td-category">' . $cat_name   . '</td>'
              . '<td class="se-td-name">'     . $stock_name . '</td>'
              . '<td class="se-td-qty">'
@@ -59,6 +61,25 @@ class StocktakeEventForm extends StockEventForm {
         $extra = <<<'JS'
 
 // ---- StocktakeEventForm-specific JS ----
+
+// Warn when the count entered exceeds the system's expected QOH for that item.
+(function() {
+    var _baseSave = savemovement;
+    savemovement = function($input) {
+        var counted  = parseFloat($input.val());
+        var $row     = $input.closest('tr');
+        var expected = $row.data('expected');
+        _baseSave($input);
+        if (!isNaN(counted) && expected !== undefined && counted > expected) {
+            var name = $row.find('.se-td-name').text();
+            setTimeout(function() {
+                jQuery.volsdialog('OKMSG',
+                    'Count of ' + counted + ' is higher than expected (' + expected + ').',
+                    undefined, undefined, name);
+            }, 100);
+        }
+    };
+})();
 
 // Override the base closestockevent() so that for uncontrolled-issues locations
 // the operator is asked whether this is an end-of-session stocktake before the

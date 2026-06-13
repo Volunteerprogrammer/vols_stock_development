@@ -447,10 +447,18 @@ class StockEventManager extends \fw\controller\manager\StdManager
     public function getstockforevent($event_id, $category_id, &$results, &$numrows, $supplier_id='') {
         $ev = []; $evn = 0;
         $this->table->selectonID($event_id, $ev, $evn);
-        if (($ev['event'] ?? '') === 'transfer') {
+        $event_type = $ev['event'] ?? '';
+        if ($event_type === 'transfer') {
             return $this->movementtable->getstockfortransfer(
                 $event_id, $category_id,
                 $ev['location1_id'] ?? 0, $ev['location2_id'] ?? 0,
+                $results, $numrows, $this->trace
+            );
+        }
+        if ($event_type === 'stocktake') {
+            return $this->movementtable->getstockforstocktake(
+                $event_id, $category_id,
+                $ev['location1_id'] ?? 0,
                 $results, $numrows, $this->trace
             );
         }
