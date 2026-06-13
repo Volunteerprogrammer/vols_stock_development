@@ -2330,6 +2330,9 @@ input
     font-size: 1.4rem;
 }
 .se-stock-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     text-align: left;
     padding: 0.5rem 0.6rem;
     background-color: var(--volscolor2, #cadee2);
