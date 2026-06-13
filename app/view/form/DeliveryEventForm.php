@@ -92,11 +92,14 @@ class DeliveryEventForm extends StockEventForm {
              . '<td class="se-td-category">' . $cat_name   . '</td>'
              . '<td class="se-td-name">'     . $stock_name . '</td>'
              . '<td class="se-td-qty">'
+             . '<div class="se-qty-wrap">'
              . '<input type="number" min="0" step="1" class="se-qty"'
              . ' data-stock-id="'    . $stock_id    . '"'
              . ' data-movement-id="' . $movement_id . '"'
              . ' value="'            . $value       . '"'
              . ' inputmode="numeric">'
+             . '<button type="button" class="se-log-btn" data-stock-id="' . $stock_id . '" data-stock-name="' . $stock_name . '" tabindex="-1" title="Show entry breakdown">?</button>'
+             . '</div>'
              . '</td>'
              . '</tr>';
     }

@@ -60,22 +60,6 @@ class StocktakeEventForm extends StockEventForm {
 
 // ---- StocktakeEventForm-specific JS ----
 
-jQuery(document).on('click', '.se-log-btn', function(e) {
-    e.stopPropagation();
-    var $btn    = jQuery(this);
-    var bd      = getbreakdown($btn.data('stock-id'));
-    var message;
-    if (bd) {
-        message = bd;
-    } else {
-        var opening = $btn.closest('tr').find('.se-qty').val();
-        message = (opening !== '' && parseFloat(opening) !== 0)
-            ? 'Opening value: ' + opening + '. No changes this session.'
-            : 'No breakdown recorded yet — use + and − to build up the count.';
-    }
-    jQuery.volsdialog('OKMSG', message, undefined, undefined, $btn.data('stock-name'));
-});
-
 // Override the base closestockevent() so that for uncontrolled-issues locations
 // the operator is asked whether this is an end-of-session stocktake before the
 // variance issues event is created.

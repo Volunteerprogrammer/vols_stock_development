@@ -552,6 +552,23 @@ function getbreakdown(stockId) {
         }
     });
 
+    // Keypad entry breakdown: show accumulated components for the active stock item.
+    jQuery(document).on('click', '.se-log-btn', function(e) {
+        e.stopPropagation();
+        var $btn    = jQuery(this);
+        var bd      = getbreakdown($btn.data('stock-id'));
+        var message;
+        if (bd) {
+            message = bd;
+        } else {
+            var opening = $btn.closest('tr').find('.se-qty').val();
+            message = (opening !== '' && parseFloat(opening) !== 0)
+                ? 'Opening value: ' + opening + '. No changes this session.'
+                : 'No breakdown recorded yet — use + and − to build up the count.';
+        }
+        jQuery.volsdialog('OKMSG', message, undefined, undefined, $btn.data('stock-name'));
+    });
+
     // Previous event selected: load stock in read-only mode; deselect to clear.
     jQuery(document).on('change', '#se-prev-event', function() {
         var event_id = jQuery(this).val();
