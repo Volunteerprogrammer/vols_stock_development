@@ -175,6 +175,19 @@ class StockEventTable extends \fw\database\table\MySQLTable
         return $success;
     }
 
+    // Returns closed events of a given type matching location(s) and optional supplier, newest first.
+    public function getpreviousevents($event_type, $location1_id, $location2_id, $supplier_id, &$results, &$numrows, $trace=false) {
+        if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
+        $sql    = "SELECT id, date_closed FROM stock_event WHERE event = ? AND status = 'closed' AND location1_id = ?";
+        $params = [$event_type, (int)$location1_id];
+        if ($location2_id) { $sql .= " AND location2_id = ?"; $params[] = (int)$location2_id; }
+        if ($supplier_id)  { $sql .= " AND supplier_id = ?";  $params[] = (int)$supplier_id;  }
+        $sql .= " ORDER BY date_closed DESC LIMIT 30";
+        $success = $this->query_params($sql, $params, $results, $numrows, $trace);
+        if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
+        return $success;
+    }
+
     // Returns all globally in-progress stocktake events with location name.
     // $result is set to the first row (most recent); $numrows is the total count.
     // Callers use $numrows to distinguish "exactly one" from "multiple".

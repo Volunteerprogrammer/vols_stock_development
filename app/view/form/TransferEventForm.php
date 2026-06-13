@@ -17,8 +17,8 @@ class TransferEventForm extends StockEventForm {
         $html .= '</div>';
         $html .= '<div class="se-event-def-row">';
         $html .= $this->renderlocationselect('se-location2', 'To location', 'se-location-select');
-        $html .= '<button type="button" id="se-start-btn" class="vols-button" style="display:none">Start Transfer</button>';
         $html .= '</div>';
+        $html .= $this->renderpreviouseventsrow();
         $html .= '</div>';
         return $html;
     }
@@ -82,10 +82,12 @@ class TransferEventForm extends StockEventForm {
         clearTimeout(sameLocTimer);
         var loc1 = jQuery('#se-location1').val();
         var loc2 = jQuery('#se-location2').val();
-        jQuery('#se-start-btn').hide();
-        jQuery('#se-event-controls').hide();
+        jQuery('#se-event-controls').hide().removeClass('se-readonly');
         jQuery('#se-event-id').val('');
         jQuery('#se-location-id').val('');
+        jQuery('#se-prev-event-row').hide();
+        jQuery('#se-prev-event').val('');
+        setviewmode(false);
         if (!loc1 || !loc2) return;
         if (loc1 === loc2) {
             sameLocTimer = setTimeout(function() {
@@ -105,7 +107,8 @@ class TransferEventForm extends StockEventForm {
                     jQuery('#se-event-controls').show();
                     loadstock(r.event.id, '');
                 } else {
-                    jQuery('#se-start-btn').show();
+                    jQuery('#se-prev-event-row').show();
+                    loadpreviousevents('transfer', loc1, loc2, null);
                 }
             });
         });
@@ -113,7 +116,7 @@ class TransferEventForm extends StockEventForm {
 
     jQuery(document).on('change', '#se-location1, #se-location2', checktransferselections);
 
-    jQuery('#se-start-btn').on('click', function() {
+    jQuery(document).on('click', '#se-start-btn', function() {
         clearTimeout(sameLocTimer);
         var loc1 = jQuery('#se-location1').val();
         var loc2 = jQuery('#se-location2').val();
@@ -125,7 +128,9 @@ class TransferEventForm extends StockEventForm {
             return;
         }
 
-        jQuery('#se-start-btn').hide();
+        jQuery('#se-prev-event-row').hide();
+        jQuery('#se-prev-event').val('');
+        setviewmode(false);
         createstockevent('transfer', loc1, loc2, null, null, function(event_id) {
             jQuery('#se-location-id').val(loc2);
             loadstock(event_id, '');

@@ -17,8 +17,8 @@ class DeliveryEventForm extends StockEventForm {
         $html .= '</div>';
         $html .= '<div class="se-event-def-row">';
         $html .= $this->rendersupplierselect('se-supplier', 'Supplier');
-        $html .= '<button type="button" id="se-start-btn" class="vols-button" style="display:none">Start Delivery</button>';
         $html .= '</div>';
+        $html .= $this->renderpreviouseventsrow();
         $html .= '</div>';
         return $html;
     }
@@ -140,10 +140,12 @@ class DeliveryEventForm extends StockEventForm {
     function checkdeliveryselections() {
         var loc = jQuery('#se-location1').val();
         var sup = jQuery('#se-supplier').val();
-        jQuery('#se-start-btn').hide();
-        jQuery('#se-event-controls').hide();
+        jQuery('#se-event-controls').hide().removeClass('se-readonly');
         jQuery('#se-event-id').val('');
         jQuery('#se-location-id').val('');
+        jQuery('#se-prev-event-row').hide();
+        jQuery('#se-prev-event').val('');
+        setviewmode(false);
         if (!loc || !sup) return;
 
         checknostocktakeinprogress([loc], function() {
@@ -154,7 +156,8 @@ class DeliveryEventForm extends StockEventForm {
                 jQuery('#se-event-controls').show();
                 loadstock(event_id, '', '');
             } else {
-                jQuery('#se-start-btn').show();
+                jQuery('#se-prev-event-row').show();
+                loadpreviousevents('delivery', loc, null, sup);
             }
         });
     }
@@ -166,12 +169,14 @@ class DeliveryEventForm extends StockEventForm {
         checkdeliveryselections();
     });
 
-    jQuery('#se-start-btn').on('click', function() {
+    jQuery(document).on('click', '#se-start-btn', function() {
         var loc = jQuery('#se-location1').val();
         var sup = jQuery('#se-supplier').val();
         if (!loc) { jQuery.volsdialog('OKMSG', 'Please select a receiving location.', undefined, undefined, 'Select Location'); return; }
         if (!sup) { jQuery.volsdialog('OKMSG', 'Please select a supplier.', undefined, undefined, 'Select Supplier'); return; }
-        jQuery('#se-start-btn').hide();
+        jQuery('#se-prev-event-row').hide();
+        jQuery('#se-prev-event').val('');
+        setviewmode(false);
         createstockevent('delivery', loc, null, sup, null, function(event_id) {
             jQuery('#se-location-id').val(loc);
             loadstock(event_id, '', '');

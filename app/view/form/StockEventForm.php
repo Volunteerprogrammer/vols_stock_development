@@ -158,6 +158,18 @@ abstract class StockEventForm extends \fw\view\form\Form {
         return $html;
     }
 
+    // Returns a row containing the previous-events dropdown and the "New ..." button.
+    // Subclasses call this at the end of rendereventdefinition().
+    protected function renderpreviouseventsrow(): string {
+        $html  = '<div id="se-prev-event-row" class="se-event-def-row" style="display:none">';
+        $html .= '<label for="se-prev-event">Previous</label>';
+        $html .= '<select id="se-prev-event"><option value="">-- None --</option></select>';
+        $html .= '<button type="button" id="se-start-btn" class="vols-button">New '
+               . htmlspecialchars($this->event_label) . '</button>';
+        $html .= '</div>';
+        return $html;
+    }
+
     // Override in subclass to inject extra fields into se-event-controls (e.g. total_weight).
     protected function renderextraeventfields(): string { return ''; }
 
@@ -209,7 +221,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
         }
         $html .= '<div class="vols-form-content se-event-page se-event-' . htmlspecialchars($this->event_type) . '"'
                . ' data-defaults="' . htmlspecialchars(json_encode($defaults)) . '"'
-               . ' data-pagenum="' . intval($pagenum) . '">';
+               . ' data-pagenum="' . intval($pagenum) . '"'
+               . ' data-event-type="' . htmlspecialchars($this->event_type) . '">';
         $html .= '<h2 class="vols-form-pageheading">' . htmlspecialchars($this->event_label) . '</h2>';
         $html .= $this->renderbanner();
         $html .= $this->rendereventdefinition();
@@ -227,6 +240,36 @@ abstract class StockEventForm extends \fw\view\form\Form {
     public function formscript(): string {
         return <<<'JS'
 var componentLog = {};
+
+function formatprevdate(s) {
+    var p = s.split(/[- :]/);
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return p[2]+' '+m[parseInt(p[1],10)-1]+' '+p[0]+' '+p[3]+':'+p[4];
+}
+
+function loadpreviousevents(event_type, loc1, loc2, sup) {
+    doServerRequest(0, JSON.stringify({
+        event_type:   event_type,
+        location1_id: loc1 || '',
+        location2_id: loc2 || '',
+        supplier_id:  sup  || ''
+    }), 'stockevent_getpreviousevents').then(function(resp) {
+        try {
+            var r = JSON.parse(resp);
+            var $sel = jQuery('#se-prev-event');
+            $sel.html('<option value="">-- None --</option>');
+            (r.events || []).forEach(function(ev) {
+                $sel.append(jQuery('<option>').val(ev.id).text(formatprevdate(ev.date_closed)));
+            });
+        } catch(ex) { console.error('loadpreviousevents', ex, resp); }
+    });
+}
+
+function setviewmode(on) {
+    jQuery('#se-event-controls').toggleClass('se-readonly', on);
+    jQuery('#se-digitpad').toggle(!on);
+    jQuery('#se-action-buttons').toggle(!on);
+}
 
 // Checks whether any of the given location IDs has an in-progress stocktake.
 // Calls callback() if clear; shows a dialog and does NOT call callback if blocked.
@@ -508,6 +551,21 @@ function getbreakdown(stockId) {
         }
     });
 
+    // Previous event selected: load stock in read-only mode; deselect to clear.
+    jQuery(document).on('change', '#se-prev-event', function() {
+        var event_id = jQuery(this).val();
+        if (!event_id) {
+            jQuery('#se-event-controls').hide().removeClass('se-readonly');
+            jQuery('#se-event-id').val('');
+            setviewmode(false);
+            return;
+        }
+        jQuery('#se-event-id').val(event_id);
+        jQuery('#se-event-controls').show();
+        setviewmode(true);
+        loadstock(event_id, '', '');
+    });
+
     // Save the active input when the user leaves the page (back button, menu nav, tab switch).
     window.addEventListener('pagehide', function() {
         if ($activeInput) {
@@ -518,6 +576,7 @@ function getbreakdown(stockId) {
 })();
 
 function savemovement($input) {
+    if (jQuery('#se-event-controls').hasClass('se-readonly')) return;
     var stock_id    = $input.data('stock-id');
     var movement_id = $input.data('movement-id') || 0;
     var value       = $input.val();

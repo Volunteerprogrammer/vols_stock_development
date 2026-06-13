@@ -151,6 +151,18 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $success = $this->manager->getinprogressevent($event_type, $location1_id, $location2_id, $supplier_id, $result, $numrows);
                             $output = json_encode(['success' => $success, 'found' => $numrows > 0, 'event' => $result]);
                             break;
+                        case "stockevent_getpreviousevents":
+                            $this->manager = $this->managercollection->StockEventManager();
+                            $this->manager->init($this->session);
+                            $d          = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $event_type = $d["event_type"]   ?? '';
+                            $location1  = (int)($d["location1_id"] ?? 0);
+                            $location2  = ((int)($d["location2_id"] ?? 0)) ?: null;
+                            $supplier   = ((int)($d["supplier_id"]  ?? 0)) ?: null;
+                            $results    = []; $numrows = 0;
+                            $this->manager->getpreviousevents($event_type, $location1, $location2, $supplier, $results, $numrows);
+                            $output = json_encode(['events' => $results]);
+                            break;
                         case "stockevent_savemovement":
                             $this->manager = $this->managercollection->StockEventManager();
                             $this->manager->init($this->session);

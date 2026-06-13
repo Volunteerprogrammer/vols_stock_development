@@ -383,6 +383,12 @@ class StockEventManager extends \fw\controller\manager\StdManager
         return $this->table->getanyinprogressstocktake($result, $numrows, $this->trace);
     }
 
+    // Returns previous closed events matching the given type and criteria.
+    public function getpreviousevents($event_type, $location1_id, $location2_id, $supplier_id, &$results, &$numrows) {
+        $results = []; $numrows = 0;
+        return $this->table->getpreviousevents($event_type, $location1_id, $location2_id, $supplier_id, $results, $numrows, $this->trace);
+    }
+
     // Returns all in-progress delivery events — used to enrich the delivery supplier dropdown.
     public function getallinprogressdeliveries(&$results, &$numrows) {
         return $this->table->getallinprogressdeliveries($results, $numrows, $this->trace);

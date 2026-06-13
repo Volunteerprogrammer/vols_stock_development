@@ -14,8 +14,8 @@ class StocktakeEventForm extends StockEventForm {
         $html  = '<div id="se-event-def" class="se-event-def">';
         $html .= '<div class="se-event-def-row">';
         $html .= $this->renderlocationselect('se-location1', 'Location', 'se-location-select');
-        $html .= '<button type="button" id="se-start-btn" class="vols-button" style="display:none">Start Stocktake</button>';
         $html .= '</div>';
+        $html .= $this->renderpreviouseventsrow();
         $html .= '</div>';
         return $html;
     }
@@ -114,7 +114,9 @@ function resumestocktake(event_id, location_id, location_name) {
     jQuery('#se-location1').val(location_id);
     jQuery('#se-event-id').val(event_id);
     jQuery('#se-location-id').val(location_id);
-    jQuery('#se-start-btn').hide();
+    jQuery('#se-prev-event-row').hide();
+    jQuery('#se-prev-event').val('');
+    setviewmode(false);
     jQuery('#se-event-controls').show();
     loadstock(event_id, '');
 }
@@ -132,27 +134,32 @@ jQuery(function() {
     });
 
     // Location dropdown change: check for in-progress stocktake at that location.
-    jQuery('#se-location1').on('change', function() {
+    jQuery(document).on('change', '#se-location1', function() {
         var loc = jQuery(this).val();
-        jQuery('#se-start-btn').hide();
-        jQuery('#se-event-controls').hide();
+        jQuery('#se-event-controls').hide().removeClass('se-readonly');
         jQuery('#se-event-id').val('');
         jQuery('#se-location-id').val('');
+        jQuery('#se-prev-event-row').hide();
+        jQuery('#se-prev-event').val('');
+        setviewmode(false);
         if (!loc) return;
 
         getinprogressevent('stocktake', loc, null, null, function(r) {
             if (r.found && r.event && r.event.id) {
                 resumestocktake(r.event.id, loc, '');
             } else {
-                jQuery('#se-start-btn').show();
+                jQuery('#se-prev-event-row').show();
+                loadpreviousevents('stocktake', loc, null, null);
             }
         });
     });
 
-    jQuery('#se-start-btn').on('click', function() {
+    jQuery(document).on('click', '#se-start-btn', function() {
         var loc = jQuery('#se-location1').val();
         if (!loc) { jQuery.volsdialog('OKMSG', 'Please select a location first.', undefined, undefined, 'Select Location'); return; }
-        jQuery('#se-start-btn').hide();
+        jQuery('#se-prev-event-row').hide();
+        jQuery('#se-prev-event').val('');
+        setviewmode(false);
         createstockevent('stocktake', loc, null, null, null, function(event_id) {
             jQuery('#se-location-id').val(loc);
             loadstock(event_id, '');

@@ -2292,6 +2292,7 @@ input
 .se-location-select,
 .se-event-def select {
     min-width: 18rem;
+    flex: 1;
 }
 .se-total-weight-input {
     width: 8rem;
