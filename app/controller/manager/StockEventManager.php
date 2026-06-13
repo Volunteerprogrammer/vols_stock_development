@@ -389,6 +389,52 @@ class StockEventManager extends \fw\controller\manager\StdManager
         return $this->table->getpreviousevents($event_type, $location1_id, $location2_id, $supplier_id, $results, $numrows, $this->trace);
     }
 
+    // Builds a CSV string for a closed event, returning only items with a recorded quantity.
+    public function exportcsv($event_id, &$csv, &$filename, &$errormsg) {
+        $ev = []; $evn = 0;
+        $this->table->selectonID($event_id, $ev, $evn);
+        if (empty($ev)) { $errormsg = "Event {$event_id} not found."; return false; }
+
+        $event_type = $ev['event'];
+        $to_loc     = (int)($ev['location2_id'] ?? 0);
+
+        // Movements for this event — only rows with a recorded quantity.
+        // Transfer: restrict to TO-location movements (positive side).
+        // Stocktake: qty column is always 0; use stock_qoh IS NOT NULL as the filter.
+        $sql    = "SELECT sc.Name as category_name, s.Name as stock_name, sm.qty, sm.stock_qoh"
+                . " FROM stock_movement sm"
+                . " JOIN stock s ON sm.stock_id = s.id"
+                . " LEFT JOIN stock_category sc ON s.category_id = sc.id"
+                . " WHERE sm.stock_event_id = ?";
+        $params = [(int)$event_id];
+        if ($event_type === 'transfer') {
+            $sql .= " AND sm.location_id = ?";
+            $params[] = $to_loc;
+        }
+        $sql .= ($event_type === 'stocktake')
+            ? " AND sm.stock_qoh IS NOT NULL"
+            : " AND sm.qty != 0";
+        $sql .= " ORDER BY sc.Name, s.Name";
+
+        $rows = []; $rn = 0;
+        $this->movementtable->query_params($sql, $params, $rows, $rn, $this->trace);
+
+        $date_str = $ev['date_closed'] ? date('Y-m-d', strtotime($ev['date_closed'])) : 'unknown';
+        $filename = $event_type . '_' . $date_str . '_' . $event_id . '.csv';
+
+        $qty_label = ['delivery' => 'Qty Received', 'transfer' => 'Qty Transferred',
+                      'adjustment' => 'Adjustment', 'stocktake' => 'Count'];
+        $lines   = ['"Category","Stock Item","' . ($qty_label[$event_type] ?? 'Qty') . '"'];
+        foreach ($rows as $row) {
+            $qty    = ($event_type === 'stocktake') ? $row['stock_qoh'] : $row['qty'];
+            $lines[] = '"' . str_replace('"', '""', $row['category_name']) . '"'
+                     . ',"' . str_replace('"', '""', $row['stock_name'])   . '"'
+                     . ',' . $qty;
+        }
+        $csv = implode("\r\n", $lines) . "\r\n";
+        return true;
+    }
+
     // Returns all in-progress delivery events — used to enrich the delivery supplier dropdown.
     public function getallinprogressdeliveries(&$results, &$numrows) {
         return $this->table->getallinprogressdeliveries($results, $numrows, $this->trace);

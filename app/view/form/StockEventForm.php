@@ -164,6 +164,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html  = '<div id="se-prev-event-row" class="se-event-def-row" style="display:none">';
         $html .= '<label for="se-prev-event">Previous</label>';
         $html .= '<select id="se-prev-event"><option value="">-- None --</option></select>';
+        $html .= '<button type="button" id="se-csv-btn" class="vols-button" style="display:none">Download CSV</button>';
         $html .= '<button type="button" id="se-start-btn" class="vols-button">New '
                . htmlspecialchars($this->event_label) . '</button>';
         $html .= '</div>';
@@ -557,13 +558,35 @@ function getbreakdown(stockId) {
         if (!event_id) {
             jQuery('#se-event-controls').hide().removeClass('se-readonly');
             jQuery('#se-event-id').val('');
+            jQuery('#se-csv-btn').hide();
             setviewmode(false);
             return;
         }
         jQuery('#se-event-id').val(event_id);
         jQuery('#se-event-controls').show();
+        jQuery('#se-csv-btn').show();
         setviewmode(true);
         loadstock(event_id, '', '');
+    });
+
+    jQuery(document).on('click', '#se-csv-btn', function() {
+        var event_id = jQuery('#se-event-id').val();
+        if (!event_id) return;
+        doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_exportcsv').then(function(resp) {
+            try {
+                var r = JSON.parse(resp);
+                if (!r.success) { jQuery.volsdialog('OKMSG', r.error || 'Export failed.', undefined, undefined, 'CSV Export'); return; }
+                var blob = new Blob([r.csv], { type: 'text/csv' });
+                var url  = URL.createObjectURL(blob);
+                var a    = document.createElement('a');
+                a.href     = url;
+                a.download = r.filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch(ex) { console.error('exportcsv', ex, resp); }
+        });
     });
 
     // Save the active input when the user leaves the page (back button, menu nav, tab switch).

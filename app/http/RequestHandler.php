@@ -163,6 +163,17 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $this->manager->getpreviousevents($event_type, $location1, $location2, $supplier, $results, $numrows);
                             $output = json_encode(['events' => $results]);
                             break;
+                        case "stockevent_exportcsv":
+                            $this->manager = $this->managercollection->StockEventManager();
+                            $this->manager->init($this->session);
+                            $d        = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $event_id = (int)($d["event_id"] ?? 0);
+                            $csv      = '';
+                            $filename = '';
+                            $errormsg = '';
+                            $success  = $this->manager->exportcsv($event_id, $csv, $filename, $errormsg);
+                            $output   = json_encode(['success' => $success, 'csv' => $csv, 'filename' => $filename, 'error' => $errormsg]);
+                            break;
                         case "stockevent_savemovement":
                             $this->manager = $this->managercollection->StockEventManager();
                             $this->manager->init($this->session);
