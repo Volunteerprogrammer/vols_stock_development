@@ -157,7 +157,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $query .= " ) AS current_qoh";
         $query .= " FROM stock s";
         $query .= " LEFT JOIN stock_category sc ON s.category_id = sc.id";
-        $query .= " LEFT JOIN stock_movement sm ON sm.stock_id = s.id AND sm.stock_event_id = {$event_id}";
+        $query .= " LEFT JOIN stock_movement sm ON sm.stock_id = s.id AND sm.stock_event_id = {$event_id} AND sm.location_id = {$to_loc}";
         $query .= " LEFT JOIN stock_item_location sil_to ON sil_to.stock_id = s.id AND sil_to.stock_location_id = {$to_loc}";
         $params = [];
         if (!empty($category_id)) {
