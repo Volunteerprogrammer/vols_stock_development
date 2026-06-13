@@ -260,7 +260,8 @@ function loadpreviousevents(event_type, loc1, loc2, sup) {
             var $sel = jQuery('#se-prev-event');
             $sel.html('<option value="">-- None --</option>');
             (r.events || []).forEach(function(ev) {
-                $sel.append(jQuery('<option>').val(ev.id).text(formatprevdate(ev.date_closed)));
+                $sel.append(jQuery('<option>').val(ev.id).text(formatprevdate(ev.date_closed))
+                    .data('weight', ev.total_weight != null ? ev.total_weight : ''));
             });
         } catch(ex) { console.error('loadpreviousevents', ex, resp); }
     });
@@ -576,9 +577,12 @@ function getbreakdown(stockId) {
             jQuery('#se-event-controls').hide().removeClass('se-readonly');
             jQuery('#se-event-id').val('');
             jQuery('#se-csv-btn').hide();
+            jQuery('#se-total-weight').val('').prop('readonly', false);
             setviewmode(false);
             return;
         }
+        var weight = jQuery(this).find('option:selected').data('weight');
+        jQuery('#se-total-weight').val(weight !== undefined ? weight : '').prop('readonly', true);
         jQuery('#se-event-id').val(event_id);
         jQuery('#se-event-controls').show();
         jQuery('#se-csv-btn').show();

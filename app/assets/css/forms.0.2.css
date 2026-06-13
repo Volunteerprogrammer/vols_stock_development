@@ -2403,6 +2403,10 @@ input
 #se-event-controls.se-readonly .se-log-btn {
     display: none;
 }
+#se-event-controls.se-readonly .se-total-weight-input {
+    background: #f0f0f0;
+    color: #555;
+}
 .se-qty {
     width: 7rem;
     text-align: right;

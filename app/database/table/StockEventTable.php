@@ -178,7 +178,7 @@ class StockEventTable extends \fw\database\table\MySQLTable
     // Returns closed events of a given type matching location(s) and optional supplier, newest first.
     public function getpreviousevents($event_type, $location1_id, $location2_id, $supplier_id, &$results, &$numrows, $trace=false) {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
-        $sql    = "SELECT id, date_closed FROM stock_event WHERE event = ? AND status = 'closed' AND location1_id = ?";
+        $sql    = "SELECT id, date_closed, total_weight FROM stock_event WHERE event = ? AND status = 'closed' AND location1_id = ?";
         $params = [$event_type, (int)$location1_id];
         if ($location2_id) { $sql .= " AND location2_id = ?"; $params[] = (int)$location2_id; }
         if ($supplier_id)  { $sql .= " AND supplier_id = ?";  $params[] = (int)$supplier_id;  }
