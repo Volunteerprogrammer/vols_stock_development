@@ -449,17 +449,27 @@ class StockEventManager extends \fw\controller\manager\StdManager
         $this->table->selectonID($event_id, $ev, $evn);
         $event_type = $ev['event'] ?? '';
         if ($event_type === 'transfer') {
+            // For closed events, calculate QOH as-at 1 second before close so the
+            // transfer's own movements don't inflate the destination QOH it displays.
+            $as_at = (!empty($ev['date_closed']))
+                ? date('Y-m-d H:i:s', strtotime($ev['date_closed']) - 1)
+                : '';
             return $this->movementtable->getstockfortransfer(
                 $event_id, $category_id,
                 $ev['location1_id'] ?? 0, $ev['location2_id'] ?? 0,
-                $results, $numrows, $this->trace
+                $results, $numrows, $this->trace, $as_at
             );
         }
         if ($event_type === 'stocktake') {
+            // For closed events, calculate expected QOH as-at 1 second before close
+            // so the stocktake's own baseline doesn't replace the expected value.
+            $as_at = (!empty($ev['date_closed']))
+                ? date('Y-m-d H:i:s', strtotime($ev['date_closed']) - 1)
+                : '';
             return $this->movementtable->getstockforstocktake(
                 $event_id, $category_id,
                 $ev['location1_id'] ?? 0,
-                $results, $numrows, $this->trace
+                $results, $numrows, $this->trace, $as_at
             );
         }
         $location_id = $ev['location1_id'] ?? '';
