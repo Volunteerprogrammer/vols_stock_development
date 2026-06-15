@@ -113,46 +113,51 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
 
         // Variance table — only shown when an event is selected and there is data
         if (!empty($event_id) && !empty($this->alldata)) {
+            $variances = array_filter($this->alldata, fn($item) => (float)($item['variance'] ?? 0) != 0);
+
             $formfields .= '<div class="vols-stockreport-toolbar">';
             $formfields .= '<button type="button" class="vols-stockreport-csvbtn" onclick="downloadVarianceCSV()">&#8681; Export CSV</button>';
             $formfields .= '</div>';
 
-            $formfields .= '<div class="vols-stockreport-table-wrap">';
-            $formfields .= '<div class="vols-variancereport-table">';
-            $formfields .= '<div class="vols-stockreport-colheadings">';
-            $formfields .= '<div class="vols-stockreport-col-name">Item</div>';
-            $formfields .= '<div class="vols-stockreport-col-code">Code</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">System Quantity</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">Stocktake Count</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">Variance</div>';
-            $formfields .= '</div>';
-
-            $currentcategory = null;
-            foreach ($this->alldata as $item) {
-                $cat = htmlspecialchars($item["category_name"] ?? "Uncategorised");
-                if ($cat !== $currentcategory) {
-                    $currentcategory = $cat;
-                    $formfields .= '<div class="vols-stockreport-category">' . $cat . '</div>';
-                }
-                $stqty    = (float)($item["stocktake_qty"] ?? 0);
-                $level    = (float)($item["stock_level"]   ?? 0);
-                $variance = (float)($item["variance"]      ?? 0);
-                $vclass   = $variance < 0 ? ' vols-variance-neg'
-                          : ($variance > 0 ? ' vols-variance-pos' : ' vols-variance-zero');
-                $name     = htmlspecialchars($item["Name"]);
-                $code     = htmlspecialchars($item["Code"]);
-                $vsign    = $variance > 0 ? '+' . $variance : (string)$variance;
-                $formfields .= '<div class="vols-stockreport-row">';
-                $formfields .= '<div class="vols-stockreport-col-name">'  . $name  . '</div>';
-                $formfields .= '<div class="vols-stockreport-col-code">'  . $code  . '</div>';
-                $formfields .= '<div class="vols-stockreport-col-num">'   . $level . '</div>';
-                $formfields .= '<div class="vols-stockreport-col-num">'   . $stqty . '</div>';
-                $formfields .= '<div class="vols-stockreport-col-num' . $vclass . '">' . $vsign . '</div>';
+            if (empty($variances)) {
+                $formfields .= '<div class="vols-stockreport-empty">All counted items matched their system quantities — no variances found.</div>';
+            } else {
+                $formfields .= '<div class="vols-stockreport-table-wrap">';
+                $formfields .= '<div class="vols-variancereport-table">';
+                $formfields .= '<div class="vols-stockreport-colheadings">';
+                $formfields .= '<div class="vols-stockreport-col-name">Item</div>';
+                $formfields .= '<div class="vols-stockreport-col-code">Code</div>';
+                $formfields .= '<div class="vols-stockreport-col-num">System Quantity</div>';
+                $formfields .= '<div class="vols-stockreport-col-num">Stocktake Count</div>';
+                $formfields .= '<div class="vols-stockreport-col-num">Variance</div>';
                 $formfields .= '</div>';
-            }
 
-            $formfields .= '</div>'; // vols-variancereport-table
-            $formfields .= '</div>'; // vols-stockreport-table-wrap
+                $currentcategory = null;
+                foreach ($variances as $item) {
+                    $cat = htmlspecialchars($item["category_name"] ?? "Uncategorised");
+                    if ($cat !== $currentcategory) {
+                        $currentcategory = $cat;
+                        $formfields .= '<div class="vols-stockreport-category">' . $cat . '</div>';
+                    }
+                    $stqty    = (float)($item["stocktake_qty"] ?? 0);
+                    $level    = (float)($item["stock_level"]   ?? 0);
+                    $variance = (float)($item["variance"]      ?? 0);
+                    $vclass   = $variance < 0 ? ' vols-variance-neg' : ' vols-variance-pos';
+                    $name     = htmlspecialchars($item["Name"]);
+                    $code     = htmlspecialchars($item["Code"]);
+                    $vsign    = $variance > 0 ? '+' . $variance : (string)$variance;
+                    $formfields .= '<div class="vols-stockreport-row">';
+                    $formfields .= '<div class="vols-stockreport-col-name">'              . $name  . '</div>';
+                    $formfields .= '<div class="vols-stockreport-col-code">'              . $code  . '</div>';
+                    $formfields .= '<div class="vols-stockreport-col-num">'               . $level . '</div>';
+                    $formfields .= '<div class="vols-stockreport-col-num">'               . $stqty . '</div>';
+                    $formfields .= '<div class="vols-stockreport-col-num' . $vclass . '">' . $vsign . '</div>';
+                    $formfields .= '</div>';
+                }
+
+                $formfields .= '</div>'; // vols-variancereport-table
+                $formfields .= '</div>'; // vols-stockreport-table-wrap
+            }
         }
 
         $this->preparecommontop(true, true, '<input type="hidden" name="report_type" value="stocktakevariance">', '', false, $rtype);
