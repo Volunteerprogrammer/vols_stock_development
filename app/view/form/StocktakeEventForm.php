@@ -24,7 +24,9 @@ class StocktakeEventForm extends StockEventForm {
         return '<tr>'
              . '<th class="se-th-category">Category</th>'
              . '<th class="se-th-name">Stock Item</th>'
+             . '<th class="se-th-expected se-readonly-only">Expected</th>'
              . '<th class="se-th-qty">Count</th>'
+             . '<th class="se-th-variance se-readonly-only">Variance</th>'
              . '</tr>';
     }
 
@@ -38,10 +40,14 @@ class StocktakeEventForm extends StockEventForm {
         $value       = ($row['stock_qoh'] !== null && $row['stock_qoh'] !== '') ? (int)$row['stock_qoh'] : '';
 
         $expected = isset($row['calculated_qoh']) ? (int)$row['calculated_qoh'] : '';
+        $variance = ($row['qty'] !== null && $row['qty'] !== '') ? (int)$row['qty'] : null;
+        $var_class = $variance === null ? '' : ($variance > 0 ? ' se-variance-pos' : ($variance < 0 ? ' se-variance-neg' : ''));
+        $var_str   = $variance === null ? '&mdash;' : ($variance > 0 ? '+' . $variance : (string)$variance);
         return '<tr class="se-stock-row" data-stock-id="' . $stock_id . '"'
              . ($expected !== '' ? ' data-expected="' . $expected . '"' : '') . '>'
              . '<td class="se-td-category">' . $cat_name   . '</td>'
              . '<td class="se-td-name">'     . $stock_name . '</td>'
+             . '<td class="se-td-expected se-readonly-only">' . ($expected !== '' ? $expected : '&mdash;') . '</td>'
              . '<td class="se-td-qty">'
              . '<div class="se-qty-wrap">'
              . '<input type="number" min="0" step="1" class="se-qty"'
@@ -52,6 +58,7 @@ class StocktakeEventForm extends StockEventForm {
              . '<button type="button" class="se-log-btn" data-stock-id="' . $stock_id . '" data-stock-name="' . $stock_name . '" tabindex="-1" title="Show count breakdown">?</button>'
              . '</div>'
              . '</td>'
+             . '<td class="se-td-variance se-readonly-only' . $var_class . '">' . $var_str . '</td>'
              . '</tr>';
     }
 

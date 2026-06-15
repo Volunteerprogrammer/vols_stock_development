@@ -2403,6 +2403,22 @@ input
 .se-log-btn:active {
     background: #ddd;
 }
+.se-readonly-only {
+    display: none;
+}
+#se-event-controls.se-readonly .se-readonly-only {
+    display: table-cell;
+}
+.se-th-expected, .se-td-expected {
+    text-align: right;
+    padding-right: 0.6rem;
+}
+.se-th-variance, .se-td-variance {
+    text-align: left;
+    padding-left: 0.6rem;
+}
+.se-variance-pos { color: #2a7a2a; }
+.se-variance-neg { color: #b00000; }
 #se-event-controls.se-readonly .se-log-btn {
     display: none;
 }
