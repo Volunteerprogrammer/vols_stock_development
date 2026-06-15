@@ -151,28 +151,74 @@ class StockForm extends \fw\view\form\StdCRUDForm {
                     return;
                 }
                 var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                var html = '<div class="vols-stockmovements-table"><div class="vols-stockmovements-colheadings">'
+
+                // Compute signed change and running QOH per location (oldest-first pass).
+                var runningQoh = {};
+                var enhanced = movements.slice().reverse();
+                for (var i = 0; i < enhanced.length; i++) {
+                    var m = enhanced[i];
+                    var loc   = m.location_id || 0;
+                    var qty   = parseFloat(m.qty);
+                    var sqoh  = (m.stock_qoh !== null && m.stock_qoh !== undefined && m.stock_qoh !== '')
+                                ? parseFloat(m.stock_qoh) : null;
+                    var change, newQoh;
+                    if (m.event === 'stocktake') {
+                        // Resets QOH to the counted value; change = variance stored in qty.
+                        change = isNaN(qty) ? null : qty;
+                        newQoh = (sqoh !== null && !isNaN(sqoh)) ? sqoh : null;
+                        if (newQoh !== null) runningQoh[loc] = newQoh;
+                    } else if (m.event === 'issue') {
+                        // qty stored positive; issues reduce QOH.
+                        change = isNaN(qty) ? null : -qty;
+                        newQoh = (runningQoh[loc] !== undefined ? runningQoh[loc] : 0) + (change || 0);
+                        runningQoh[loc] = newQoh;
+                    } else {
+                        // delivery, transfer, adjustment — qty already carries the correct sign.
+                        change = isNaN(qty) ? null : qty;
+                        newQoh = (runningQoh[loc] !== undefined ? runningQoh[loc] : 0) + (change || 0);
+                        runningQoh[loc] = newQoh;
+                    }
+                    enhanced[i] = Object.assign({}, m, { _change: change, _new_qoh: newQoh });
+                }
+                enhanced.reverse(); // back to newest-first for display
+
+                var html = '<div class="vols-stockmovements-table">'
+                         + '<div class="vols-stockmovements-colheadings">'
                          + '<div class="vols-stockmovements-col-date">Date / Time</div>'
                          + '<div class="vols-stockmovements-col-type">Type</div>'
                          + '<div class="vols-stockmovements-col-loc">Location</div>'
-                         + '<div class="vols-stockmovements-col-qty">Qty</div>'
+                         + '<div class="vols-stockmovements-col-change">Change</div>'
+                         + '<div class="vols-stockmovements-col-qoh">QOH</div>'
                          + '</div>';
-                for (var i = 0; i < movements.length; i++) {
-                    var m = movements[i];
+
+                for (var i = 0; i < enhanced.length; i++) {
+                    var m = enhanced[i];
                     var d = new Date(m.event_date.replace(' ', 'T'));
                     var hh = String(d.getHours()).padStart(2, '0');
                     var mm = String(d.getMinutes()).padStart(2, '0');
                     var dateStr = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ' ' + hh + ':' + mm;
                     var label = m.event.charAt(0).toUpperCase() + m.event.slice(1);
-                    var rawQty = (m.event === 'stocktake' && m.stock_qoh !== null) ? parseFloat(m.stock_qoh) : parseFloat(m.qty);
-                    var qty = isNaN(rawQty) ? parseFloat(m.qty) : rawQty;
-                    var qtyStr = (qty % 1 === 0) ? qty.toString() : qty.toFixed(1);
-                    var loc = m.location_name || '—';
+                    var loc   = m.location_name || '—';
+
+                    var ch = m._change;
+                    var changeStr, changeClass;
+                    if (ch === null || isNaN(ch)) {
+                        changeStr = '—'; changeClass = '';
+                    } else {
+                        changeStr  = (ch > 0 ? '+' : '') + (ch % 1 === 0 ? ch.toString() : ch.toFixed(1));
+                        changeClass = ch > 0 ? ' vols-variance-pos' : (ch < 0 ? ' vols-variance-neg' : '');
+                    }
+
+                    var qohVal = m._new_qoh;
+                    var qohStr = (qohVal !== null && qohVal !== undefined && !isNaN(qohVal))
+                        ? (qohVal % 1 === 0 ? qohVal.toString() : qohVal.toFixed(1)) : '—';
+
                     html += '<div class="vols-stockmovements-row" data-loc-id="' + (m.location_id || 0) + '">'
                           + '<div class="vols-stockmovements-col-date">' + dateStr + '</div>'
                           + '<div class="vols-stockmovements-col-type"><span class="vols-stockmov-' + m.event + '">' + label + '</span></div>'
                           + '<div class="vols-stockmovements-col-loc">' + loc + '</div>'
-                          + '<div class="vols-stockmovements-col-qty">' + qtyStr + '</div>'
+                          + '<div class="vols-stockmovements-col-change' + changeClass + '">' + changeStr + '</div>'
+                          + '<div class="vols-stockmovements-col-qoh">' + qohStr + '</div>'
                           + '</div>';
                 }
                 html += '</div>';
