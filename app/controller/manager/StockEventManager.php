@@ -216,7 +216,7 @@ class StockEventManager extends \fw\controller\manager\StdManager
 
     // Closes the event identified by $event_id.
     // Applies type-specific pre-close logic before setting status = 'closed'.
-    public function closeevent($event_id, $create_issue = true, &$errormessage = '') {
+    public function closeevent($event_id, $create_issue = true, &$errormessage = '', &$warning = '') {
         if ($this->trace) { echo "Enter ".__METHOD__." event={$event_id}<br>"; }
 
         $event   = [];
@@ -246,10 +246,13 @@ class StockEventManager extends \fw\controller\manager\StdManager
             );
         }
 
-        // For stocktakes at uncontrolled-issues locations: generate variance issue.
-        // Only when the operator confirmed this is an end-of-session stocktake.
+        // For stocktakes at uncontrolled-issues locations: generate variance issue,
+        // then recalculate all stocktake variances (they become zero once the issue is in place).
         if ($success && $event['event'] === 'stocktake') {
-            $success = $this->postclosestocktakeifuncontrolled($event, $create_issue, $errormessage);
+            $success = $this->postclosestocktakeifuncontrolled($event, $create_issue, $errormessage, $warning);
+            if ($success) {
+                $success = $this->preclosestocktake($event, $errormessage);
+            }
         }
 
         if ($this->trace) { echo "Leave ".__METHOD__." OK={$success}<br>"; }
@@ -309,12 +312,11 @@ class StockEventManager extends \fw\controller\manager\StdManager
     }
 
     // For stocktakes at locations with uncontrolled_issues = true:
-    // create a closed issue event (dated 1 minute before the stocktake) with
-    // movements qty = variance for every item that has a non-zero variance.
-    // The stocktake remains closed as the new baseline; the issue sits just before
-    // it in the timeline, capturing the untracked consumption.
-    // If all variances are zero, no issue event is created.
-    private function postclosestocktakeifuncontrolled($event, $create_issue, &$errormessage) {
+    // Create a closed issue event (dated 5 minutes before the stocktake) capturing
+    // untracked consumption (negative-variance items only). Positive variances indicate
+    // untracked inflow and are reported as a warning instead — no issue is created for them.
+    // If there are no negative variances, no issue event is created.
+    private function postclosestocktakeifuncontrolled($event, $create_issue, &$errormessage, &$warning) {
         if ($this->trace) { echo "Enter ".__METHOD__." event={$event['id']}<br>"; }
 
         if (!$create_issue) {
@@ -335,9 +337,20 @@ class StockEventManager extends \fw\controller\manager\StdManager
             return false;
         }
 
-        $nonzero = array_values(array_filter($variance_rows, fn($r) => $r['variance'] != 0));
-        if (empty($nonzero)) {
-            if ($this->trace) { echo "Leave ".__METHOD__." (zero variance — stocktake stays closed)<br>"; }
+        // Negative variance = items went out untracked (create issue).
+        // Positive variance = untracked inflow — illogical to issue; report instead.
+        $negative = array_values(array_filter($variance_rows, fn($r) => (float)$r['variance'] < 0));
+        $positive = array_values(array_filter($variance_rows, fn($r) => (float)$r['variance'] > 0));
+
+        if (!empty($positive)) {
+            $names   = implode(', ', array_column($positive, 'Name'));
+            $warning = "Positive variances found for: {$names}. "
+                     . "This may indicate untracked stock received at this location. "
+                     . "No issue event was created for these items.";
+        }
+
+        if (empty($negative)) {
+            if ($this->trace) { echo "Leave ".__METHOD__." (no negative variance — no issue needed)<br>"; }
             return true;
         }
 
@@ -354,8 +367,8 @@ class StockEventManager extends \fw\controller\manager\StdManager
             return false;
         }
 
-        // Create one movement per non-zero-variance item; qty = variance.
-        foreach ($nonzero as $row) {
+        // One movement per negative-variance item; qty = −variance (positive = items that went out).
+        foreach ($negative as $row) {
             $this->movementtable->clear();
             $this->movementtable->setfield("stock_id",       $row['id']);
             $this->movementtable->setfield("stock_event_id", $new_event_id);
@@ -363,7 +376,7 @@ class StockEventManager extends \fw\controller\manager\StdManager
             $this->movementtable->setfield("unit",           "");
             $this->movementtable->setfield("unit_qty",       "1");
             $this->movementtable->setfield("movement_date",  $issue_date);
-            $this->movementtable->setfield("qty",            $row['variance']);
+            $this->movementtable->setfield("qty",            -(float)$row['variance']);
             $mid = 0;
             if (!$this->movementtable->insert(true, $mid, false, $errormessage)) {
                 return false;
