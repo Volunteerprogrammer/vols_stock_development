@@ -1924,8 +1924,9 @@ input
     padding-right: 0.5rem;
 }
 
-.vols-stockreport-qty-ok   { color: var(--doitbg, #5c903a); }
-.vols-stockreport-qty-zero { color: var(--volscolor4, #cc0000); }
+.vols-stockreport-qty-ok       { color: var(--doitbg, #5c903a); }
+.vols-stockreport-qty-zero     { color: inherit; }
+.vols-stockreport-qty-negative { color: var(--volscolor4, #cc0000); }
 
 /* Stock level report always shows all columns; .vols-stockreport-table-wrap scrolls horizontally on narrow viewports */
 
@@ -2023,6 +2024,7 @@ input
     border-bottom: 1px solid #f0f0f0;
 }
 .vols-delivreport-col-itemname { padding-left: 1.5rem; }
+.vols-delivreport-location { color: #888; font-size: 0.9em; margin-left: 0.4rem; }
 .vols-delivreport-total {
     display: grid;
     grid-template-columns: 9rem 1fr 8rem;
@@ -2032,16 +2034,23 @@ input
     margin-top: 0.2rem;
 }
 
+.vols-delivreport-table--with-items .vols-stockreport-colheadings,
+.vols-delivreport-table--with-items .vols-stockreport-row,
+.vols-delivreport-table--with-items .vols-delivreport-item,
+.vols-delivreport-table--with-items .vols-delivreport-total {
+    grid-template-columns: 9rem 1fr 6rem 8rem;
+}
+
 /* ---- end Deliveries Report ---- */
 
 /* ---- Below Minimum Report ---- */
 .vols-belowmin-withloc .vols-stockreport-colheadings,
 .vols-belowmin-withloc .vols-stockreport-row {
-    grid-template-columns: 10rem 1fr 8rem 5rem 5rem 5rem;
+    grid-template-columns: 10rem 1fr 8rem 7rem 7rem 7rem;
 }
 .vols-belowmin-noloc .vols-stockreport-colheadings,
 .vols-belowmin-noloc .vols-stockreport-row {
-    grid-template-columns: 10rem 1fr 5rem 5rem 5rem;
+    grid-template-columns: 10rem 1fr 7rem 7rem 7rem;
 }
 .vols-belowmin-variance { color: #c00; font-weight: 600; }
 /* ---- end Below Minimum Report ---- */
@@ -2695,4 +2704,4 @@ input
     opacity: 0.4;
     cursor: default;
 }
-.vols-usagereport-qty        { font-weight: bold; color: #c07a00; }
+.vols-usagereport-qty        { font-weight: bold; }

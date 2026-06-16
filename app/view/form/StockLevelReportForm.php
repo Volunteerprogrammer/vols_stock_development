@@ -162,8 +162,9 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
             $stdate  = $dt ? $dt->format('d-m-Y H:i') : '—';
             $name    = htmlspecialchars($item["Name"]);
             $code    = htmlspecialchars($item["Code"]);
-            $qtyclass = $qty <= 0 ? "vols-stockreport-qty vols-stockreport-qty-zero"
-                                  : "vols-stockreport-qty vols-stockreport-qty-ok";
+            $qtyclass = $qty < 0  ? "vols-stockreport-qty vols-stockreport-qty-negative"
+                     : ($qty == 0 ? "vols-stockreport-qty vols-stockreport-qty-zero"
+                                  : "vols-stockreport-qty vols-stockreport-qty-ok");
             $formfields .= '<div class="vols-stockreport-row">';
             $formfields .= '<div class="vols-stockreport-col-name">'.$name.'</div>';
             $formfields .= '<div class="vols-stockreport-col-code">'.$code.'</div>';

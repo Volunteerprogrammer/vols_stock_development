@@ -128,6 +128,7 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
                 $deliveries[$eid] = [
                     'delivery_date' => $row['delivery_date'],
                     'supplier_name' => $row['supplier_name'],
+                    'location_name' => $row['location_name'],
                     'total_weight'  => $row['total_weight'],
                     'items'         => [],
                 ];
@@ -156,11 +157,13 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
             $total_weight = 0;
             $jsrows = [];
 
+            $tableclass = $include_items ? 'vols-delivreport-table vols-delivreport-table--with-items' : 'vols-delivreport-table';
             $formfields .= '<div class="vols-stockreport-table-wrap">';
-            $formfields .= '<div class="vols-delivreport-table">';
+            $formfields .= '<div class="' . $tableclass . '">';
             $formfields .= '<div class="vols-stockreport-colheadings">';
             $formfields .= '<div>Date</div>';
             $formfields .= '<div>Supplier</div>';
+            if ($include_items) $formfields .= '<div class="vols-stockreport-col-num">Qty</div>';
             $formfields .= '<div class="vols-stockreport-col-num">Weight (kg)</div>';
             $formfields .= '</div>';
 
@@ -172,7 +175,9 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
 
                 $formfields .= '<div class="vols-stockreport-row">';
                 $formfields .= '<div>' . htmlspecialchars($date_disp) . '</div>';
-                $formfields .= '<div>' . htmlspecialchars($d['supplier_name']) . '</div>';
+                $loc_disp = $d['location_name'] ? ' <span class="vols-delivreport-location">(' . htmlspecialchars($d['location_name']) . ')</span>' : '';
+                $formfields .= '<div>' . htmlspecialchars($d['supplier_name']) . $loc_disp . '</div>';
+                if ($include_items) $formfields .= '<div></div>';
                 $formfields .= '<div class="vols-stockreport-col-num">' . $wt_disp . '</div>';
                 $formfields .= '</div>';
 
@@ -184,12 +189,13 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
                                      . htmlspecialchars($item['category_name'] ? $item['category_name'] . ' – ' : '')
                                      . htmlspecialchars($item['stock_name']) . '</div>';
                         $formfields .= '<div class="vols-stockreport-col-num">' . $item['qty'] . '</div>';
+                        $formfields .= '<div></div>';
                         $formfields .= '</div>';
                     }
                 }
 
                 // Build JS data for CSV
-                $jsrow = ['date' => $date_disp, 'supplier' => $d['supplier_name'], 'weight' => $wt ?? ''];
+                $jsrow = ['date' => $date_disp, 'supplier' => $d['supplier_name'], 'location' => $d['location_name'] ?? '', 'weight' => $wt ?? ''];
                 $jsrow['items'] = [];
                 foreach ($d['items'] as $item) {
                     $jsrow['items'][] = ['cat' => $item['category_name'], 'name' => $item['stock_name'], 'qty' => $item['qty']];
@@ -200,6 +206,7 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<div class="vols-delivreport-total">';
             $formfields .= '<div>Total</div>';
             $formfields .= '<div></div>';
+            if ($include_items) $formfields .= '<div></div>';
             $formfields .= '<div class="vols-stockreport-col-num">' . $total_weight . '</div>';
             $formfields .= '</div>';
 
@@ -240,26 +247,27 @@ function filterDeliverySuppliers(catId) {
 }
 function downloadDeliveriesCSV() {
     var rows = deliveriesIncludeItems
-        ? [['Date','Supplier','Weight (kg)','Category','Stock Item','Qty']]
-        : [['Date','Supplier','Weight (kg)']];
+        ? [['Date','Supplier','Location','Weight (kg)','Category','Stock Item','Qty']]
+        : [['Date','Supplier','Location','Weight (kg)']];
     var totalWeight = 0;
     for (var i = 0; i < deliveriesReportData.length; i++) {
         var d = deliveriesReportData[i];
+        var wt = d.weight !== '' ? d.weight : '';
         totalWeight += d.weight !== '' ? parseInt(d.weight) : 0;
-        if (deliveriesIncludeItems && d.items && d.items.length > 0) {
-            rows.push([d.date, d.supplier, d.weight !== '' ? d.weight : '']);
+        if (deliveriesIncludeItems) {
+            rows.push([d.date, d.supplier, d.location, wt, '', '', '']);
             for (var j = 0; j < d.items.length; j++) {
                 var it = d.items[j];
-                rows.push(['', '', '', it.cat, it.name, it.qty]);
+                rows.push(['', '', '', '', it.cat, it.name, it.qty]);
             }
         } else {
-            rows.push([d.date, d.supplier, d.weight !== '' ? d.weight : '']);
+            rows.push([d.date, d.supplier, d.location, wt]);
         }
     }
     if (deliveriesIncludeItems) {
-        rows.push(['Total', '', totalWeight, '', '', '']);
+        rows.push(['Total', '', '', totalWeight, '', '', '']);
     } else {
-        rows.push(['Total', '', totalWeight]);
+        rows.push(['Total', '', '', totalWeight]);
     }
     var csv = rows.map(function(row) {
         return row.map(function(v) {
