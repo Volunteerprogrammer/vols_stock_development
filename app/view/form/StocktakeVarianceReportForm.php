@@ -180,7 +180,7 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
              . "                ? '\"' + s.replace(/\"/g, '\"\"') + '\"' : s;\n"
              . "        }).join(',');\n"
              . "    }).join('\\r\\n');\n"
-             . "    var blob = new Blob([csv], {type: 'text/csv'});\n"
+             . "    var blob = new Blob(['\\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});\n"
              . "    var a = document.createElement('a');\n"
              . "    a.href = URL.createObjectURL(blob);\n"
              . "    a.download = 'stocktake-variance.csv';\n"

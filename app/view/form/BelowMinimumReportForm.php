@@ -147,7 +147,7 @@ function downloadBelowMinCSV() {
             return s.indexOf(',') !== -1 || s.indexOf('"') !== -1 ? '"' + s.replace(/"/g, '""') + '"' : s;
         }).join(',');
     }).join('\r\n');
-    var blob = new Blob([csv], {type: 'text/csv'});
+    var blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8'});
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     var d2 = new Date();

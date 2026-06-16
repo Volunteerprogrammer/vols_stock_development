@@ -597,7 +597,7 @@ function getbreakdown(stockId) {
             try {
                 var r = JSON.parse(resp);
                 if (!r.success) { jQuery.volsdialog('OKMSG', r.error || 'Export failed.', undefined, undefined, 'CSV Export'); return; }
-                var blob = new Blob([r.csv], { type: 'text/csv' });
+                var blob = new Blob(['﻿' + r.csv], { type: 'text/csv;charset=utf-8' });
                 var url  = URL.createObjectURL(blob);
                 var a    = document.createElement('a');
                 a.href     = url;

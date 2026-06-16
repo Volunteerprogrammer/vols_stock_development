@@ -154,7 +154,7 @@ class StockUsageReportForm extends \fw\view\form\StdCRUDForm {
              . "            return s.indexOf(',') !== -1 || s.indexOf('\"') !== -1 ? '\"' + s.replace(/\"/g, '\"\"') + '\"' : s;\n"
              . "        }).join(',');\n"
              . "    }).join('\\r\\n');\n"
-             . "    var blob = new Blob([csv], {type: 'text/csv'});\n"
+             . "    var blob = new Blob(['\\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});\n"
              . "    var a = document.createElement('a');\n"
              . "    a.href = URL.createObjectURL(blob);\n"
              . "    var d = new Date();\n"
