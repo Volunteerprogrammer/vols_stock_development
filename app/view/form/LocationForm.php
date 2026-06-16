@@ -40,7 +40,7 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
     // Returns the <tbody> rows for the target quantities table.
     public function rendertargetstable(array $rows): string {
         if (empty($rows)) {
-            return '<tr><td colspan="4" class="loc-tgt-empty">No stock items found.</td></tr>';
+            return '<tr><td colspan="5" class="loc-tgt-empty">No stock items found.</td></tr>';
         }
         $html = '';
         foreach ($rows as $row) {
@@ -50,6 +50,7 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
             $cat_id      = (int)($row['category_id'] ?? 0);
             $target_qty  = ($row['target_qty'] !== null && $row['target_qty'] !== '' && (int)$row['target_qty'] > 0) ? (int)$row['target_qty'] : '';
             $minimum_qty = ($row['minimum_qty'] !== null && $row['minimum_qty'] !== '') ? (int)$row['minimum_qty'] : '';
+            $position    = ($row['stocktake_position'] !== null && $row['stocktake_position'] !== '') ? (int)$row['stocktake_position'] : '';
             $html .= '<tr data-category-id="' . $cat_id . '">'
                    . '<td class="loc-tgt-cat">'  . $cat_name   . '</td>'
                    . '<td class="loc-tgt-name">' . $stock_name . '</td>'
@@ -62,6 +63,11 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
                    . '<input type="number" name="min_qty_' . $stock_id . '" min="0" step="1"'
                    . ' class="loc-minqty-input"'
                    . ' value="' . $minimum_qty . '">'
+                   . '</td>'
+                   . '<td class="loc-tgt-pos">'
+                   . '<input type="number" name="pos_' . $stock_id . '" min="1" step="1"'
+                   . ' class="loc-pos-input"'
+                   . ' value="' . $position . '">'
                    . '</td>'
                    . '</tr>';
         }
@@ -100,6 +106,7 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
                      . '<th class="loc-tgt-name">Stock Item</th>'
                      . '<th class="loc-tgt-qty">Target Qty</th>'
                      . '<th class="loc-tgt-minqty">Min Qty</th>'
+                     . '<th class="loc-tgt-pos">Position</th>'
                      . '</tr></thead>';
         $formfields .= '<tbody id="loc-targets-tbody"></tbody>';
         $formfields .= '</table>';

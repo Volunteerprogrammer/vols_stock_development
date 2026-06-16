@@ -70,7 +70,7 @@ class StockItemLocationTable extends \fw\database\table\MySQLTable
         $params = [(int)$location_id];
         $query  = "SELECT s.id AS stock_id, s.Name AS stock_name, s.category_id,";
         $query .= " sc.Name AS category_name,";
-        $query .= " sil.target_qty, sil.minimum_qty";
+        $query .= " sil.target_qty, sil.minimum_qty, sil.stocktake_position";
         $query .= " FROM stock s";
         $query .= " LEFT JOIN stock_category sc ON s.category_id = sc.id";
         $query .= " LEFT JOIN stock_item_location sil ON sil.stock_id = s.id AND sil.stock_location_id = ?";
