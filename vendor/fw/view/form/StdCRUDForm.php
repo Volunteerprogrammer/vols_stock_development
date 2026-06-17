@@ -49,7 +49,6 @@ abstract class StdCRUDForm extends Form {
             }
             $this->hiddenfields .= $this->recorddelimiter;
         }
-        $this->names["NA"]="No matching records";
         if ($this->trace ||$trace ) { echo gtab(-1)."Leave ".__METHOD__."   names ".count($this->names)." data ".count($this->alldata)."<br>"; }
      }
     protected function validatefields(&$badfields) { 
