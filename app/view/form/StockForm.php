@@ -76,7 +76,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         $formfields  .= '<div class="childcontainer stockmovements grouped">';
         $formfields  .= '<div class="vols-stockmovements-filter">';
         $formfields  .= '<label class="vols-stockmovements-filter-label" for="mov_location_id">Location:</label>';
-        $formfields  .= '<select id="mov_location_id" class="vols-stockmovements-locselect" onchange="filterStockMovements(this.value)">';
+        $formfields  .= '<select id="mov_location_id" class="vols-stockmovements-locselect nondatainput" onchange="filterStockMovements(this.value)">';
         $formfields  .= '<option value="">All locations</option>';
         foreach ($alllocations as $loc) {
             $formfields .= '<option value="' . (int)$loc['id'] . '">' . htmlspecialchars($loc['name']) . '</option>';
