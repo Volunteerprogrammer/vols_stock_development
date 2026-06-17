@@ -87,9 +87,9 @@ class BelowMinimumReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<div>Category</div>';
             $formfields .= '<div>Stock Item</div>';
             if ($show_loc) { $formfields .= '<div>Location</div>'; }
-            $formfields .= '<div class="vols-stockreport-col-num">Current</div>';
             $formfields .= '<div class="vols-stockreport-col-num">Minimum</div>';
-            $formfields .= '<div class="vols-stockreport-col-num">Variance</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">Current</div>';
+            $formfields .= '<div class="vols-stockreport-col-num">Shortfall</div>';
             $formfields .= '</div>';
 
             $jsrows = [];
@@ -100,8 +100,8 @@ class BelowMinimumReportForm extends \fw\view\form\StdCRUDForm {
                 if ($show_loc) {
                     $formfields .= '<div>' . htmlspecialchars($row['location_name']) . '</div>';
                 }
-                $formfields .= '<div class="vols-stockreport-col-num">'   . (int)$row['current_qty'] . '</div>';
                 $formfields .= '<div class="vols-stockreport-col-num">'   . (int)$row['minimum_qty'] . '</div>';
+                $formfields .= '<div class="vols-stockreport-col-num">'   . (int)$row['current_qty'] . '</div>';
                 $formfields .= '<div class="vols-stockreport-col-num vols-belowmin-variance">' . (int)$row['variance'] . '</div>';
                 $formfields .= '</div>';
 
@@ -130,15 +130,15 @@ function formhaserrors() { return 0; }
 function displayselectedrecord() {}
 function downloadBelowMinCSV() {
     var headers = belowMinShowLoc
-        ? ['Category','Stock Item','Location','Current Qty','Minimum Qty','Variance']
-        : ['Category','Stock Item','Current Qty','Minimum Qty','Variance'];
+        ? ['Category','Stock Item','Location','Minimum Qty','Current Qty','Shortfall']
+        : ['Category','Stock Item','Minimum Qty','Current Qty','Shortfall'];
     var rows = [headers];
     for (var i = 0; i < belowMinData.length; i++) {
         var d = belowMinData[i];
         if (belowMinShowLoc) {
-            rows.push([d.cat, d.name, d.location, d.current, d.minimum, d.variance]);
+            rows.push([d.cat, d.name, d.location, d.minimum, d.current, d.variance]);
         } else {
-            rows.push([d.cat, d.name, d.current, d.minimum, d.variance]);
+            rows.push([d.cat, d.name, d.minimum, d.current, d.variance]);
         }
     }
     var csv = rows.map(function(row) {
