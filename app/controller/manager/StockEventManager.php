@@ -246,13 +246,10 @@ class StockEventManager extends \fw\controller\manager\StdManager
             );
         }
 
-        // For stocktakes at uncontrolled-issues locations: generate variance issue,
-        // then recalculate all stocktake variances (they become zero once the issue is in place).
+        // For stocktakes at uncontrolled-issues locations: generate variance issue.
+        // Stocktake movement qtys for covered items are zeroed inside that method.
         if ($success && $event['event'] === 'stocktake') {
             $success = $this->postclosestocktakeifuncontrolled($event, $create_issue, $errormessage, $warning);
-            if ($success) {
-                $success = $this->preclosestocktake($event, $errormessage);
-            }
         }
 
         if ($this->trace) { echo "Leave ".__METHOD__." OK={$success}<br>"; }
@@ -368,6 +365,8 @@ class StockEventManager extends \fw\controller\manager\StdManager
         }
 
         // One movement per negative-variance item; qty = −variance (positive = items that went out).
+        // The stocktake movement qty is zeroed immediately after — the issue now carries the change,
+        // so the stocktake should show no variance for these items.
         foreach ($negative as $row) {
             $this->movementtable->clear();
             $this->movementtable->setfield("stock_id",       $row['id']);
@@ -379,6 +378,13 @@ class StockEventManager extends \fw\controller\manager\StdManager
             $this->movementtable->setfield("qty",            -(float)$row['variance']);
             $mid = 0;
             if (!$this->movementtable->insert(true, $mid, false, $errormessage)) {
+                return false;
+            }
+            $result = null; $zn = 0;
+            if (!$this->movementtable->execute_params(
+                "UPDATE stock_movement SET qty = 0 WHERE stock_event_id = ? AND stock_id = ?",
+                [(int)$event['id'], (int)$row['id']], $result, $zn, $errormessage, 1
+            )) {
                 return false;
             }
         }

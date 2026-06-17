@@ -100,12 +100,20 @@ class StockMovementTable extends \fw\database\table\MySQLTable
             $query .= " LEFT JOIN stock_item_location sil"
                     . "   ON sil.stock_id = s.id AND sil.stock_location_id = {$lid}";
         }
+        $wheres = [];
         if (!empty($category_id)) {
-            $query .= " WHERE s.category_id = ?";
-            $params[] = $category_id;
+            $wheres[] = "s.category_id = ?";
+            $params[]  = $category_id;
         } elseif (!empty($supplier_id)) {
-            $query .= " WHERE s.category_id IN (SELECT stock_category_id FROM stock_supplier_category WHERE stock_supplier_id = ?)";
-            $params[] = $supplier_id;
+            $wheres[] = "s.category_id IN (SELECT stock_category_id FROM stock_supplier_category WHERE stock_supplier_id = ?)";
+            $params[]  = $supplier_id;
+        }
+        if (!empty($location_id)) {
+            $wheres[] = "(scl.position IS NULL OR scl.position >= 0)";
+            $wheres[] = "(sil.stocktake_position IS NULL OR sil.stocktake_position >= 0)";
+        }
+        if (!empty($wheres)) {
+            $query .= " WHERE " . implode(" AND ", $wheres);
         }
         if (!empty($location_id)) {
             $query .= " ORDER BY CASE WHEN scl.position IS NULL THEN 1 ELSE 0 END, scl.position, sc.Name,"
@@ -164,10 +172,15 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $query .= " LEFT JOIN stock_item_location sil"
                 . "   ON sil.stock_id = s.id AND sil.stock_location_id = {$loc}";
         $params = [];
+        $wheres = [
+            "(scl.position IS NULL OR scl.position >= 0)",
+            "(sil.stocktake_position IS NULL OR sil.stocktake_position >= 0)",
+        ];
         if (!empty($category_id)) {
-            $query .= " WHERE s.category_id = ?";
-            $params[] = $category_id;
+            $wheres[] = "s.category_id = ?";
+            $params[]  = $category_id;
         }
+        $query .= " WHERE " . implode(" AND ", $wheres);
         $query .= " ORDER BY CASE WHEN scl.position IS NULL THEN 1 ELSE 0 END, scl.position, sc.Name,"
                 . " CASE WHEN sil.stocktake_position IS NULL THEN 1 ELSE 0 END, sil.stocktake_position, s.Name";
         $success = $this->query_params($query, $params, $results, $numrows, $trace);
@@ -184,6 +197,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
     public function getstockfortransfer($event_id, $category_id, $from_loc_id, $to_loc_id, &$results, &$numrows, $trace=false, $as_at='') {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
         $event_id   = (int)$event_id;
+        $from_loc   = (int)$from_loc_id;
         $to_loc     = (int)$to_loc_id;
         $as_at_cond = $as_at ? " AND se_st2.date_closed <= '{$as_at}'" : '';
         $as_at_st   = $as_at ? " AND se_st.date_closed  <= '{$as_at}'" : '';
@@ -219,11 +233,18 @@ class StockMovementTable extends \fw\database\table\MySQLTable
         $query .= " LEFT JOIN stock_category sc ON s.category_id = sc.id";
         $query .= " LEFT JOIN stock_movement sm ON sm.stock_id = s.id AND sm.stock_event_id = {$event_id} AND sm.location_id = {$to_loc}";
         $query .= " LEFT JOIN stock_item_location sil_to ON sil_to.stock_id = s.id AND sil_to.stock_location_id = {$to_loc}";
+        $query .= " LEFT JOIN stock_item_location sil_from ON sil_from.stock_id = s.id AND sil_from.stock_location_id = {$from_loc}";
+        $query .= " LEFT JOIN stock_category_location scl_from ON scl_from.stock_category_id = s.category_id AND scl_from.stock_location_id = {$from_loc}";
         $params = [];
+        $wheres = [
+            "(scl_from.position IS NULL OR scl_from.position >= 0)",
+            "(sil_from.stocktake_position IS NULL OR sil_from.stocktake_position >= 0)",
+        ];
         if (!empty($category_id)) {
-            $query .= " WHERE s.category_id = ?";
-            $params[] = $category_id;
+            $wheres[] = "s.category_id = ?";
+            $params[]  = $category_id;
         }
+        $query .= " WHERE " . implode(" AND ", $wheres);
         $query .= " ORDER BY sc.Name, s.Name";
         $success = $this->query_params($query, $params, $results, $numrows, $trace);
         if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
