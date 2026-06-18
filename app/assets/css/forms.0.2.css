@@ -2489,6 +2489,7 @@ input
 }
 .se-required {
     white-space: nowrap;
+    color: #444;
 }
 .se-required-pos  { }
 .se-required-neg  { color: var(--dangerbg, #e2001a); }
