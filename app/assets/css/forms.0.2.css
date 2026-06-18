@@ -2488,12 +2488,11 @@ input
     box-shadow: 0 0 0 2px rgba(92, 144, 58, 0.2);
 }
 .se-required {
-    font-weight: 600;
     white-space: nowrap;
 }
-.se-required-pos  { color: var(--doitbg, #5c903a); }
+.se-required-pos  { }
 .se-required-neg  { color: var(--dangerbg, #e2001a); }
-.se-required-zero { color: #888; }
+.se-required-zero { }
 .se-empty,
 .se-loading {
     text-align: center;
