@@ -29,7 +29,7 @@ class TransferEventForm extends StockEventForm {
              . '<th class="se-th-name">Stock Item</th>'
              . '<th class="se-th-qoh">Current<br>QOH</th>'
              . '<th class="se-th-target">Target</th>'
-             . '<th class="se-th-required">Required</th>'
+             . '<th class="se-th-required">Rqd</th>'
              . '<th class="se-th-qty">Qty<br>Transferred</th>'
              . '</tr>';
     }
