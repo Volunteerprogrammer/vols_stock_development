@@ -281,9 +281,9 @@ class HTMLHead extends \fw\view\head\HTMLHead
                                                     }
                                          }];
                                if (dtype === "BOOKINGHISTORY" ) {
-                                   myoptions = jQuery.extend(options, {Width: "auto", minWidth: 900, maxWidth: "95vw", height:"auto" });
+                                   myoptions = jQuery.extend(options, {width: "auto", minWidth: 900, maxWidth: "95vw", height:"auto" });
                                } else {
-                                   myoptions = jQuery.extend(options, {Width: "auto", minWidth: 450, maxWidth: "95vw", height:"auto" });
+                                   myoptions = jQuery.extend(options, {width: "auto", minWidth: 450, maxWidth: "95vw", height:"auto" });
                                }
                                break;
                             // case "PRINT":
