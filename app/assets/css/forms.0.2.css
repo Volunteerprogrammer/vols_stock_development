@@ -2459,17 +2459,22 @@ input
 
 /* Current QOH / Target / Required columns */
 .se-th-qoh,
-.se-th-target,
+.se-th-target {
+    text-align: left;
+}
 .se-th-required {
     text-align: right;
 }
 .se-td-qoh {
     padding: 0.4rem 0.6rem;
-    text-align: right;
+    text-align: left;
     color: #555;
     font-size: 1.3rem;
 }
-.se-td-target,
+.se-td-target {
+    padding: 0.4rem 0.4rem;
+    text-align: left;
+}
 .se-td-required {
     padding: 0.4rem 0.4rem;
     text-align: right;
