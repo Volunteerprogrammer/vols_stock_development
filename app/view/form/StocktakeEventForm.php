@@ -70,14 +70,23 @@ class StocktakeEventForm extends StockEventForm {
 // ---- StocktakeEventForm-specific JS ----
 
 // Warn when the count entered exceeds the system's expected QOH for that item.
+// Only fires when the user explicitly commits via +, REPLACE, or - buttons.
 (function() {
+    var _alertArmed = false;
+
+    jQuery(document).on('touchstart click', '.se-digit-add, .se-digit-replace, .se-digit-subtract', function() {
+        _alertArmed = true;
+    });
+
     var _baseSave = savemovement;
     savemovement = function($input) {
+        var doAlert  = _alertArmed;
+        _alertArmed  = false;
         var counted  = parseFloat($input.val());
         var $row     = $input.closest('tr');
         var expected = $row.data('expected');
         _baseSave($input);
-        if (!isNaN(counted) && expected !== undefined && counted > expected) {
+        if (doAlert && !isNaN(counted) && expected !== undefined && counted > expected) {
             var name = $row.find('.se-td-name').text();
             setTimeout(function() {
                 jQuery.volsdialog('OKMSG',

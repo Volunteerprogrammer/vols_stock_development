@@ -2337,6 +2337,9 @@ input
     border-collapse: collapse;
     font-size: 1.4rem;
 }
+.se-event-transfer .se-stock-table {
+    width: auto;
+}
 .se-stock-table thead th {
     position: sticky;
     top: 0;
@@ -2406,7 +2409,7 @@ input
 .se-log-btn::before {
     content: '';
     position: absolute;
-    inset: -1rem -4rem -1rem -8rem;
+    inset: -1rem -1rem -1rem -2rem;
 }
 .se-log-btn:active {
     background: #ddd;
