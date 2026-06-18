@@ -2617,7 +2617,7 @@ input
 .se-pad-nav {
     display: flex;
     gap: 0.4rem;
-    margin-top: 0.4rem;
+    margin-top: 3.5rem;
 }
 .se-digit-prev,
 .se-digit-next {
