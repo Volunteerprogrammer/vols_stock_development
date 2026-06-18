@@ -138,6 +138,16 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $this->manager->getanyinprogressstocktake($result, $numrows);
                             $output = json_encode(['found' => $numrows > 0, 'count' => $numrows, 'event' => $result]);
                             break;
+                        case "stockevent_getanyotherinprogressatlocation":
+                            $this->manager = $this->managercollection->StockEventManager();
+                            $this->manager->init($this->session);
+                            $d           = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $location_id = (int)($d["location_id"] ?? 0);
+                            $result      = [];
+                            $numrows     = 0;
+                            $this->manager->getanyotherinprogresseventatlocation($location_id, $result, $numrows);
+                            $output = json_encode(['found' => $numrows > 0, 'event' => $result ? $result[0] : null]);
+                            break;
                         case "stockevent_getinprogressevent":
                             $this->manager = $this->managercollection->StockEventManager();
                             $this->manager->init($this->session);

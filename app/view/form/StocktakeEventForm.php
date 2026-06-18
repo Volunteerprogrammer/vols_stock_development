@@ -172,13 +172,27 @@ jQuery(function() {
         setviewmode(false);
         if (!loc) return;
 
-        getinprogressevent('stocktake', loc, null, null, function(r) {
-            if (r.found && r.event && r.event.id) {
-                resumestocktake(r.event.id, loc, '');
-            } else {
-                jQuery('#se-prev-event-row').show();
-                loadpreviousevents('stocktake', loc, null, null);
-            }
+        // Block if any non-stocktake event is in progress at this location.
+        doServerRequest(0, JSON.stringify({ location_id: loc }), 'stockevent_getanyotherinprogressatlocation').then(function(resp) {
+            try {
+                var r = JSON.parse(resp);
+                if (r.found && r.event) {
+                    var label = r.event.event.charAt(0).toUpperCase() + r.event.event.slice(1);
+                    jQuery.volsdialog('OKMSG',
+                        'A ' + label + ' event is currently in progress at this location. Please close or cancel it before starting a stocktake.',
+                        function() { jQuery('#se-location1').val(''); },
+                        undefined, 'Event In Progress');
+                    return;
+                }
+                getinprogressevent('stocktake', loc, null, null, function(r2) {
+                    if (r2.found && r2.event && r2.event.id) {
+                        resumestocktake(r2.event.id, loc, '');
+                    } else {
+                        jQuery('#se-prev-event-row').show();
+                        loadpreviousevents('stocktake', loc, null, null);
+                    }
+                });
+            } catch(ex) { console.error(ex, resp); }
         });
     });
 

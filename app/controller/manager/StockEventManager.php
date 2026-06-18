@@ -43,6 +43,13 @@ class StockEventManager extends \fw\controller\manager\StdManager
                 $errormessage = "A stocktake is already in progress at this location. Close or cancel it before starting a new one.";
                 return false;
             }
+            $other = []; $othern = 0;
+            $this->table->getanyotherinprogresseventatlocation($location1_id, $other, $othern);
+            if ($othern > 0) {
+                $ev = $other[0];
+                $errormessage = "A " . ucfirst($ev['event']) . " event is currently in progress at this location. Please close or cancel it before starting a stocktake.";
+                return false;
+            }
         } else {
             // For all other event types, block if a stocktake is in progress at any relevant location.
             foreach (array_filter([$location1_id, $location2_id]) as $loc_id) {
@@ -88,6 +95,10 @@ class StockEventManager extends \fw\controller\manager\StdManager
         $result = (!empty($results)) ? $results[0] : [];
         if ($this->trace) { echo "Leave ".__METHOD__." found={$numrows}<br>"; }
         return $success;
+    }
+
+    public function getanyotherinprogresseventatlocation($location_id, &$results, &$numrows) {
+        return $this->table->getanyotherinprogresseventatlocation($location_id, $results, $numrows);
     }
 
     // =========================================================================
@@ -511,16 +522,26 @@ class StockEventManager extends \fw\controller\manager\StdManager
             return false;
         }
 
-        // Block if a stocktake for the same location was closed after this event was created
-        $st_results = [];
-        $st_numrows = 0;
-        $this->table->query_params(
-            "SELECT id FROM stock_event WHERE event = 'stocktake' AND status = 'closed' AND location1_id = ? AND date_closed > ?",
-            [$event['location1_id'], $event['date_created']], $st_results, $st_numrows
+        // If no movements have been recorded, nothing can have been invalidated — allow cancel.
+        $mv_results = []; $mv_numrows = 0;
+        $this->movementtable->query_params(
+            "SELECT COUNT(*) AS cnt FROM stock_movement WHERE stock_event_id = ?",
+            [(int)$event_id], $mv_results, $mv_numrows
         );
-        if ($st_numrows > 0) {
-            $errormessage = "This event cannot be cancelled: a stocktake was completed after it was created.";
-            return false;
+        $has_movements = !empty($mv_results) && (int)($mv_results[0]['cnt'] ?? 0) > 0;
+
+        if ($has_movements) {
+            // Block if a stocktake for the same location was closed after this event was created
+            $st_results = [];
+            $st_numrows = 0;
+            $this->table->query_params(
+                "SELECT id FROM stock_event WHERE event = 'stocktake' AND status = 'closed' AND location1_id = ? AND date_closed > ?",
+                [$event['location1_id'], $event['date_created']], $st_results, $st_numrows
+            );
+            if ($st_numrows > 0) {
+                $errormessage = "This event cannot be cancelled: a stocktake was completed after it was created.";
+                return false;
+            }
         }
 
         // Delete all movements linked to this event

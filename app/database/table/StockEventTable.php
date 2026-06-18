@@ -175,6 +175,22 @@ class StockEventTable extends \fw\database\table\MySQLTable
         return $success;
     }
 
+    // Returns any in-progress non-stocktake event at a given location (location1 or location2).
+    // Used to block a new stocktake from starting while another event is open.
+    public function getanyotherinprogresseventatlocation($location_id, &$results, &$numrows, $trace=false) {
+        if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
+        $success = $this->query_params(
+            "SELECT se.*, l.name as location1_name FROM stock_event se"
+            . " JOIN stock_location l ON se.location1_id = l.id"
+            . " WHERE se.event != 'stocktake' AND se.status = 'in progress'"
+            . " AND (se.location1_id = ? OR se.location2_id = ?)"
+            . " ORDER BY se.date_created DESC LIMIT 1",
+            [$location_id, $location_id], $results, $numrows, $trace
+        );
+        if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
+        return $success;
+    }
+
     // Returns closed events of a given type matching location(s) and optional supplier, newest first.
     public function getpreviousevents($event_type, $location1_id, $location2_id, $supplier_id, &$results, &$numrows, $trace=false) {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
