@@ -408,22 +408,47 @@ function getbreakdown(stockId) {
             jQuery('#se-pad-display').val('');
         } else if (key === 'back') {
             jQuery('#se-pad-display').val(padVal.slice(0, -1));
-        } else if (key === 'next') {
-            clearTimeout(saveTimer);
-            savemovement($activeInput);
-            jQuery('#se-pad-display').val('');
-            var $inputs = jQuery('.se-qty:visible');
-            var $next   = $inputs.eq($inputs.index($activeInput[0]) + 1);
-            if ($next.length) { $next.focus(); } else { $activeInput.blur(); }
-            return;
-        } else if (key === 'prev') {
-            clearTimeout(saveTimer);
-            savemovement($activeInput);
-            jQuery('#se-pad-display').val('');
-            var $inputs = jQuery('.se-qty:visible');
-            var idx     = $inputs.index($activeInput[0]);
-            var $prev   = idx > 0 ? $inputs.eq(idx - 1) : jQuery();
-            if ($prev.length) { $prev.focus(); } else { $activeInput.blur(); }
+        } else if (key === 'next' || key === 'prev') {
+            var $inputs2 = jQuery('.se-qty:visible');
+            var $target;
+            if (key === 'next') {
+                $target = $inputs2.eq($inputs2.index($activeInput[0]) + 1);
+            } else {
+                var pidx = $inputs2.index($activeInput[0]);
+                $target  = pidx > 0 ? $inputs2.eq(pidx - 1) : jQuery();
+            }
+            var doNavigate = function() {
+                clearTimeout(saveTimer);
+                savemovement($activeInput);
+                jQuery('#se-pad-display').val('');
+                if ($target.length) { $target.focus(); } else { $activeInput.blur(); }
+            };
+            if (padVal !== '') {
+                var $capturedInput = $activeInput;
+                var capturedPadVal = padVal;
+                jQuery('<div>').html('The pad shows <strong>' + capturedPadVal + '</strong> — apply it to this item first, or clear it?')
+                    .dialog({
+                        title: 'Pending Pad Value', modal: true, width: 440,
+                        buttons: [
+                            { text: 'Apply (+)', click: function() {
+                                jQuery(this).dialog('close').remove();
+                                var cur = parseFloat($capturedInput.val() || '0') || 0;
+                                var num = parseFloat(capturedPadVal) || 0;
+                                $capturedInput.val(String(Math.round((cur + num) * 10) / 10));
+                                doNavigate();
+                            }},
+                            { text: 'CLR', click: function() {
+                                jQuery(this).dialog('close').remove();
+                                doNavigate();
+                            }},
+                            { text: 'Cancel', click: function() {
+                                jQuery(this).dialog('close').remove();
+                            }}
+                        ]
+                    });
+                return;
+            }
+            doNavigate();
             return;
         } else if (key === 'add') {
             var current = parseFloat($activeInput.val() || '0') || 0;
