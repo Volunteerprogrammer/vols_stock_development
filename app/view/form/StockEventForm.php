@@ -424,50 +424,9 @@ function getbreakdown(stockId) {
                 if ($target.length) { $target.focus(); } else { $activeInput.blur(); }
             };
             if (padVal !== '') {
-                var $capturedInput = $activeInput;
-                var capturedPadVal = padVal;
-                jQuery('<div>').html('The pad shows <strong>' + capturedPadVal + '</strong> — apply it to this item first, or clear it?')
-                    .dialog({
-                        title: 'Pending Pad Value', modal: true, width: 580,
-                        open: function() {
-                            var $widget = jQuery(this).dialog('widget');
-                            $widget.find('.ui-dialog-buttonset').css({'display':'flex','align-items':'stretch'});
-                            var $btns = $widget.find('.ui-dialog-buttonpane button');
-                            $btns.css({'border-radius':'3px','margin':'0 4px 0 0'});
-                            $btns.eq(0).css({'background-color':'#e6f4ea','color':'#1a5c2a','border-color':'#3a8a4a','border-style':'solid','font-size':'4.8rem'});
-                            $btns.eq(1).css({'background-color':'#e8f0fe','color':'#1a3a7a','border-color':'#3a5abf','border-style':'solid'});
-                            $btns.eq(2).css({'background-color':'#fdecea','color':'#7a1a1a','border-color':'#c04040','border-style':'solid','font-size':'4.8rem'});
-                            $btns.eq(3).css({'background-color':'#fff4e0','color':'#7a4e00','border-color':'#c07a00','border-style':'solid'});
-                        },
-                        buttons: [
-                            { text: '+', click: function() {
-                                jQuery(this).dialog('close').remove();
-                                var cur = parseFloat($capturedInput.val() || '0') || 0;
-                                var num = parseFloat(capturedPadVal) || 0;
-                                $capturedInput.val(String(Math.round((cur + num) * 10) / 10));
-                                doNavigate();
-                            }},
-                            { text: 'REPLACE', click: function() {
-                                jQuery(this).dialog('close').remove();
-                                $capturedInput.val(capturedPadVal);
-                                doNavigate();
-                            }},
-                            { text: '-', click: function() {
-                                jQuery(this).dialog('close').remove();
-                                var cur = parseFloat($capturedInput.val() || '0') || 0;
-                                var num = parseFloat(capturedPadVal) || 0;
-                                $capturedInput.val(String(Math.round((cur - num) * 10) / 10));
-                                doNavigate();
-                            }},
-                            { text: 'CLR', click: function() {
-                                jQuery(this).dialog('close').remove();
-                                doNavigate();
-                            }},
-                            { text: 'Cancel', click: function() {
-                                jQuery(this).dialog('close').remove();
-                            }}
-                        ]
-                    });
+                jQuery.volsdialog('OKMSG',
+                    'The pad shows ' + padVal + ' — please apply this to the stock item or clear it before navigating.',
+                    undefined, undefined, 'Pending Pad Value');
                 return;
             }
             doNavigate();
