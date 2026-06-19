@@ -437,7 +437,7 @@ function getbreakdown(stockId) {
                             $btns.eq(3).css({'background-color':'#fff4e0','color':'#7a4e00','border-color':'#c07a00','border-style':'solid'});
                         },
                         buttons: [
-                            { text: 'Apply (+)', click: function() {
+                            { text: '+', click: function() {
                                 jQuery(this).dialog('close').remove();
                                 var cur = parseFloat($capturedInput.val() || '0') || 0;
                                 var num = parseFloat(capturedPadVal) || 0;
