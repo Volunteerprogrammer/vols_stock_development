@@ -428,12 +428,13 @@ function getbreakdown(stockId) {
                 var capturedPadVal = padVal;
                 jQuery('<div>').html('The pad shows <strong>' + capturedPadVal + '</strong> — apply it to this item first, or clear it?')
                     .dialog({
-                        title: 'Pending Pad Value', modal: true, width: 440,
+                        title: 'Pending Pad Value', modal: true, width: 580,
                         open: function() {
                             var $btns = jQuery(this).dialog('widget').find('.ui-dialog-buttonpane button');
                             $btns.eq(0).css({'background-color':'#e6f4ea','color':'#1a5c2a','border-color':'#3a8a4a','border-style':'solid'});
                             $btns.eq(1).css({'background-color':'#e8f0fe','color':'#1a3a7a','border-color':'#3a5abf','border-style':'solid'});
                             $btns.eq(2).css({'background-color':'#fdecea','color':'#7a1a1a','border-color':'#c04040','border-style':'solid'});
+                            $btns.eq(3).css({'background-color':'#fff4e0','color':'#7a4e00','border-color':'#c07a00','border-style':'solid'});
                         },
                         buttons: [
                             { text: 'Apply (+)', click: function() {
