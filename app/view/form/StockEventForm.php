@@ -424,12 +424,10 @@ function getbreakdown(stockId) {
                 if ($target.length) { $target.focus(); } else { $activeInput.blur(); }
             };
             if (padVal !== '') {
-                jQuery.volsdialog('OKMSG',
-                    '<p>The pad shows <strong>' + padVal + '</strong>.</p><p>Please apply this to the stock item or clear it before navigating.</p>',
-                    undefined, undefined, 'Pending Pad Value',
-                    undefined, undefined, undefined,
-                    function() {
-                        jQuery('#volsdialog').closest('.ui-dialog').css({'min-width': '0', 'width': '320px'});
+                jQuery('<div>').html('<p>The pad shows <strong>' + padVal + '</strong>.</p><p>Please apply this to the stock item or clear it before navigating.</p>')
+                    .dialog({
+                        title: 'Pending Pad Value', modal: true, width: 340,
+                        buttons: [{ text: 'OK', click: function() { jQuery(this).dialog('close').remove(); } }]
                     });
                 return;
             }
