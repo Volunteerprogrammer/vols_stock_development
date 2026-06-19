@@ -429,12 +429,30 @@ function getbreakdown(stockId) {
                 jQuery('<div>').html('The pad shows <strong>' + capturedPadVal + '</strong> — apply it to this item first, or clear it?')
                     .dialog({
                         title: 'Pending Pad Value', modal: true, width: 440,
+                        open: function() {
+                            var $btns = jQuery(this).dialog('widget').find('.ui-dialog-buttonpane button');
+                            $btns.eq(0).css({'background-color':'#e6f4ea','color':'#1a5c2a','border-color':'#3a8a4a','border-style':'solid'});
+                            $btns.eq(1).css({'background-color':'#e8f0fe','color':'#1a3a7a','border-color':'#3a5abf','border-style':'solid'});
+                            $btns.eq(2).css({'background-color':'#fdecea','color':'#7a1a1a','border-color':'#c04040','border-style':'solid'});
+                        },
                         buttons: [
                             { text: 'Apply (+)', click: function() {
                                 jQuery(this).dialog('close').remove();
                                 var cur = parseFloat($capturedInput.val() || '0') || 0;
                                 var num = parseFloat(capturedPadVal) || 0;
                                 $capturedInput.val(String(Math.round((cur + num) * 10) / 10));
+                                doNavigate();
+                            }},
+                            { text: 'REPLACE', click: function() {
+                                jQuery(this).dialog('close').remove();
+                                $capturedInput.val(capturedPadVal);
+                                doNavigate();
+                            }},
+                            { text: '-', click: function() {
+                                jQuery(this).dialog('close').remove();
+                                var cur = parseFloat($capturedInput.val() || '0') || 0;
+                                var num = parseFloat(capturedPadVal) || 0;
+                                $capturedInput.val(String(Math.round((cur - num) * 10) / 10));
                                 doNavigate();
                             }},
                             { text: 'CLR', click: function() {
@@ -699,6 +717,10 @@ function loadstock(event_id, category_id, supplier_id) {
         jQuery('#se-stock-table-body').html(resp);
         jQuery('#se-stock-table-body .se-qty').prop('readonly', true);
         resizestocktable();
+        if (!jQuery('#se-event-controls').hasClass('se-readonly')) {
+            var $first = jQuery('#se-stock-table-body .se-qty:visible').first();
+            if ($first.length) { $first.focus(); }
+        }
     });
 }
 
