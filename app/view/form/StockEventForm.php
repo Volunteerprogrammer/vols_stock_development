@@ -426,7 +426,11 @@ function getbreakdown(stockId) {
             if (padVal !== '') {
                 jQuery.volsdialog('OKMSG',
                     'The pad shows ' + padVal + ' — please apply this to the stock item or clear it before navigating.',
-                    undefined, undefined, 'Pending Pad Value');
+                    undefined, undefined, 'Pending Pad Value',
+                    undefined, undefined, undefined,
+                    function() {
+                        jQuery('#volsdialog').dialog('option', 'minWidth', 100).dialog('option', 'width', 'auto');
+                    });
                 return;
             }
             doNavigate();
