@@ -25,6 +25,7 @@ class TransferEventForm extends StockEventForm {
 
     protected function renderstocktableheader(): string {
         return '<tr>'
+             . '<th class="se-th-category">Category</th>'
              . '<th class="se-th-name">Stock Item</th>'
              . '<th class="se-th-qoh">Current<br>QOH</th>'
              . '<th class="se-th-target">Target</th>'
@@ -54,6 +55,7 @@ class TransferEventForm extends StockEventForm {
         }
 
         return '<tr class="se-stock-row" data-stock-id="' . $stock_id . '" data-qoh="' . $current_qoh . '">'
+             . '<td class="se-td-category">' . $cat_name    . '</td>'
              . '<td class="se-td-name">'     . $stock_name  . '</td>'
              . '<td class="se-td-qoh">'      . $current_qoh . '</td>'
              . '<td class="se-td-target">'   . $tgt_html    . '</td>'

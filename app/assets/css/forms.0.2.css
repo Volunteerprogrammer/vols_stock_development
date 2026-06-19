@@ -2337,8 +2337,12 @@ input
     border-collapse: collapse;
     font-size: 1.4rem;
 }
-.se-event-transfer .se-stock-table {
+.se-event-transfer #se-event-controls:not(.se-readonly) .se-stock-table {
     width: auto;
+}
+.se-event-transfer #se-event-controls:not(.se-readonly) .se-th-category,
+.se-event-transfer #se-event-controls:not(.se-readonly) .se-td-category {
+    display: none;
 }
 .se-stock-table thead th {
     position: sticky;
