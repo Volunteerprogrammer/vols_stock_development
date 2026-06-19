@@ -430,7 +430,10 @@ function getbreakdown(stockId) {
                     .dialog({
                         title: 'Pending Pad Value', modal: true, width: 580,
                         open: function() {
-                            var $btns = jQuery(this).dialog('widget').find('.ui-dialog-buttonpane button');
+                            var $widget = jQuery(this).dialog('widget');
+                            $widget.find('.ui-dialog-buttonset').css({'display':'flex','align-items':'stretch'});
+                            var $btns = $widget.find('.ui-dialog-buttonpane button');
+                            $btns.css({'border-radius':'3px'});
                             $btns.eq(0).css({'background-color':'#e6f4ea','color':'#1a5c2a','border-color':'#3a8a4a','border-style':'solid','font-size':'4.8rem'});
                             $btns.eq(1).css({'background-color':'#e8f0fe','color':'#1a3a7a','border-color':'#3a5abf','border-style':'solid'});
                             $btns.eq(2).css({'background-color':'#fdecea','color':'#7a1a1a','border-color':'#c04040','border-style':'solid','font-size':'4.8rem'});
