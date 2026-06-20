@@ -304,6 +304,16 @@ class SessionManager extends \fw\controller\manager\StdManager
             $results, $numrows
         );
         $attended = !empty($results) && (int)($results[0]['cnt'] ?? 0) > 0;
+        if ($attended) {
+            $display_date = $parts[0] . '/' . $parts[1] . '/' . $parts[2]; // DD/MM/YYYY
+            $note = $display_date . ': Attending twice in a week';
+            $result = null; $rownums = 0; $errmsg = '';
+            $this->clientsessiontable->execute_params(
+                "UPDATE client SET office_comments = TRIM(LEADING '\n' FROM CONCAT('\n', COALESCE(office_comments, ''), '\n', ?))"
+                . " WHERE id = ?",
+                [$note, $client_id], $result, $rownums, $errmsg, 1
+            );
+        }
         // Re-registration check: alert if date_registered is 12+ months ago
         $regresults = []; $regnumrows = 0;
         $this->clientsessiontable->query_params(
