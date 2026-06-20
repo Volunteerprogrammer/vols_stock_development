@@ -287,6 +287,23 @@ class SessionManager extends \fw\controller\manager\StdManager
             return "!!".$errormessage;
         }
      }    
+    public function checkmondayattendance($client_id, $session_date_str) {
+        // $session_date_str is 'dd.mm.yyyy' from the session selector data-date attribute
+        $parts = explode('.', $session_date_str);
+        if (count($parts) !== 3 || !$client_id) return json_encode(['attended' => false]);
+        $mysql_date = $parts[2] . '-' . $parts[1] . '-' . $parts[0]; // YYYY-MM-DD
+        $results = []; $numrows = 0;
+        $this->clientsessiontable->query_params(
+            "SELECT COUNT(*) AS cnt FROM client_session cs"
+            . " JOIN session s ON s.id = cs.session_id"
+            . " WHERE cs.client_id = ?"
+            . " AND DATE(s.start) = DATE_SUB(DATE(?), INTERVAL DAYOFWEEK(DATE(?)) - 2 DAY)",
+            [$client_id, $mysql_date, $mysql_date],
+            $results, $numrows
+        );
+        $attended = !empty($results) && (int)($results[0]['cnt'] ?? 0) > 0;
+        return json_encode(['attended' => $attended]);
+    }
     public function deleteclientsession($clientsession_id) {
        $success = $this->clientsessiontable->delete("`id`={$clientsession_id}",$numrows,false,$errormessage);
         if ($success) {

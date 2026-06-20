@@ -380,10 +380,24 @@ class AttendanceForm extends \fw\view\form\Form {
                         jQuery("#attendeeslist").append(listitem.prop("outerHTML")); 
                         jQuery("#attendeeslist li").last().data("clientsessionid",clientsession_id);
                         const test = jQuery("#attendeeslist li").last().data("clientsessionid");
-                        listitem.remove(); 
+                        listitem.remove();
                         reset();
-                    }                   
+                        checkmondayattendance(client_id);
+                    }
                     setlihandlers(1);
+                }
+                async function checkmondayattendance(client_id) {
+                    const $opt = jQuery('#sessionselector option:selected');
+                    if ($opt.text().indexOf('(Thu)') === -1) return;
+                    const datestr = $opt.data('date'); // 'dd.mm.yyyy'
+                    if (!datestr) return;
+                    try {
+                        const result = await doServerRequest('', JSON.stringify({client_id: client_id, session_date: datestr}), 'attendance_checkmondayattendance');
+                        const r = JSON.parse(result);
+                        if (r.attended) {
+                            jQuery.volsdialog('OKMSG', 'This client also attended on Monday this week.', undefined, undefined, 'Also attended Monday');
+                        }
+                    } catch(e) { console.error('checkmondayattendance', e); }
                 }
                 function removeattendee(listitem) {
                     const content = "Remove this attendee?"

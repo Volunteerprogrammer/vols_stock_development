@@ -110,11 +110,17 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $this->sessionmanager->init($this->session);
                             $output = $this->sessionmanager->deleteclientsession($this->requestdata["id"]);
                             break;
-                       case "addclientsession" :    
+                       case "addclientsession" :
                              $this->sessionmanager = $this->managercollection->sessionmanager();
                             $this->sessionmanager->init($this->session);
                             $thedata = explode(',',$this->requestdata["thedata"]);
                             $output = $this->sessionmanager->addclientsession($thedata[0],$thedata[1]);
+                            break;
+                        case "attendance_checkmondayattendance":
+                            $this->sessionmanager = $this->managercollection->sessionmanager();
+                            $this->sessionmanager->init($this->session);
+                            $d = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $output = $this->sessionmanager->checkmondayattendance((int)($d['client_id'] ?? 0), $d['session_date'] ?? '');
                             break;
                         case "stockevent_createevent":
                             $this->manager = $this->managercollection->StockEventManager();
