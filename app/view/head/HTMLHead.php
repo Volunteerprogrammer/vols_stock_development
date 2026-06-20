@@ -354,7 +354,7 @@ class HTMLHead extends \fw\view\head\HTMLHead
                                                        }
                                                 }
                                          ];
-                                options = jQuery.extend(options, {width: "auto", minWidth : 600, dialogClass: "no-close",});
+                                options = jQuery.extend(options, {minWidth : 600, dialogClass: "no-close",});
                                break;
                             // case "TEXTAREAEDIT":
                             //    mybuttons = [{ text : "Save",

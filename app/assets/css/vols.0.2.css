@@ -228,10 +228,12 @@ input
   font-size: 2.5rem;
 }
 
-.ui-dialog #vols-dialog.ui-dialog-content {
+.ui-dialog #volsdialog.ui-dialog-content {
 /*	The content area of the dialog.*/
   font-size: 2rem;
   padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 
 }
 .ui-dialog .ui-dialog-buttonpane {
