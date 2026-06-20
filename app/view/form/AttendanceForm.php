@@ -387,8 +387,8 @@ class AttendanceForm extends \fw\view\form\Form {
                     setlihandlers(1);
                 }
                 async function checkmondayattendance(client_id) {
-                    const $opt = jQuery('#sessionselector option:selected');
-                    const datestr = $opt.data('date'); // 'dd.mm.yyyy'
+                    const opt = jQuery('#sessionselector option:selected');
+                    const datestr = opt.data('date'); // 'dd.mm.yyyy'
                     if (!datestr) return;
                     try {
                         const result = await doServerRequest('', JSON.stringify({client_id: client_id, session_date: datestr}), 'attendance_checkmondayattendance');
