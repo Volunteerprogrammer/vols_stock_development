@@ -2625,7 +2625,9 @@ input
     margin-top: 3.5rem;
 }
 .se-digit-prev,
-.se-digit-next {
+.se-digit-next,
+.content_panel .se-digit-prev,
+.content_panel .se-digit-next {
     flex: 1;
     background-color: var(--doitbg, #5c903a);
     color: #fff;
