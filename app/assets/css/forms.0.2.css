@@ -2535,7 +2535,8 @@ input
     grid-template-columns: repeat(3, 1fr);
     gap: 0.4rem;
 }
-.se-digit-btn {
+.se-digit-btn,
+.content_panel .se-digit-btn {
     font-size: 2rem;
     font-weight: 500;
     padding: 0.7rem 0;
