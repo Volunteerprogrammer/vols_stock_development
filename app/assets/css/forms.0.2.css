@@ -1848,6 +1848,8 @@ input
 
 .vols-stockreport-table-wrap {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 22rem);
     width: 100%;
 }
 
@@ -1884,6 +1886,10 @@ input
     margin-bottom: 0.2rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
 }
 
 .vols-stockreport-category {
