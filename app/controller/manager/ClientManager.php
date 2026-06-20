@@ -44,6 +44,20 @@ class ClientManager extends \fw\controller\manager\StdManager
     //     $this->insertintotablefields($fields,$data);
     //     if ($this->trace || $trace ) {echo "Leave ".__METHOD__."<br>";}
     //  }
+    public function update(&$errormessage = "", $trace = false) {
+        $success = parent::update($errormessage, $trace);
+        if ($success) {
+            $data = $this->session->getrequestdata();
+            if (!empty($data['reregister'])) {
+                $result = null; $numrows = 0;
+                $this->table->execute_params(
+                    "UPDATE client SET date_registered = NOW() WHERE id = ?",
+                    [(int)$this->id], $result, $numrows, $errormessage, 1
+                );
+            }
+        }
+        return $success;
+    }
     protected function updatechildren($clientid,$data,&$errormessage,$trace) {
         // the child data constists of groups of 6 fields - id, membername, relationship, mob, yob, cob
         //first load all current children so we can detect records that were deleted
@@ -114,7 +128,7 @@ class ClientManager extends \fw\controller\manager\StdManager
                    . 'address_townsuburb, address_state, address_postcode, residence, gender, '
                    . 'month_of_birth, year_of_birth, interpreter, language, country_of_birth, '
                    . 'aborigine_TSislander, represented_by, carer_name, concession_card, dietary, '
-                   . 'comments, office_comments, has_read_tandc';
+                   . 'comments, office_comments, has_read_tandc, date_first_registered, date_registered';
         $success = $this->table->select($fieldlist, '', '', '', $orderby ?: 'given_name, family_name', 0, $datafields, $numrows, $trace);
         $success = $success && $this->getparents($parents,$trace);  // IN THE SUBCLASS
         if ($success) {

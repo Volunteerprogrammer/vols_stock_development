@@ -290,19 +290,28 @@ class SessionManager extends \fw\controller\manager\StdManager
     public function checkmondayattendance($client_id, $session_date_str) {
         // $session_date_str is 'dd.mm.yyyy' from the session selector data-date attribute
         $parts = explode('.', $session_date_str);
-        if (count($parts) !== 3 || !$client_id) return json_encode(['attended' => false]);
+        if (count($parts) !== 3 || !$client_id) return json_encode(['attended' => false, 'needs_reregistration' => false]);
         $mysql_date = $parts[2] . '-' . $parts[1] . '-' . $parts[0]; // YYYY-MM-DD
+        // Monday attendance: only meaningful for Thursday sessions (DAYOFWEEK=5)
         $results = []; $numrows = 0;
         $this->clientsessiontable->query_params(
             "SELECT COUNT(*) AS cnt FROM client_session cs"
             . " JOIN session s ON s.id = cs.session_id"
             . " WHERE cs.client_id = ?"
+            . " AND DAYOFWEEK(DATE(?)) = 5"
             . " AND DATE(s.start) = DATE_SUB(DATE(?), INTERVAL DAYOFWEEK(DATE(?)) - 2 DAY)",
-            [$client_id, $mysql_date, $mysql_date],
+            [$client_id, $mysql_date, $mysql_date, $mysql_date],
             $results, $numrows
         );
         $attended = !empty($results) && (int)($results[0]['cnt'] ?? 0) > 0;
-        return json_encode(['attended' => $attended]);
+        // Re-registration check: alert if date_registered is 12+ months ago
+        $regresults = []; $regnumrows = 0;
+        $this->clientsessiontable->query_params(
+            "SELECT TIMESTAMPDIFF(MONTH, date_registered, NOW()) >= 12 AS expired FROM client WHERE id = ?",
+            [$client_id], $regresults, $regnumrows
+        );
+        $needs_reregistration = !empty($regresults) && (bool)($regresults[0]['expired'] ?? 0);
+        return json_encode(['attended' => $attended, 'needs_reregistration' => $needs_reregistration]);
     }
     public function deleteclientsession($clientsession_id) {
        $success = $this->clientsessiontable->delete("`id`={$clientsession_id}",$numrows,false,$errormessage);

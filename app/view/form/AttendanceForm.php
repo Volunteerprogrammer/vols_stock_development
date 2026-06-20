@@ -388,13 +388,18 @@ class AttendanceForm extends \fw\view\form\Form {
                 }
                 async function checkmondayattendance(client_id) {
                     const $opt = jQuery('#sessionselector option:selected');
-                    if ($opt.text().indexOf('(Thu)') === -1) return;
                     const datestr = $opt.data('date'); // 'dd.mm.yyyy'
                     if (!datestr) return;
                     try {
                         const result = await doServerRequest('', JSON.stringify({client_id: client_id, session_date: datestr}), 'attendance_checkmondayattendance');
                         const r = JSON.parse(result);
-                        if (r.attended) {
+                        const showMonday = r.attended;
+                        if (r.needs_reregistration) {
+                            const cb = showMonday
+                                ? function() { jQuery.volsdialog('OKMSG', 'This client also attended on Monday this week.', undefined, undefined, 'Also attended Monday'); }
+                                : undefined;
+                            jQuery.volsdialog('OKMSG', 'This client\'s registration is more than 12 months old and needs to be renewed.', cb, undefined, 'Re-registration Required');
+                        } else if (showMonday) {
                             jQuery.volsdialog('OKMSG', 'This client also attended on Monday this week.', undefined, undefined, 'Also attended Monday');
                         }
                     } catch(e) { console.error('checkmondayattendance', e); }

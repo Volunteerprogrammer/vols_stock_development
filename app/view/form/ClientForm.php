@@ -261,6 +261,9 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '</div>';
         $formfields .= '<input type="hidden" id="tandc_signature" name="tandc_signature" value="">';
         //=====================================================================================================
+        $formfields .= '<input type="hidden" id="reregister" name="reregister" value="0">';
+        $formfields .= '<input type="hidden" id="client_date_registered" name="client_date_registered" data-fnum="26">';
+        //=====================================================================================================
         $formfields .= $this->sessionsattended(); // exists in the subclass
         $this->preparecommontop(selecttext:$this->clientid,pagesubheading:$pagesubheading);
         // in this form, vols may perform data entry under a common login. In order to populate the client's registered_by and modified_by fields
@@ -269,6 +272,18 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
         $this->hiddeninputs  = '<input id="registered_by" type="hidden" name="registered_by" value="'.$user_id.'">';
         $this->hiddeninputs .= '<input id="modified_by" type="hidden" name="modified_by"  value="'.$user_id.'">';
         return $formfields;
+     }
+    protected function editclickscript() {
+        return <<<'JS'
+                const dateReg = jQuery('#client_date_registered').val();
+                if (dateReg && clientRegExpired(dateReg)) {
+                    jQuery.volsdialog('YESNO', 'Is this client being re-registered?<br><br>If re-registering, please ensure all data fields are verified as current by the client.',
+                        function() { jQuery('#reregister').val('1'); },
+                        undefined,
+                        'Re-registration'
+                    );
+                }
+        JS;
      }
     protected function newclickscript() {
         // in the case of a ClientVolsForm implementation there is subclass version of this method that
@@ -281,6 +296,7 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
                 // default the state to VIC
                 jQuery("#address_state").val("VIC").change();
                 jQuery("div.attendancecontainer").remove();
+                jQuery('#reregister').val('0');
 
         JS;
         return $script;
@@ -289,6 +305,13 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
         $as = $this->attendancescript; // defined in the subclass
         $script  = <<<JS
                 function postajaxscript(){}
+                function clientRegExpired(dateStr) {
+                    const d = new Date(dateStr);
+                    if (isNaN(d.getTime())) return false;
+                    const cutoff = new Date();
+                    cutoff.setFullYear(cutoff.getFullYear() - 1);
+                    return d < cutoff;
+                }
                 function postloadfieldsscript(selectedid){
                     const fd = "{$this->fielddelimiter}";
                     const rd = "{$this->recorddelimiter}";
@@ -339,13 +362,14 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
                         }
                     }
                     jQuery("#editarea div.childcontainer div.childdeleteicon").off().on("click",function(event){
-                        deletechild(jQuery(this),event);  
+                        deletechild(jQuery(this),event);
                     });
                     jQuery("#address_state").val("VIC").change();
                     {$as}
                     sigclear();
                     doServerRequest(0, JSON.stringify({client_id: selectedid}), 'client_getsignature')
                         .then(function(base64) { sigload(base64); });
+                    jQuery('#reregister').val('0');
                 }
                 function postclearfieldsscript(){
                     jQuery(".vols-tablecell input[type='checkbox']").prop("checked",false);
@@ -434,7 +458,7 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
                         disactivateactionbuttons(0,0,1,1,0,1);
                     }                }
          JS;
-        $script .= $this->vols_masterscript($this->formname, 
+        $script .= $this->vols_masterscript($this->formname,
                                     $this->objname, //$objectname
                                     true, //$idselection=
                                     true,  //$adjustnamerow=
@@ -448,7 +472,7 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
                                     // '', //$presavescript,
                                     // '', // disablescript
                                     // '', //$onloadscript
-                                    ); 
+                                    );
         $script .= <<<'JS'
 
             // ---- Signature pad ----
