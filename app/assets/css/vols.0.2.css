@@ -232,6 +232,7 @@ input
 /*	The content area of the dialog.*/
   font-size: 2rem;
   padding: 1.5rem 1rem;
+  min-width: 560px;
   box-sizing: border-box;
   overflow-wrap: break-word;
 
