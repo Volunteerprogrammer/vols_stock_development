@@ -424,11 +424,8 @@ function getbreakdown(stockId) {
                 if ($target.length) { $target.focus(); } else { $activeInput.blur(); }
             };
             if (padVal !== '') {
-                jQuery('<div>').html('<p>The pad shows <strong>' + padVal + '</strong>.</p><p>Please apply this value to the stock item or clear it before navigating.</p>')
-                    .dialog({
-                        title: 'Pending Pad Value', modal: true, width: 340,
-                        buttons: [{ text: 'OK', click: function() { jQuery(this).dialog('close').remove(); } }]
-                    });
+                jQuery.volsdialog('OKMSG', '<p>The pad shows <strong>' + padVal + '</strong>.</p><p>Please apply this value to the stock item or clear it before navigating.</p>',
+                    undefined, undefined, 'Pending Pad Value');
                 return;
             }
             doNavigate();
