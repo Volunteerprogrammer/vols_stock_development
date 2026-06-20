@@ -58,7 +58,7 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
         $rtype .= '</form>';
 
         // Page header
-        $formfields  = '<div class="vols-stockreport-header">';
+        $formfields  = '<div class="vols-stockreport-layout"><div class="vols-stockreport-controls"><div class="vols-stockreport-header">';
         $formfields .= '<span class="vols-stockreport-icon">&#128202;</span>';
         $formfields .= '<span class="vols-stockreport-headertext">Stocktake variance: the difference between counted quantities and calculated stock levels at the time of each stocktake.</span>';
         $formfields .= '</div>';
@@ -110,6 +110,7 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
             ]);
         }
         $formfields .= '<script>var varianceReportData=[' . implode(',', $jsrows) . '];</script>';
+        $formfields .= '</div><div class="vols-stockreport-scroll">';
 
         // Variance table — only shown when an event is selected and there is data
         if (!empty($event_id) && !empty($this->alldata)) {
@@ -160,6 +161,7 @@ class StocktakeVarianceReportForm extends \fw\view\form\StdCRUDForm {
             }
         }
 
+        $formfields .= '</div></div>'; // scroll + layout
         $this->preparecommontop(true, true, '<input type="hidden" name="report_type" value="stocktakevariance">', '', false, $rtype);
         return $formfields;
     }

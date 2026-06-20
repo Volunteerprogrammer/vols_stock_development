@@ -1846,10 +1846,23 @@ input
     opacity: 0.85;
 }
 
+.vols-stockreport-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+.vols-stockreport-controls {
+    flex-shrink: 0;
+    background: #fff;
+}
+.vols-stockreport-scroll {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
 .vols-stockreport-table-wrap {
     overflow-x: auto;
-    overflow-y: auto;
-    max-height: calc(100vh - 22rem);
     width: 100%;
 }
 
@@ -2138,6 +2151,10 @@ input
     color: var(--midgrey, #888);
     border-bottom: 2px solid var(--midgrey, #aaa);
     padding-bottom: 0.3rem;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
     margin-bottom: 0.2rem;
 }
 

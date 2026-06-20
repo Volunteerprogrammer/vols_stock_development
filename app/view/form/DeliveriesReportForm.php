@@ -59,7 +59,7 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
         $rtype .= '</select>';
         $rtype .= '</form>';
 
-        $formfields  = '<div class="vols-stockreport-header">';
+        $formfields  = '<div class="vols-stockreport-layout"><div class="vols-stockreport-controls"><div class="vols-stockreport-header">';
         $formfields .= '<span class="vols-stockreport-icon">&#128666;</span>';
         $formfields .= '<span class="vols-stockreport-headertext">Deliveries report. Select a date range to list all closed deliveries with their total weights.</span>';
         $formfields .= '</div>';
@@ -119,6 +119,7 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
                      . 'var deliverySelSup='       . json_encode($sel_sup) . ';'
                      . 'document.addEventListener("DOMContentLoaded",function(){filterDeliverySuppliers(deliverySelCat);});'
                      . '</script>';
+        $formfields .= '</div><div class="vols-stockreport-scroll">';
 
         // Group flat query rows into deliveries
         $deliveries = [];
@@ -218,6 +219,7 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<script>var deliveriesReportTo="'   . htmlspecialchars($to_disp)   . '";</script>';
         }
 
+        $formfields .= '</div></div>'; // scroll + layout
         $this->preparecommontop(true, true, '<input type="hidden" name="report_type" value="deliveriesreport">', '', false, $rtype);
         return $formfields;
     }

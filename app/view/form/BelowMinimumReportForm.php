@@ -53,7 +53,7 @@ class BelowMinimumReportForm extends \fw\view\form\StdCRUDForm {
         $rtype .= '</select>';
         $rtype .= '</form>';
 
-        $formfields  = '<div class="vols-stockreport-header">';
+        $formfields  = '<div class="vols-stockreport-layout"><div class="vols-stockreport-controls"><div class="vols-stockreport-header">';
         $formfields .= '<span class="vols-stockreport-icon">&#9660;</span>';
         $formfields .= '<span class="vols-stockreport-headertext">Low Stock report. Lists stock items whose current level is below their set minimum quantity.</span>';
         $formfields .= '</div>';
@@ -69,6 +69,7 @@ class BelowMinimumReportForm extends \fw\view\form\StdCRUDForm {
         }
         $formfields .= '</select>';
         $formfields .= '</div>';
+        $formfields .= '</div><div class="vols-stockreport-scroll">';
 
         $show_loc = empty($location_id);
 
@@ -120,6 +121,7 @@ class BelowMinimumReportForm extends \fw\view\form\StdCRUDForm {
             $formfields .= '<script>var belowMinShowLoc='  . ($show_loc ? 'true' : 'false') . ';</script>';
         }
 
+        $formfields .= '</div></div>'; // scroll + layout
         $this->preparecommontop(true, true, '<input type="hidden" name="report_type" value="belowminimumreport">', '', false, $rtype);
         return $formfields;
     }

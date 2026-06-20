@@ -56,7 +56,7 @@ class StockUsageReportForm extends \fw\view\form\StdCRUDForm {
         $rtype .= '</select>';
         $rtype .= '</form>';
 
-        $formfields  = '<div class="vols-usagereport-header">';
+        $formfields  = '<div class="vols-stockreport-layout"><div class="vols-stockreport-controls"><div class="vols-usagereport-header">';
         $formfields .= '<span class="vols-usagereport-icon">&#128200;</span>';
         $formfields .= '<span class="vols-usagereport-headertext">Stock usage report. Select a location and date range, then click Generate.</span>';
         $formfields .= '</div>';
@@ -80,6 +80,7 @@ class StockUsageReportForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '<input type="date" name="to" class="vols-usagereport-dateinput" value="'.htmlspecialchars($to_val).'">';
         $formfields .= '<button type="submit" class="vols-usagereport-genbtn">Generate Report</button>';
         $formfields .= '</div>';
+        $formfields .= '</div><div class="vols-stockreport-scroll">';
 
         if ($queried) {
             $from_disp = date('d-m-Y', strtotime($this->parents['from']));
@@ -135,6 +136,7 @@ class StockUsageReportForm extends \fw\view\form\StdCRUDForm {
             }
         }
 
+        $formfields .= '</div></div>'; // scroll + layout
         $this->preparecommontop(true, true, '<input type="hidden" name="report_type" value="usagereport">', '', false, $rtype);
         return $formfields;
     }

@@ -75,7 +75,7 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
                 : ' Each row shows the last stocktake per location as the baseline.';
         }
 
-        $formfields  = '<div class="vols-stockreport-header">';
+        $formfields  = '<div class="vols-stockreport-layout"><div class="vols-stockreport-controls"><div class="vols-stockreport-header">';
         $formfields .= '<span class="vols-stockreport-icon">&#128202;</span>';
         $formfields .= '<span class="vols-stockreport-headertext">' . $header_text . '</span>';
         $formfields .= '</div>';
@@ -131,7 +131,7 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
         $show_stdate  = !empty($location_id);
         $table_class  = 'vols-stockreport-table' . ($show_stdate ? '' : ' vols-stockreport-table--noloc');
 
-        $formfields .= '<div class="vols-stockreport-table-wrap">';
+        $formfields .= '</div><div class="vols-stockreport-scroll"><div class="vols-stockreport-table-wrap">';
         $formfields .= '<div class="' . $table_class . '">';
         $formfields .= '<div class="vols-stockreport-colheadings">';
         $formfields .= '<div class="vols-stockreport-col-name">Item</div>';
@@ -179,7 +179,7 @@ class StockLevelReportForm extends \fw\view\form\StdCRUDForm {
         }
 
         $formfields .= '</div>'; // vols-stockreport-table
-        $formfields .= '</div>'; // vols-stockreport-table-wrap
+        $formfields .= '</div></div></div>'; // table-wrap + scroll + layout
 
         $this->component->setheadingoverride("Stock Reports");
         $rtype  = '<form id="reporttypeform" method="POST">';
