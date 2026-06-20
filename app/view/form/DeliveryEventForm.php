@@ -36,7 +36,7 @@ class DeliveryEventForm extends StockEventForm {
                 $date  = date('d M Y', strtotime($sup['in_progress_date']));
                 $label_text = $sup['name'] . ' – continue (' . $date . ')';
             } else {
-                $label_text = $sup['name'] . ' – New Delivery';
+                $label_text = $sup['name'];
             }
             $html .= '<option value="' . (int)$sup['id'] . '" data-event-id="' . $event_id . '">'
                    . htmlspecialchars($label_text) . '</option>';
