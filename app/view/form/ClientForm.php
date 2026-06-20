@@ -262,7 +262,7 @@ class ClientForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '<input type="hidden" id="tandc_signature" name="tandc_signature" value="">';
         //=====================================================================================================
         $formfields .= '<input type="hidden" id="reregister" name="reregister" value="0">';
-        $formfields .= '<input type="hidden" id="client_date_registered" name="client_date_registered" data-fnum="26">';
+        $formfields .= '<input type="hidden" id="client_date_registered" name="client_date_registered" data-fnum="25">';
         //=====================================================================================================
         $formfields .= $this->sessionsattended(); // exists in the subclass
         $this->preparecommontop(selecttext:$this->clientid,pagesubheading:$pagesubheading);

@@ -128,7 +128,7 @@ class ClientManager extends \fw\controller\manager\StdManager
                    . 'address_townsuburb, address_state, address_postcode, residence, gender, '
                    . 'month_of_birth, year_of_birth, interpreter, language, country_of_birth, '
                    . 'aborigine_TSislander, represented_by, carer_name, concession_card, dietary, '
-                   . 'comments, office_comments, has_read_tandc, date_first_registered, date_registered';
+                   . 'comments, office_comments, has_read_tandc, date_registered';
         $success = $this->table->select($fieldlist, '', '', '', $orderby ?: 'given_name, family_name', 0, $datafields, $numrows, $trace);
         $success = $success && $this->getparents($parents,$trace);  // IN THE SUBCLASS
         if ($success) {
