@@ -1858,11 +1858,11 @@ input
 }
 .vols-stockreport-scroll {
     flex: 1;
+    overflow-x: auto;
     overflow-y: auto;
     min-height: 0;
 }
 .vols-stockreport-table-wrap {
-    overflow-x: auto;
     width: 100%;
 }
 
