@@ -287,20 +287,20 @@ class SessionManager extends \fw\controller\manager\StdManager
             return "!!".$errormessage;
         }
      }    
-    public function checkmondayattendance($client_id, $session_date_str) {
+    public function checkweeklyattendance($client_id, $session_date_str) {
         // $session_date_str is 'dd.mm.yyyy' from the session selector data-date attribute
         $parts = explode('.', $session_date_str);
         if (count($parts) !== 3 || !$client_id) return json_encode(['attended' => false, 'needs_reregistration' => false]);
         $mysql_date = $parts[2] . '-' . $parts[1] . '-' . $parts[0]; // YYYY-MM-DD
-        // Monday attendance: only meaningful for Thursday sessions (DAYOFWEEK=5)
+        // 7-day rolling window: alert if client attended in the 6 days before today
+        // (today's session is already written when this runs, so we exclude today to avoid self-match)
         $results = []; $numrows = 0;
         $this->clientsessiontable->query_params(
             "SELECT COUNT(*) AS cnt FROM client_session cs"
             . " JOIN session s ON s.id = cs.session_id"
             . " WHERE cs.client_id = ?"
-            . " AND DAYOFWEEK(DATE(?)) = 5"
-            . " AND DATE(s.start) = DATE_SUB(DATE(?), INTERVAL DAYOFWEEK(DATE(?)) - 2 DAY)",
-            [$client_id, $mysql_date, $mysql_date, $mysql_date],
+            . " AND DATE(s.start) BETWEEN DATE_SUB(DATE(?), INTERVAL 6 DAY) AND DATE_SUB(DATE(?), INTERVAL 1 DAY)",
+            [$client_id, $mysql_date, $mysql_date],
             $results, $numrows
         );
         $attended = !empty($results) && (int)($results[0]['cnt'] ?? 0) > 0;

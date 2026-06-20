@@ -382,27 +382,27 @@ class AttendanceForm extends \fw\view\form\Form {
                         const test = jQuery("#attendeeslist li").last().data("clientsessionid");
                         listitem.remove();
                         reset();
-                        checkmondayattendance(client_id);
+                        checkweeklyattendance(client_id);
                     }
                     setlihandlers(1);
                 }
-                async function checkmondayattendance(client_id) {
+                async function checkweeklyattendance(client_id) {
                     const opt = jQuery('#sessionselector option:selected');
                     const datestr = opt.data('date'); // 'dd.mm.yyyy'
                     if (!datestr) return;
                     try {
-                        const result = await doServerRequest('', JSON.stringify({client_id: client_id, session_date: datestr}), 'attendance_checkmondayattendance');
+                        const result = await doServerRequest('', JSON.stringify({client_id: client_id, session_date: datestr}), 'attendance_checkweeklyattendance');
                         const r = JSON.parse(result);
-                        const showMonday = r.attended;
+                        const attendedRecently = r.attended;
                         if (r.needs_reregistration) {
-                            const cb = showMonday
-                                ? function() { jQuery.volsdialog('OKMSG', 'This client also attended on Monday this week.', undefined, undefined, 'Also attended Monday'); }
+                            const cb = attendedRecently
+                                ? function() { jQuery.volsdialog('OKMSG', 'This client has already attended in the past 7 days.', undefined, undefined, 'Attended Recently'); }
                                 : undefined;
                             jQuery.volsdialog('OKMSG', 'This client\'s registration is more than 12 months old and needs to be renewed.', cb, undefined, 'Re-registration Required');
-                        } else if (showMonday) {
-                            jQuery.volsdialog('OKMSG', 'This client also attended on Monday this week.', undefined, undefined, 'Also attended Monday');
+                        } else if (attendedRecently) {
+                            jQuery.volsdialog('OKMSG', 'This client has already attended in the past 7 days.', undefined, undefined, 'Attended Recently');
                         }
-                    } catch(e) { console.error('checkmondayattendance', e); }
+                    } catch(e) { console.error('checkweeklyattendance', e); }
                 }
                 function removeattendee(listitem) {
                     const content = "Remove this attendee?"
