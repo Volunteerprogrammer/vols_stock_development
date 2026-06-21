@@ -1398,12 +1398,6 @@ input
 ::placeholder {
   color: var(--placeholder);
  }
-#loginfields {
-    display: grid;
-    grid-template-columns: 10px 1px 16px;
-    grid-template-rows: 1px 1px  2px;
-    margin-bottom: 3rem;
- }
 
 
 /*.clickable.menu {
