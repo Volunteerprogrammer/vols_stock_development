@@ -3,164 +3,127 @@ namespace app\view\form;
 use \lib\StdLib as lib;
 class FormCollection {
     private $trace = false;
-	public function __construct(protected LoginForm $loginform
-                                ,protected ConfigForm $configform
-                                ,protected RosterForm $rosterform
-                                ,protected UserProfileForm $userprofileform
-                                ,protected TaskForm $taskform
-                                ,protected RoleForm $roleform
-                                ,protected ReportForm $reportform
-                                ,protected UserForm $userform
-                                ,protected ClientAdminForm $clientadminform
-                                ,protected ClientVolsForm $clientvolsform
-                                ,protected ActionForm $actionform
-                                ,protected PageForm $pageform
-                                ,protected SessionForm $sessionform
-                                ,protected AttendanceAdminForm $attendanceadminform
-                                ,protected AttendanceVolsForm $attendancevolsform
-                                ,protected AttendanceReportForm $attendancereportform
-                                ,protected StartNewPasswordForm $startnewpasswordform
-                                ,protected EnterNewPasswordForm $enternewpasswordform
-                                ,protected MenuitemForm $menuitemform
-                                ,protected ConfirmCodeForm $ConfirmCodeForm
-                                ,protected StockCategoryForm $stockcategoryform
-                                ,protected StockForm $stockform
-                                ,protected StocktakeForm $stocktakeform
-                                ,protected DeliveryForm $deliveryform
-                                ,protected StockoutForm $stockoutform
-                                ,protected StockLevelReportForm $stocklevelreportform
-                                ,protected DamagedStockForm $damagedstockform
-                                ,protected StockUsageReportForm $stockusagereportform
-                                ,protected LocationForm $locationform
-                                ,protected StockSupplierForm $stocksupplierform
-                               ,protected StocktakeEventForm $stocktakeeventform
-                               ,protected DeliveryEventForm $deliveryeventform
-                               ,protected TransferEventForm $transfereventform
-                               ,protected AdjustmentEventForm $adjustmenteventform
-                               ,protected StocktakeVarianceReportForm $stocktakevariancereportform
-                               ,protected StockClientForm $stockclientform
-                               ,protected DeliveriesReportForm $deliveriesreportform
-                               ,protected StockSupplierCategoryForm $stocksuppliercategoryform
-                               ,protected BelowMinimumReportForm $belowminimumreportform
-                                // ,protected SessionListForm $SessionList
-                            ){
-        if ($this->trace ) { echo "Enter ".__METHOD__."<br>\n"; }
-	}
-    public function LoginForm() {
-        return $this->loginform;
+    private array $instances = [];
+
+    public function __construct(private \fw\factory\ClassFactory $factory) {
+        if ($this->trace) { echo "Enter ".__METHOD__."<br>\n"; }
     }
-    public function ConfigForm() {
-        return $this->configform;
+
+    public function LoginForm(): LoginForm {
+        return $this->instances[LoginForm::class] ??= $this->factory->getClass(LoginForm::class);
     }
-    public function MenuitemForm() {
-        return $this->menuitemform;
+    public function ConfigForm(): ConfigForm {
+        return $this->instances[ConfigForm::class] ??= $this->factory->getClass(ConfigForm::class);
     }
-    public function StartNewPasswordForm() {
-        return $this->startnewpasswordform;
+    public function MenuitemForm(): MenuitemForm {
+        return $this->instances[MenuitemForm::class] ??= $this->factory->getClass(MenuitemForm::class);
     }
-    public function EnterNewPasswordForm() {
-        return $this->enternewpasswordform;
+    public function StartNewPasswordForm(): StartNewPasswordForm {
+        return $this->instances[StartNewPasswordForm::class] ??= $this->factory->getClass(StartNewPasswordForm::class);
     }
-    public function ConfirmCodeForm() {
-        return $this->ConfirmCodeForm;
+    public function EnterNewPasswordForm(): EnterNewPasswordForm {
+        return $this->instances[EnterNewPasswordForm::class] ??= $this->factory->getClass(EnterNewPasswordForm::class);
     }
-    public function RosterForm() {
-        return $this->rosterform;
+    public function ConfirmCodeForm(): ConfirmCodeForm {
+        return $this->instances[ConfirmCodeForm::class] ??= $this->factory->getClass(ConfirmCodeForm::class);
     }
-    public function UserProfileForm() {
-        return $this->userprofileform;
+    public function RosterForm(): RosterForm {
+        return $this->instances[RosterForm::class] ??= $this->factory->getClass(RosterForm::class);
     }
-    public function ClientAdminForm() {
-        return $this->clientadminform;
+    public function UserProfileForm(): UserProfileForm {
+        return $this->instances[UserProfileForm::class] ??= $this->factory->getClass(UserProfileForm::class);
     }
-    public function ClientVolsForm() {
-        return $this->clientvolsform;
+    public function ClientAdminForm(): ClientAdminForm {
+        return $this->instances[ClientAdminForm::class] ??= $this->factory->getClass(ClientAdminForm::class);
     }
-    public function TaskForm() {
-        return $this->taskform;
+    public function ClientVolsForm(): ClientVolsForm {
+        return $this->instances[ClientVolsForm::class] ??= $this->factory->getClass(ClientVolsForm::class);
     }
-    public function RoleForm() {
-        return $this->roleform;
+    public function TaskForm(): TaskForm {
+        return $this->instances[TaskForm::class] ??= $this->factory->getClass(TaskForm::class);
     }
-    public function ReportForm() {
-        return $this->reportform;
+    public function RoleForm(): RoleForm {
+        return $this->instances[RoleForm::class] ??= $this->factory->getClass(RoleForm::class);
     }
-    public function UserForm() {
-        return $this->userform;
+    public function ReportForm(): ReportForm {
+        return $this->instances[ReportForm::class] ??= $this->factory->getClass(ReportForm::class);
     }
-     public function ActionForm() {
-        return $this->actionform;
+    public function UserForm(): UserForm {
+        return $this->instances[UserForm::class] ??= $this->factory->getClass(UserForm::class);
     }
-     public function PageForm() {
-        return $this->pageform;
+    public function ActionForm(): ActionForm {
+        return $this->instances[ActionForm::class] ??= $this->factory->getClass(ActionForm::class);
     }
-    public function AttendanceAdminForm() {
-        return $this->attendanceadminform;
+    public function PageForm(): PageForm {
+        return $this->instances[PageForm::class] ??= $this->factory->getClass(PageForm::class);
     }
-    public function AttendanceVolsForm() {
-        return $this->attendancevolsform;
+    public function AttendanceAdminForm(): AttendanceAdminForm {
+        return $this->instances[AttendanceAdminForm::class] ??= $this->factory->getClass(AttendanceAdminForm::class);
     }
-     public function AttendanceReportForm() {
-        return $this->attendancereportform;
+    public function AttendanceVolsForm(): AttendanceVolsForm {
+        return $this->instances[AttendanceVolsForm::class] ??= $this->factory->getClass(AttendanceVolsForm::class);
     }
-    public function SessionForm() {
-        return $this->sessionform;
+    public function AttendanceReportForm(): AttendanceReportForm {
+        return $this->instances[AttendanceReportForm::class] ??= $this->factory->getClass(AttendanceReportForm::class);
     }
-    public function StockCategoryForm() {
-        return $this->stockcategoryform;
+    public function SessionForm(): SessionForm {
+        return $this->instances[SessionForm::class] ??= $this->factory->getClass(SessionForm::class);
     }
-    public function StockForm() {
-        return $this->stockform;
+    public function StockCategoryForm(): StockCategoryForm {
+        return $this->instances[StockCategoryForm::class] ??= $this->factory->getClass(StockCategoryForm::class);
     }
-    public function StocktakeForm() {
-        return $this->stocktakeform;
+    public function StockForm(): StockForm {
+        return $this->instances[StockForm::class] ??= $this->factory->getClass(StockForm::class);
     }
-    public function DeliveryForm() {
-        return $this->deliveryform;
+    public function StocktakeForm(): StocktakeForm {
+        return $this->instances[StocktakeForm::class] ??= $this->factory->getClass(StocktakeForm::class);
     }
-    public function StockoutForm() {
-        return $this->stockoutform;
+    public function DeliveryForm(): DeliveryForm {
+        return $this->instances[DeliveryForm::class] ??= $this->factory->getClass(DeliveryForm::class);
     }
-    public function StockLevelReportForm() {
-        return $this->stocklevelreportform;
+    public function StockoutForm(): StockoutForm {
+        return $this->instances[StockoutForm::class] ??= $this->factory->getClass(StockoutForm::class);
     }
-    public function DamagedStockForm() {
-        return $this->damagedstockform;
+    public function StockLevelReportForm(): StockLevelReportForm {
+        return $this->instances[StockLevelReportForm::class] ??= $this->factory->getClass(StockLevelReportForm::class);
     }
-    public function StockUsageReportForm() {
-        return $this->stockusagereportform;
+    public function DamagedStockForm(): DamagedStockForm {
+        return $this->instances[DamagedStockForm::class] ??= $this->factory->getClass(DamagedStockForm::class);
     }
-    public function LocationForm() {
-        return $this->locationform;
+    public function StockUsageReportForm(): StockUsageReportForm {
+        return $this->instances[StockUsageReportForm::class] ??= $this->factory->getClass(StockUsageReportForm::class);
     }
-    public function StockSupplierForm() {
-        return $this->stocksupplierform;
+    public function LocationForm(): LocationForm {
+        return $this->instances[LocationForm::class] ??= $this->factory->getClass(LocationForm::class);
     }
-    public function StocktakeEventForm() {
-        return $this->stocktakeeventform;
+    public function StockSupplierForm(): StockSupplierForm {
+        return $this->instances[StockSupplierForm::class] ??= $this->factory->getClass(StockSupplierForm::class);
     }
-    public function DeliveryEventForm() {
-        return $this->deliveryeventform;
+    public function StocktakeEventForm(): StocktakeEventForm {
+        return $this->instances[StocktakeEventForm::class] ??= $this->factory->getClass(StocktakeEventForm::class);
     }
-    public function TransferEventForm() {
-        return $this->transfereventform;
+    public function DeliveryEventForm(): DeliveryEventForm {
+        return $this->instances[DeliveryEventForm::class] ??= $this->factory->getClass(DeliveryEventForm::class);
     }
-    public function AdjustmentEventForm() {
-        return $this->adjustmenteventform;
+    public function TransferEventForm(): TransferEventForm {
+        return $this->instances[TransferEventForm::class] ??= $this->factory->getClass(TransferEventForm::class);
     }
-    public function StocktakeVarianceReportForm() {
-        return $this->stocktakevariancereportform;
+    public function AdjustmentEventForm(): AdjustmentEventForm {
+        return $this->instances[AdjustmentEventForm::class] ??= $this->factory->getClass(AdjustmentEventForm::class);
     }
-    public function StockClientForm() {
-        return $this->stockclientform;
+    public function StocktakeVarianceReportForm(): StocktakeVarianceReportForm {
+        return $this->instances[StocktakeVarianceReportForm::class] ??= $this->factory->getClass(StocktakeVarianceReportForm::class);
     }
-    public function DeliveriesReportForm() {
-        return $this->deliveriesreportform;
+    public function StockClientForm(): StockClientForm {
+        return $this->instances[StockClientForm::class] ??= $this->factory->getClass(StockClientForm::class);
     }
-    public function StockSupplierCategoryForm() {
-        return $this->stocksuppliercategoryform;
+    public function DeliveriesReportForm(): DeliveriesReportForm {
+        return $this->instances[DeliveriesReportForm::class] ??= $this->factory->getClass(DeliveriesReportForm::class);
     }
-    public function BelowMinimumReportForm() {
-        return $this->belowminimumreportform;
+    public function StockSupplierCategoryForm(): StockSupplierCategoryForm {
+        return $this->instances[StockSupplierCategoryForm::class] ??= $this->factory->getClass(StockSupplierCategoryForm::class);
+    }
+    public function BelowMinimumReportForm(): BelowMinimumReportForm {
+        return $this->instances[BelowMinimumReportForm::class] ??= $this->factory->getClass(BelowMinimumReportForm::class);
     }
 }

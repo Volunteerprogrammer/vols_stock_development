@@ -185,7 +185,7 @@ class ViewController {
             case $c2v($mm::ROSTER2)         : //$permission = $permission || in_array($mm::ROSTER2."||VIEW",$this->rights);
             case $c2v($mm::ROSTER1)         : //$permission = $permission || in_array($mm::ROSTER1."||VIEW",$this->rights);
                                                 if ($this->setthispage(0,$this->pagenum,$this->usermanager,$this->forms->Rosterform(),$errormessage, $trace)) {
-                                                    $this->rolemanager = $this->mgrs->Rolemanager();
+                                                    $this->rolemanager = $this->mgrs->RoleManager();
                                                     $this->rolemanager->init($this->session);
                                                     $this->rostermanager = $this->mgrs->RosterManager();
                                                     $this->rostermanager->init($this->session);

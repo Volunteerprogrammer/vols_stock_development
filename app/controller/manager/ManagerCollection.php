@@ -3,152 +3,97 @@ namespace app\controller\manager;
 use \lib\StdLib as lib;
 class ManagerCollection {
     private $trace = false;
-	public function __construct(protected MenuManager $menumanager
-                               ,protected LogManager $logmanager
-                               ,protected ConfigManager $configmanager
-                               ,protected UserManager $usermanager
-                               ,protected ClientManager $clientmanager
-                               ,protected TaskManager $taskmanager
-                               ,protected RosterManager $rostermanager
-                               ,protected RoleManager $rolemanager
-                               ,protected PageManager $pagemanager
-                               ,protected ActionManager $actionmanager
-                               ,protected SessionManager $sessionmanager
-                               ,protected EMailManager $emailmanager
-                               ,protected ReportManager $reportmanager
-                               ,protected StockCategoryManager $stockcategorymanager
-                               ,protected StockManager $stockmanager
-                               ,protected StocktakeManager $stocktakemanager
-                               ,protected DeliveryManager $deliverymanager
-                               ,protected StockoutManager $stockoutmanager
-                               ,protected StockLevelReportManager $stocklevelreportmanager
-                               ,protected DamagedStockManager $damagedstockmanager
-                               ,protected StockUsageReportManager $stockusagereportmanager
-                               ,protected LocationManager $locationmanager
-                               ,protected StockSupplierManager $stocksuppliermanager
-                               ,protected StockEventManager $stockeventmanager
-                               ,protected StocktakeVarianceReportManager $stocktakevariancereportmanager
-                               ,protected StockClientManager $stockclientmanager
-                               ,protected DeliveriesReportManager $deliveriesreportmanager
-                               ,protected StockSupplierCategoryManager $stocksuppliercategorymanager
-                               ,protected BelowMinimumReportManager $belowminimumreportmanager
-                               ){
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>\n"; }
-	}
-    public function TaskManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->taskmanager;
+    private array $instances = [];
+
+    public function __construct(private \fw\factory\ClassFactory $factory) {
+        if ($this->trace) { echo "Visit ".__METHOD__."<br>\n"; }
     }
-    public function RosterManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->rostermanager;
+
+    public function MenuManager(): MenuManager {
+        return $this->instances[MenuManager::class] ??= $this->factory->getClass(MenuManager::class);
     }
-    public function LogManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->logmanager;
+    public function LogManager(): LogManager {
+        return $this->instances[LogManager::class] ??= $this->factory->getClass(LogManager::class);
     }
-    public function ConfigManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->configmanager;
+    public function ConfigManager(): ConfigManager {
+        return $this->instances[ConfigManager::class] ??= $this->factory->getClass(ConfigManager::class);
     }
-    public function UserManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->usermanager;
+    public function UserManager(): UserManager {
+        return $this->instances[UserManager::class] ??= $this->factory->getClass(UserManager::class);
     }
-    public function ClientManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->clientmanager;
+    public function ClientManager(): ClientManager {
+        return $this->instances[ClientManager::class] ??= $this->factory->getClass(ClientManager::class);
     }
-    public function Rolemanager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->rolemanager;
+    public function TaskManager(): TaskManager {
+        return $this->instances[TaskManager::class] ??= $this->factory->getClass(TaskManager::class);
     }
-    public function MenuManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->menumanager;
-    }        
-    public function PageManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->pagemanager;
-    }        
-    public function ActionManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->actionmanager;
-    }        
-    public function SessionManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->sessionmanager;
+    public function RosterManager(): RosterManager {
+        return $this->instances[RosterManager::class] ??= $this->factory->getClass(RosterManager::class);
     }
-    public function EMailManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->emailmanager;
-    }      
-    public function ReportManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->reportmanager;
+    public function RoleManager(): RoleManager {
+        return $this->instances[RoleManager::class] ??= $this->factory->getClass(RoleManager::class);
     }
-    public function StockCategoryManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stockcategorymanager;
+    public function PageManager(): PageManager {
+        return $this->instances[PageManager::class] ??= $this->factory->getClass(PageManager::class);
     }
-    public function StockManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stockmanager;
+    public function ActionManager(): ActionManager {
+        return $this->instances[ActionManager::class] ??= $this->factory->getClass(ActionManager::class);
     }
-    public function StocktakeManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stocktakemanager;
+    public function SessionManager(): SessionManager {
+        return $this->instances[SessionManager::class] ??= $this->factory->getClass(SessionManager::class);
     }
-    public function DeliveryManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->deliverymanager;
+    public function EMailManager(): EMailManager {
+        return $this->instances[EMailManager::class] ??= $this->factory->getClass(EMailManager::class);
     }
-    public function StockoutManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stockoutmanager;
+    public function ReportManager(): ReportManager {
+        return $this->instances[ReportManager::class] ??= $this->factory->getClass(ReportManager::class);
     }
-    public function StockLevelReportManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stocklevelreportmanager;
+    public function StockCategoryManager(): StockCategoryManager {
+        return $this->instances[StockCategoryManager::class] ??= $this->factory->getClass(StockCategoryManager::class);
     }
-    public function DamagedStockManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->damagedstockmanager;
+    public function StockManager(): StockManager {
+        return $this->instances[StockManager::class] ??= $this->factory->getClass(StockManager::class);
     }
-    public function StockUsageReportManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stockusagereportmanager;
+    public function StocktakeManager(): StocktakeManager {
+        return $this->instances[StocktakeManager::class] ??= $this->factory->getClass(StocktakeManager::class);
     }
-    public function LocationManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->locationmanager;
+    public function DeliveryManager(): DeliveryManager {
+        return $this->instances[DeliveryManager::class] ??= $this->factory->getClass(DeliveryManager::class);
     }
-    public function StockSupplierManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stocksuppliermanager;
+    public function StockoutManager(): StockoutManager {
+        return $this->instances[StockoutManager::class] ??= $this->factory->getClass(StockoutManager::class);
     }
-    public function StockEventManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stockeventmanager;
+    public function StockLevelReportManager(): StockLevelReportManager {
+        return $this->instances[StockLevelReportManager::class] ??= $this->factory->getClass(StockLevelReportManager::class);
     }
-    public function StocktakeVarianceReportManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stocktakevariancereportmanager;
+    public function DamagedStockManager(): DamagedStockManager {
+        return $this->instances[DamagedStockManager::class] ??= $this->factory->getClass(DamagedStockManager::class);
     }
-    public function StockClientManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stockclientmanager;
+    public function StockUsageReportManager(): StockUsageReportManager {
+        return $this->instances[StockUsageReportManager::class] ??= $this->factory->getClass(StockUsageReportManager::class);
     }
-    public function DeliveriesReportManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->deliveriesreportmanager;
+    public function LocationManager(): LocationManager {
+        return $this->instances[LocationManager::class] ??= $this->factory->getClass(LocationManager::class);
     }
-    public function StockSupplierCategoryManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->stocksuppliercategorymanager;
+    public function StockSupplierManager(): StockSupplierManager {
+        return $this->instances[StockSupplierManager::class] ??= $this->factory->getClass(StockSupplierManager::class);
     }
-    public function BelowMinimumReportManager() {
-        if ($this->trace ) { echo "Visit ".__METHOD__."<br>"; }
-        return $this->belowminimumreportmanager;
+    public function StockEventManager(): StockEventManager {
+        return $this->instances[StockEventManager::class] ??= $this->factory->getClass(StockEventManager::class);
+    }
+    public function StocktakeVarianceReportManager(): StocktakeVarianceReportManager {
+        return $this->instances[StocktakeVarianceReportManager::class] ??= $this->factory->getClass(StocktakeVarianceReportManager::class);
+    }
+    public function StockClientManager(): StockClientManager {
+        return $this->instances[StockClientManager::class] ??= $this->factory->getClass(StockClientManager::class);
+    }
+    public function DeliveriesReportManager(): DeliveriesReportManager {
+        return $this->instances[DeliveriesReportManager::class] ??= $this->factory->getClass(DeliveriesReportManager::class);
+    }
+    public function StockSupplierCategoryManager(): StockSupplierCategoryManager {
+        return $this->instances[StockSupplierCategoryManager::class] ??= $this->factory->getClass(StockSupplierCategoryManager::class);
+    }
+    public function BelowMinimumReportManager(): BelowMinimumReportManager {
+        return $this->instances[BelowMinimumReportManager::class] ??= $this->factory->getClass(BelowMinimumReportManager::class);
     }
 }
