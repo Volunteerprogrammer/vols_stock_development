@@ -152,12 +152,22 @@ foreach ($managerTests as $method => $expectedClass) {
     }
 }
 
+// ---- BodyCollection ---------------------------------------------------------
+echo "\n=== BodyCollection ===\n";
+
+$bodies = new \app\view\body\BodyCollection($factory);
+check('BodyCollection instantiated', $bodies instanceof \app\view\body\BodyCollection);
+checkInstance('LoginBody',   $bodies->LoginBody(),   \app\view\body\LoginBody::class);
+checkInstance('StandardBody',$bodies->StandardBody(),\app\view\body\StandardBody::class);
+
 // ---- Caching check ----------------------------------------------------------
 echo "\n=== Caching (same instance returned on second call) ===\n";
-check('FormCollection caches LoginForm',       $forms->LoginForm()   === $forms->LoginForm());
-check('FormCollection caches StockForm',       $forms->StockForm()   === $forms->StockForm());
-check('ManagerCollection caches ClientManager',$managers->ClientManager() === $managers->ClientManager());
-check('ManagerCollection caches StockManager', $managers->StockManager()  === $managers->StockManager());
+check('FormCollection caches LoginForm',        $forms->LoginForm()        === $forms->LoginForm());
+check('FormCollection caches StockForm',        $forms->StockForm()        === $forms->StockForm());
+check('ManagerCollection caches ClientManager', $managers->ClientManager() === $managers->ClientManager());
+check('ManagerCollection caches StockManager',  $managers->StockManager()  === $managers->StockManager());
+check('BodyCollection caches LoginBody',        $bodies->LoginBody()       === $bodies->LoginBody());
+check('BodyCollection caches StandardBody',     $bodies->StandardBody()    === $bodies->StandardBody());
 
 // ---- Summary ----------------------------------------------------------------
 echo "\n" . str_repeat('=', 50) . "\n";
