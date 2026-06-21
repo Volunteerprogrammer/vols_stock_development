@@ -5,3 +5,4 @@
 app/config/**
 .\sql
 *.sql
+!sql/regenerate_audit_triggers.sql
