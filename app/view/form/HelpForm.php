@@ -43,10 +43,12 @@ class HelpForm extends \fw\view\form\Form
             $html .= '</div>';
         } else {
             // Table of contents
-            $html .= '<div class="help-toc vols-tablerow" style="padding:12px 20px;">';
-            $html .= '<strong>Contents</strong><ul style="margin:8px 0 0 16px;">';
+            $html .= '<div class="help-toc vols-tablerow" style="padding:14px 20px;background:#f4f8fd;border-bottom:1px solid #c8d8ee;">';
+            $html .= '<strong style="font-size:0.9em;text-transform:uppercase;letter-spacing:0.05em;color:#4a7fbf;">Contents</strong>';
+            $html .= '<ul style="margin:8px 0 0 18px;line-height:1.9;">';
             foreach ($visible as $item) {
-                $html .= '<li><a href="#help_'.(int)$item['page_id'].'">'.htmlspecialchars($item['title']).'</a></li>';
+                $html .= '<li><a href="#help_'.(int)$item['page_id'].'" style="color:#2c5282;text-decoration:none;">'
+                       . htmlspecialchars($item['title']).'</a></li>';
             }
             $html .= '</ul></div>';
 
@@ -55,9 +57,12 @@ class HelpForm extends \fw\view\form\Form
                 $pid   = (int)$item['page_id'];
                 $title = htmlspecialchars($item['title']);
                 $body  = nl2br(htmlspecialchars($item['content']));
-                $html .= '<section id="help_'.$pid.'" class="help-section vols-tablerow" style="padding:16px 20px;border-top:1px solid #ddd;">';
-                $html .= '<h2 style="margin:0 0 10px;">'.$title.'</h2>';
-                $html .= '<div class="help-content" style="line-height:1.6;">'.$body.'</div>';
+                $html .= '<section id="help_'.$pid.'" class="help-section vols-tablerow" style="padding:16px 20px 20px;border-top:3px solid #4a7fbf;">';
+                $html .= '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">';
+                $html .= '<h2 style="margin:0;font-size:1.15em;color:#2c5282;letter-spacing:0.02em;">'.$title.'</h2>';
+                $html .= '<a href="#help-display" style="font-size:0.78em;color:#4a7fbf;text-decoration:none;white-space:nowrap;margin-left:16px;" title="Back to top">&#9650; top</a>';
+                $html .= '</div>';
+                $html .= '<div class="help-content" style="line-height:1.7;color:#333;">'.$body.'</div>';
                 $html .= '</section>';
             }
         }
