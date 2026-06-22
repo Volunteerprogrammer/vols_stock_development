@@ -96,4 +96,7 @@ class ManagerCollection {
     public function BelowMinimumReportManager(): BelowMinimumReportManager {
         return $this->instances[BelowMinimumReportManager::class] ??= $this->factory->getClass(BelowMinimumReportManager::class);
     }
+    public function HelpManager(): HelpManager {
+        return $this->instances[HelpManager::class] ??= $this->factory->getClass(HelpManager::class);
+    }
 }

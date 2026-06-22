@@ -92,6 +92,8 @@ $formTests = [
     'DeliveriesReportForm'         => \app\view\form\DeliveriesReportForm::class,
     'StockSupplierCategoryForm'    => \app\view\form\StockSupplierCategoryForm::class,
     'BelowMinimumReportForm'       => \app\view\form\BelowMinimumReportForm::class,
+    'HelpForm'                     => \app\view\form\HelpForm::class,
+    'HelpAdminForm'                => \app\view\form\HelpAdminForm::class,
 ];
 
 foreach ($formTests as $method => $expectedClass) {
@@ -140,6 +142,7 @@ $managerTests = [
     'DeliveriesReportManager'          => \app\controller\manager\DeliveriesReportManager::class,
     'StockSupplierCategoryManager'     => \app\controller\manager\StockSupplierCategoryManager::class,
     'BelowMinimumReportManager'        => \app\controller\manager\BelowMinimumReportManager::class,
+    'HelpManager'                      => \app\controller\manager\HelpManager::class,
 ];
 
 foreach ($managerTests as $method => $expectedClass) {
@@ -168,6 +171,9 @@ check('ManagerCollection caches ClientManager', $managers->ClientManager() === $
 check('ManagerCollection caches StockManager',  $managers->StockManager()  === $managers->StockManager());
 check('BodyCollection caches LoginBody',        $bodies->LoginBody()       === $bodies->LoginBody());
 check('BodyCollection caches StandardBody',     $bodies->StandardBody()    === $bodies->StandardBody());
+check('FormCollection caches HelpForm',         $forms->HelpForm()         === $forms->HelpForm());
+check('FormCollection caches HelpAdminForm',    $forms->HelpAdminForm()    === $forms->HelpAdminForm());
+check('ManagerCollection caches HelpManager',   $managers->HelpManager()   === $managers->HelpManager());
 
 // ---- Summary ----------------------------------------------------------------
 echo "\n" . str_repeat('=', 50) . "\n";

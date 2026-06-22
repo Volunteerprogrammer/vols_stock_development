@@ -118,6 +118,7 @@ class RequestProcessController {
                 case "stocksupplierform":         $success = $this->processCRUDform($this->managercollection->StockSupplierManager(),$errormessage,$trace); break;
                 case "stocksuppliercategoryform": $success = $this->processCRUDform($this->managercollection->StockSupplierCategoryManager(),$errormessage,$trace); break;
                 case "stockclientform":           $success = $this->processCRUDform($this->managercollection->StockClientManager(),$errormessage,$trace); break;
+                case "helpadminform":             $success = $this->processCRUDform($this->managercollection->HelpManager(),$errormessage,$trace); break;
                 default :               $errormessage = 'No FORM recognised. $_POST = '.implode(",",$this->requestdata);
                                         $success = false;
             }

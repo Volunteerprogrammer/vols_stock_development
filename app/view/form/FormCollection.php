@@ -126,4 +126,10 @@ class FormCollection {
     public function BelowMinimumReportForm(): BelowMinimumReportForm {
         return $this->instances[BelowMinimumReportForm::class] ??= $this->factory->getClass(BelowMinimumReportForm::class);
     }
+    public function HelpForm(): HelpForm {
+        return $this->instances[HelpForm::class] ??= $this->factory->getClass(HelpForm::class);
+    }
+    public function HelpAdminForm(): HelpAdminForm {
+        return $this->instances[HelpAdminForm::class] ??= $this->factory->getClass(HelpAdminForm::class);
+    }
 }

@@ -229,6 +229,8 @@ class ViewController {
                 case $c2v($mm::DELIVERYEVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->DeliveryEventForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::TRANSFEREVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->TransferEventForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::ADJUSTMENTEVENTPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->AdjustmentEventForm(),$errormessage,"",$trace);break;
+            case $c2v($mm::HELPDISPLAYPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpForm(),$errormessage,'',$trace); break;
+            case $c2v($mm::HELPADMINPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpAdminForm(),$errormessage,'title',$trace); break;
             default: die(__METHOD__." Unknown pagenum : {$this->pagenum}");
         }
        if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
@@ -294,6 +296,8 @@ class ViewController {
             case $c2v($mm::DELIVERYEVENTPAGE)     :
             case $c2v($mm::TRANSFEREVENTPAGE)     :
             case $c2v($mm::ADJUSTMENTEVENTPAGE)   :$success = $this->prepare_stockevent_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::HELPDISPLAYPAGE)       :$success = $this->prepare_help_display_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::HELPADMINPAGE)         :$success = $this->prepare_help_admin_body($user_id,$errormessage,$trace); break;
             default                               :$success = $this->prepare_std_body($user_id,$this->orderby,$errormessage,$trace);
         }
         if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
@@ -977,6 +981,86 @@ class ViewController {
             return false;
         }
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
+        return true;
+     }
+    private function prepare_help_display_body($user_id, &$errormessage, $trace=false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        try {
+            $data    = "";
+            $parents = [];
+            $numrows = 0;
+            $this->manager->getallrecords($data, "page_id", $parents, $numrows, false, false);
+            $this->form->init($this->session, $data, $parents, false);
+            $this->bodysection = $this->bodies->standardbody();
+            $this->bodysection->init($this->session, $this->form, "Help", "", $errormessage);
+        } catch (\Exception $e) {
+            $errormessage = __METHOD__." : ".$e->getMessage();
+            if ($this->trace) { echo gtab(-1)."Leave ".__METHOD__."...<br>$errormessage<br>"; }
+            return false;
+        }
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
+        return true;
+     }
+    private function prepare_help_admin_body($user_id, &$errormessage, $trace=false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        try {
+            $data    = "";
+            $parents = [];
+            $numrows = 0;
+            $success = $this->manager->getallrecords($data, "title", $parents, $numrows, false, false);
+            if ($success) {
+                $mm = $this->menumanager;
+                $parents['pages'] = [
+                    $mm::ROSTER1                   => "Roster 1",
+                    $mm::ROSTER2                   => "Roster 2",
+                    $mm::ROSTER3                   => "Roster 3",
+                    $mm::ROSTER4                   => "Roster 4",
+                    $mm::ROSTER5                   => "Roster 5",
+                    $mm::ROSTER6                   => "Roster 6",
+                    $mm::ROSTER7                   => "Roster 7",
+                    $mm::ROSTER8                   => "Roster 8",
+                    $mm::ROSTER9                   => "Roster 9",
+                    $mm::ROSTER10                  => "Roster 10",
+                    $mm::PROFILEPAGE               => "My Profile",
+                    $mm::CLIENTADMINPAGE           => "Client Admin",
+                    $mm::CLIENTVOLSPAGE            => "Client Check-In",
+                    $mm::ATTENDANCEADMINPAGE       => "Attendance Admin",
+                    $mm::ATTENDANCEVOLSPAGE        => "Attendance Vols",
+                    $mm::CLIENTREPORTPAGE          => "Attendance Report",
+                    $mm::TASKPAGE                  => "Tasks",
+                    $mm::ROLEPAGE                  => "Roles",
+                    $mm::USERPAGE                  => "Users",
+                    $mm::SESSIONPAGE               => "Sessions",
+                    $mm::ACTIONPAGE                => "Actions",
+                    $mm::PAGEPAGE                  => "Pages",
+                    $mm::REPORTPAGE                => "Reports",
+                    $mm::CONFIGPAGE                => "Configuration",
+                    $mm::MENUITEMPAGE              => "Menu Items",
+                    $mm::STOCKCATEGORYPAGE         => "Stock Categories",
+                    $mm::STOCKPAGE                 => "Stock Items",
+                    $mm::LOCATIONPAGE              => "Locations",
+                    $mm::STOCKSUPPLIERPAGE         => "Suppliers",
+                    $mm::STOCKCLIENTPAGE           => "Stock Clients",
+                    $mm::STOCKSUPPLIERCATEGORYPAGE => "Supplier Categories",
+                    $mm::STOCKTAKEEVENTPAGE        => "Stocktake",
+                    $mm::DELIVERYEVENTPAGE         => "Delivery",
+                    $mm::TRANSFEREVENTPAGE         => "Transfer",
+                    $mm::ADJUSTMENTEVENTPAGE       => "Adjustment",
+                    $mm::STOCKLEVELREPORTPAGE      => "Stock Reports",
+                ];
+                $this->form->init($this->session, $data, $parents, false);
+                $this->bodysection = $this->bodies->standardbody();
+                $this->bodysection->init($this->session, $this->form, "Help Content Administration", "", $errormessage);
+            } else {
+                $errormessage = __METHOD__." failed to load help content";
+                return false;
+            }
+        } catch (\Exception $e) {
+            $errormessage = __METHOD__." : ".$e->getMessage();
+            if ($this->trace) { echo gtab(-1)."Leave ".__METHOD__."...<br>$errormessage<br>"; }
+            return false;
+        }
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
         return true;
      }
     private function buildstockalertpopup(): string {

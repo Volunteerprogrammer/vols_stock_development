@@ -36,6 +36,9 @@ class MenuManager  extends \fw\controller\manager\StdManager
     const CONFIGPAGE        = 500;
     const MENUITEMPAGE      = 501;
     const LOGOUTPAGE        = 999;
+    // Help / documentation pages
+    const HELPDISPLAYPAGE   = 600;
+    const HELPADMINPAGE     = 601;
     // Stock management pages
     const LOCATIONPAGE              = 409;
     const STOCKCATEGORYPAGE         = 401;
