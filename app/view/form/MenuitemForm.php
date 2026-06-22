@@ -43,13 +43,11 @@ class MenuitemForm extends \fw\view\form\StdCRUDForm {
         // Note the fieldnum parameter should equal the position of the field in the field array in the relevant table Class
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
         $parentdata = array_combine(array_column($this->parents,"id"),array_column($this->parents,"menutext"));
-        $optn = [];
         // $button = '<div class="vols-tablecell vols-width-100 aligncenter"><div id="buildsessions" class="clickable action doitbg" style"height: auto">Build</div></div>';
         // $heading = '<div style="display:inline-grid;grid-template-columns:1fr 1fr;align-items:center;"><div style="margin-right:20px">Build sessions:  </div>'.$button.'</div>';
         // $formfields  = $this->component->rendersectionheading($heading,"","","","","","","","",true);
         $formfields  = $this->component->buildinputrow("menucode",1,"",'Menu code','Menu code',20,64,true,'','');
-        $pagenums    = $this->component->renderdropdown("page_number",1,$optn,false,false,false,false,$this->pagenumbers,'',false,'','',false,2);
-        $formfields  .= $this->component->renderformrow("","","Page",false,"","","",$pagenums);
+        $formfields  .= $this->component->buildinputrow("page_number",2,"",'Page number','e.g. 101',6,4,false,'','');
         $formfields  .= $this->component->buildinputrow("text",3,"",'Menu text','Menu text',20,64,false,'','');
         $formfields  .= $this->component->buildcheckboxrow("inactive",false,"",false,4,"Inactive");
         $formfields  .= $this->component->buildcheckboxrow("is_public",false,"",false,6,'Public page','No permissions required to access this item.');
@@ -208,8 +206,14 @@ class MenuitemForm extends \fw\view\form\StdCRUDForm {
              }
             function formhaserrors() {
                 let errors = 0;
-                if (!jQuery("#menucode").val()){ 
+                if (!jQuery("#menucode").val()){
                     jQuery("#menucoderow_error").html("(This is a required field.)");
+                    errors++;
+                }
+                const pnRaw = jQuery("#page_number").val().trim();
+                const pnInt = parseInt(pnRaw, 10);
+                if (pnRaw === '' || isNaN(pnInt) || String(pnInt) !== pnRaw || pnInt < -1 || pnInt > 9999) {
+                    jQuery("#page_numberrow_error").html("(Must be a whole number from -1 to 9999)");
                     errors++;
                 }
                 return errors;
