@@ -17,6 +17,7 @@ class ClassFactory
 	private $trace = false;
 	private $i = 0 ;
 	private $indent;
+	public function __construct() {}
 	/*======================================================================================= THE CLASS BUILDING TOOLS*/
 	private function getargvalue($arg=[]) { //
 		if ($this->trace) { echo $this->indent($this->i)."Enter ".__METHOD__."($arg) <br>"; }
