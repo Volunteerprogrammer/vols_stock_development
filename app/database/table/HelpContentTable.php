@@ -21,7 +21,7 @@ class HelpContentTable extends \fw\database\table\MySQLTable
     }
 
     public function getbypage(int $page_id, &$results, &$numrows): bool {
-        $query = "SELECT * FROM {$this->tablename} WHERE page_id = {$page_id}";
+        $query = "SELECT * FROM ".lib::capsToUnderscores($this->tablename)." WHERE page_id = {$page_id}";
         return $this->query($query, $results, $numrows);
     }
 
@@ -32,7 +32,7 @@ class HelpContentTable extends \fw\database\table\MySQLTable
             return true;
         }
         $list  = implode(',', array_map('intval', $page_ids));
-        $query = "SELECT * FROM {$this->tablename} WHERE page_id IN ({$list}) ORDER BY page_id";
+        $query = "SELECT * FROM ".lib::capsToUnderscores($this->tablename)." WHERE page_id IN ({$list}) ORDER BY page_id";
         return $this->query($query, $results, $numrows);
     }
 }
