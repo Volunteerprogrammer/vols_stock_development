@@ -22,7 +22,7 @@ class RosterManager
                                 protected \apptable\BookingTable $bookingtable,
                                 protected \apptable\UserTable $usertable,
                                 protected \app\controller\manager\SessionManager $sessionmanager,
-                                protected \app\controller\Manager\TaskExtenderManager $taskextendermanager,
+                                protected \app\controller\manager\TaskExtenderManager $taskextendermanager,
                                 protected \fw\exception\ErrorHandler $errorhandler
                             ){
        if ($this->trace ) { echo "Enter ".__METHOD__."<br>"; }
