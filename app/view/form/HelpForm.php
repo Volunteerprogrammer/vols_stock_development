@@ -17,10 +17,17 @@ class HelpForm extends \fw\view\form\Form
     public function render($pagenum='', $nextpage='', $subheading='', $rights=[], $isadmin=false, $menu='', $trace=false) {
         $visible = [];
         foreach ($this->helpitems as $item) {
-            $pid = (int)$item['page_id'];
-            if ($isadmin || in_array($pid.'||VIEW', $rights)) {
-                $visible[] = $item;
+            $pid = isset($item['page_id']) && $item['page_id'] !== null && $item['page_id'] !== ''
+                ? (int)$item['page_id'] : 0;
+            if ($pid === 0) continue; // shared block record — only shown via {{block:N}} transclusion
+            $show = ($isadmin || in_array($pid.'||VIEW', $rights));
+            if (!$show && !empty($item['also_covers'])) {
+                foreach (explode(',', $item['also_covers']) as $extra) {
+                    $ep = (int)trim($extra);
+                    if ($ep > 0 && in_array($ep.'||VIEW', $rights)) { $show = true; break; }
+                }
             }
+            if ($show) { $visible[] = $item; }
         }
 
         $mm        = $this->menumanager;

@@ -49,11 +49,25 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         foreach ($this->pages as $pid => $pname) {
             $pageoptions .= '<option value="'.(int)$pid.'">'.htmlspecialchars($pname).' ('.$pid.')</option>';
         }
-        $pageselect  = '<select name="page_id" id="page_id" data-fnum="1" required>';
+        $pageselect  = '<select name="page_id" id="page_id" data-fnum="1">';
         $pageselect .= $pageoptions;
         $pageselect .= '</select>';
 
-        $formfields  = $this->component->renderformrow('page_idrow', '', 'Page', true, '', '', '', $pageselect);
+        $this->component->setwidths(20, 30, 50, true);
+        $formfields  = $this->component->renderformrow('page_idrow', '', 'Page', false, '', '', '', $pageselect, '', '', 'page_id_hint', 'Leave blank to create a shared content block');
+        $this->component->restorewidths();
+        $formfields .= $this->component->buildinputrow("also_covers", 8, "", 'Also covers', 'extra page IDs, comma-separated, e.g. 102,103', 40, 500, false, '', '');
+        $blockrefcode = '<code id="blockref_display" style="display:none;background:#f4f4f4;padding:2px 6px;border-radius:3px;"></code>'
+                      . '<div id="blockref_copy" class="clickable action doitbg" style="display:none;width:fit-content;padding:0 10px;float:right;" onclick="'
+                      . 'var t=document.getElementById(\'blockref_display\').textContent;'
+                      . 'navigator.clipboard.writeText(t).then(function(){'
+                      . 'var b=document.getElementById(\'blockref_copy\');b.textContent=\'Copied!\';'
+                      . 'setTimeout(function(){b.textContent=\'Copy\';},1500);});'
+                      . '">Copy</div>';
+        $blockrefhint = '<span id="blockref_hint" style="display:none;">Paste into another record\'s content to include this block</span>';
+        $this->component->setwidths(20, 30, 50, true);
+        $formfields .= $this->component->renderformrow('blockrefrow', '', 'Block ref', false, '', '', '', $blockrefcode, '', '', '', $blockrefhint);
+        $this->component->restorewidths();
         $formfields .= $this->component->buildinputrow("title",      2, "", 'Title',   'Title',   40, 255, true,  '', '');
         $formfields .= $this->component->buildtextarearow("content", 3, "", 'Content', 'Content', 50, 10, 10000, true, '', '');
 
@@ -75,13 +89,27 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $postloadfieldsscript = <<<JS
             const _pled = tinymce.get('content');
             if (_pled) { _pled.setContent(jQuery("#content").val() || ''); }
+            const _bid = jQuery("#hiddenid").val();
+            if (_bid && _bid !== '0') {
+                jQuery("#blockref_display").text('{{block:' + _bid + '}}').show();
+                jQuery("#blockref_copy").css('display','inline-block');
+                jQuery("#blockref_hint").show();
+            } else {
+                jQuery("#blockref_display").hide();
+                jQuery("#blockref_copy").hide();
+                jQuery("#blockref_hint").hide();
+            }
         JS;
         $postclearfieldsscript = <<<JS
             jQuery("#page_id").val("");
             const _pced = tinymce.get('content'); if (_pced) { _pced.setContent(''); }
+            jQuery("#blockref_display").hide();
+            jQuery("#blockref_copy").hide();
+            jQuery("#blockref_hint").hide();
         JS;
         $presavescript = <<<JS
             const _psed = tinymce.get('content'); if (_psed) { _psed.save(); }
+            jQuery("#also_covers").val(jQuery("#also_covers").val().trim().replace(/\s+/g, ''));
         JS;
         $disablescript = <<<JS
             const _dsed = tinymce.get('content'); if (_dsed) { _dsed.mode.set('design'); }
@@ -123,10 +151,6 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $script .= <<<JS
             function formhaserrors() {
                 let errors = 0;
-                if (!jQuery("#page_id").val()) {
-                    jQuery("#page_idrow_error").html("(Required)");
-                    errors++;
-                }
                 if (!jQuery("#title").val()) {
                     jQuery("#titlerow_error").html("(Required)");
                     errors++;

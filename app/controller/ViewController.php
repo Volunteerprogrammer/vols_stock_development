@@ -996,6 +996,9 @@ class ViewController {
             } else {
                 $this->manager->getallrecords($data, "page_id", $parents, $numrows, false, false);
             }
+            if (is_array($data) && !empty($data)) {
+                $this->resolveblocks($data);
+            }
             $this->form->init($this->session, $data, $parents, false);
             $this->bodysection = $this->bodies->standardbody();
             $this->bodysection->init($this->session, $this->form, "Help", "", $errormessage);
@@ -1007,6 +1010,35 @@ class ViewController {
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
         return true;
      }
+
+    private function resolveblocks(array &$items): void {
+        $blockIds = [];
+        foreach ($items as $item) {
+            preg_match_all('/\{\{block:(\d+)\}\}/', $item['content'] ?? '', $m);
+            foreach ($m[1] as $id) { $blockIds[(int)$id] = true; }
+        }
+        if (empty($blockIds)) return;
+        $blocks  = [];
+        $numrows = 0;
+        $this->manager->getblocks(array_keys($blockIds), $blocks, $numrows);
+        $map = [];
+        if (is_array($blocks)) {
+            foreach ($blocks as $b) { $map[(int)$b['id']] = $b['content'] ?? ''; }
+        }
+        foreach ($items as &$item) {
+            $ownId = (int)($item['id'] ?? 0);
+            $item['content'] = preg_replace_callback(
+                '/\{\{block:(\d+)\}\}/',
+                function($m) use ($map, $ownId) {
+                    $bid = (int)$m[1];
+                    return ($bid === $ownId) ? $m[0] : ($map[$bid] ?? '');
+                },
+                $item['content'] ?? ''
+            );
+        }
+        unset($item);
+    }
+
     private function prepare_help_admin_body($user_id, &$errormessage, $trace=false) {
         if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
         try {

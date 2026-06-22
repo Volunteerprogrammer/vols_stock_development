@@ -36,6 +36,15 @@ class HelpManager extends \fw\controller\manager\StdManager
         $this->table->setfield("modified_by",       $this->user_id);
     }
 
+    protected function insertdataintotablefields($data) {
+        if (($data['page_id'] ?? '') === '') { $data['page_id'] = null; }
+        parent::insertdataintotablefields($data);
+    }
+
+    public function getblocks(array $record_ids, &$results, &$numrows): bool {
+        return $this->table->getbyids($record_ids, $results, $numrows);
+    }
+
     public function getbypage(int $page_id, &$results, &$numrows): bool {
         return $this->table->getbypage($page_id, $results, $numrows);
     }
