@@ -24,7 +24,7 @@ class HelpForm extends \fw\view\form\Form
         }
 
         $mm        = $this->menumanager;
-        $adminlink = $isadmin ? '<a href="?p='.$mm::HELPADMINPAGE.'" class="help-admin-link">Edit Help Content</a>' : '';
+        $adminlink = in_array($mm::HELPADMINPAGE.'||UPDATE', $rights) ? '<a href="?p='.$mm::HELPADMINPAGE.'" class="help-admin-link">Edit Help Content</a>' : '';
 
         $html  = '<div id="help-display" class="vols-table">';
         $html .= '<div class="vol-form-headingcontainer"><div class="headingrowwrap">';
@@ -37,7 +37,7 @@ class HelpForm extends \fw\view\form\Form
         if (empty($visible)) {
             $html .= '<div class="vols-tablerow" style="padding:20px;">';
             $html .= '<p>No help content has been written for the pages you can access yet.</p>';
-            if ($isadmin) {
+            if (in_array($mm::HELPADMINPAGE.'||UPDATE', $rights)) {
                 $html .= '<p>Use the <a href="?p='.$mm::HELPADMINPAGE.'">Help Content Admin</a> page to add content.</p>';
             }
             $html .= '</div>';
