@@ -60,7 +60,7 @@ class HelpForm extends \fw\view\form\Form
                 $html .= '<section id="help_'.$pid.'" class="help-section vols-tablerow" style="padding:16px 20px 20px;border-top:3px solid #4a7fbf;">';
                 $html .= '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">';
                 $html .= '<h2 style="margin:0;font-size:1.15em;color:#2c5282;letter-spacing:0.02em;">'.$title.'</h2>';
-                $html .= '<a href="#help-display" style="font-size:0.78em;color:#4a7fbf;text-decoration:none;white-space:nowrap;margin-left:16px;" title="Back to top">&#9650; top</a>';
+                $html .= '<a href="#help-display" style="font-size:0.78em;color:#4a7fbf;text-decoration:none;white-space:nowrap;margin-left:16px;margin-right:18px;" title="Back to top">&#9650; top</a>';
                 $html .= '</div>';
                 $html .= '<div class="help-content" style="line-height:1.7;color:#333;">'.$body.'</div>';
                 $html .= '</section>';
