@@ -53,7 +53,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $pageselect .= $pageoptions;
         $pageselect .= '</select>';
 
-        $formfields  = $this->component->renderformrow('page_idrow', '', 'Page', true, '', '', 'page_id', $pageselect);
+        $formfields  = $this->component->renderformrow('page_idrow', '', 'Page', true, '', '', '', $pageselect);
         $formfields .= $this->component->buildinputrow("title",      2, "", 'Title',   'Title',   40, 255, true,  '', '');
         $formfields .= $this->component->buildtextarearow("content", 3, "", 'Content', 'Content', 50, 10, 10000, true, '', '');
 
@@ -68,24 +68,23 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
     }
 
     protected function cancelclickscript() {
-        return "if (tinymce.activeEditor) { tinymce.activeEditor.mode.set('readonly'); }";
+        return "const _ce = tinymce.get('content'); if (_ce) { _ce.mode.set('readonly'); }";
     }
 
     public function formscript() {
         $postloadfieldsscript = <<<JS
-            if (tinymce.activeEditor) {
-                tinymce.activeEditor.setContent(jQuery("#content").val() || '');
-            }
+            const _pled = tinymce.get('content');
+            if (_pled) { _pled.setContent(jQuery("#content").val() || ''); }
         JS;
         $postclearfieldsscript = <<<JS
             jQuery("#page_id").val("");
-            if (tinymce.activeEditor) { tinymce.activeEditor.setContent(''); }
+            const _pced = tinymce.get('content'); if (_pced) { _pced.setContent(''); }
         JS;
         $presavescript = <<<JS
-            if (tinymce.activeEditor) { tinymce.triggerSave(); }
+            const _psed = tinymce.get('content'); if (_psed) { _psed.save(); }
         JS;
         $disablescript = <<<JS
-            if (tinymce.activeEditor) { tinymce.activeEditor.mode.set('design'); }
+            const _dsed = tinymce.get('content'); if (_dsed) { _dsed.mode.set('design'); }
         JS;
         $onloadscript = <<<JS
             tinymce.init({
@@ -132,9 +131,10 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                     jQuery("#titlerow_error").html("(Required)");
                     errors++;
                 }
-                if (tinymce.activeEditor) { tinymce.triggerSave(); }
-                if (!jQuery("#content").val().trim()) {
-                    jQuery("#contentrow_error").html("(Required)");
+                const _fhed = tinymce.get('content');
+                if (_fhed && !_fhed.getContent({format:'text'}).trim()) {
+                    errors++;
+                } else if (!_fhed && !jQuery("#content").val().trim()) {
                     errors++;
                 }
                 return errors;
