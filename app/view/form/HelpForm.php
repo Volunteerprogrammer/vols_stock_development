@@ -42,15 +42,17 @@ class HelpForm extends \fw\view\form\Form
             }
             $html .= '</div>';
         } else {
-            // Table of contents
-            $html .= '<div class="help-toc vols-tablerow" style="padding:14px 20px;background:#f4f8fd;border-bottom:1px solid #c8d8ee;">';
-            $html .= '<strong style="font-size:0.9em;text-transform:uppercase;letter-spacing:0.05em;color:#4a7fbf;">Contents</strong>';
-            $html .= '<ul style="margin:8px 0 0 18px;line-height:1.9;">';
-            foreach ($visible as $item) {
-                $html .= '<li><a href="#help_'.(int)$item['page_id'].'" style="color:#2c5282;text-decoration:none;">'
-                       . htmlspecialchars($item['title']).'</a></li>';
+            // Table of contents — only shown when displaying multiple sections
+            if (count($visible) > 1) {
+                $html .= '<div class="help-toc vols-tablerow" style="padding:14px 20px;background:#f4f8fd;border-bottom:1px solid #c8d8ee;">';
+                $html .= '<strong style="font-size:0.9em;text-transform:uppercase;letter-spacing:0.05em;color:#4a7fbf;">Contents</strong>';
+                $html .= '<ul style="margin:8px 0 0 18px;line-height:1.9;">';
+                foreach ($visible as $item) {
+                    $html .= '<li><a href="#help_'.(int)$item['page_id'].'" style="color:#2c5282;text-decoration:none;">'
+                           . htmlspecialchars($item['title']).'</a></li>';
+                }
+                $html .= '</ul></div>';
             }
-            $html .= '</ul></div>';
 
             // Sections
             foreach ($visible as $item) {

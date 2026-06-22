@@ -989,7 +989,13 @@ class ViewController {
             $data    = "";
             $parents = [];
             $numrows = 0;
-            $this->manager->getallrecords($data, "page_id", $parents, $numrows, false, false);
+            $helpfor = intval($_GET['helpfor'] ?? 0);
+            if ($helpfor > 0) {
+                $this->manager->getbypage($helpfor, $data, $numrows);
+                if (!is_array($data)) { $data = []; }
+            } else {
+                $this->manager->getallrecords($data, "page_id", $parents, $numrows, false, false);
+            }
             $this->form->init($this->session, $data, $parents, false);
             $this->bodysection = $this->bodies->standardbody();
             $this->bodysection->init($this->session, $this->form, "Help", "", $errormessage);

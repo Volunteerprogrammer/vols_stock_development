@@ -36,6 +36,10 @@ class HelpManager extends \fw\controller\manager\StdManager
         $this->table->setfield("modified_by",       $this->user_id);
     }
 
+    public function getbypage(int $page_id, &$results, &$numrows): bool {
+        return $this->table->getbypage($page_id, $results, $numrows);
+    }
+
     public function getforpages(array $page_ids, &$results, &$numrows): bool {
         return $this->table->getforpages($page_ids, $results, $numrows);
     }
