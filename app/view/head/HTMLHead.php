@@ -84,6 +84,9 @@ class HTMLHead extends \fw\view\head\HTMLHead
             $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/tables.0.2.css" >';
             $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/forms.0.2.css" >';
         }
+        if ((int) $this->pagenum === 601) {
+            $this->links .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js" referrerpolicy="origin"></script>';
+        }
         if ($this->trace ) { echo "Leave ".__METHOD__."<br>\n"; }
      }
     protected function setscript() {

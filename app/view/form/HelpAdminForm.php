@@ -67,14 +67,44 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         return $formfields;
     }
 
+    protected function cancelclickscript() {
+        return "if (tinymce.activeEditor) { tinymce.activeEditor.mode.set('readonly'); }";
+    }
+
     public function formscript() {
-        $postloadfieldsscript = <<<SCRIPT
-            const pageVal = jQuery("#page_id").val();
-            if (pageVal) { jQuery("#page_id").val(pageVal); }
-        SCRIPT;
-        $postclearfieldsscript = <<<SCRIPT
+        $postloadfieldsscript = <<<JS
+            if (tinymce.activeEditor) {
+                tinymce.activeEditor.setContent(jQuery("#content").val() || '');
+            }
+        JS;
+        $postclearfieldsscript = <<<JS
             jQuery("#page_id").val("");
-        SCRIPT;
+            if (tinymce.activeEditor) { tinymce.activeEditor.setContent(''); }
+        JS;
+        $presavescript = <<<JS
+            if (tinymce.activeEditor) { tinymce.triggerSave(); }
+        JS;
+        $disablescript = <<<JS
+            if (tinymce.activeEditor) { tinymce.activeEditor.mode.set('design'); }
+        JS;
+        $onloadscript = <<<JS
+            tinymce.init({
+                selector: '#content',
+                plugins: 'lists link',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link',
+                menubar: false,
+                height: 380,
+                branding: false,
+                setup: function(editor) {
+                    editor.on('init', function() {
+                        editor.mode.set('readonly');
+                    });
+                    editor.on('change', function() {
+                        editor.save();
+                    });
+                }
+            });
+        JS;
         $script = $this->vols_masterscript(
             $this->formname,
             $this->objname,
@@ -87,16 +117,11 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             $postclearfieldsscript,
             false,  // trace
             '',     // multisubmit
-            ''      // presavescript
+            $presavescript,
+            $disablescript,
+            $onloadscript
         );
         $script .= <<<JS
-            function loaddataintoform(recordnum) {
-                const recdata = getdata();
-                jQuery("#hiddenid").val(recdata[0]);
-                jQuery("#page_id").val(recdata[1]);
-                jQuery("#title").val(recdata[2]);
-                jQuery("#content").val(recdata[3]);
-            }
             function formhaserrors() {
                 let errors = 0;
                 if (!jQuery("#page_id").val()) {
@@ -107,7 +132,8 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                     jQuery("#titlerow_error").html("(Required)");
                     errors++;
                 }
-                if (!jQuery("#content").val()) {
+                if (tinymce.activeEditor) { tinymce.triggerSave(); }
+                if (!jQuery("#content").val().trim()) {
                     jQuery("#contentrow_error").html("(Required)");
                     errors++;
                 }

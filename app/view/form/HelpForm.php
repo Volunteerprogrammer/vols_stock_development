@@ -56,7 +56,10 @@ class HelpForm extends \fw\view\form\Form
             foreach ($visible as $item) {
                 $pid   = (int)$item['page_id'];
                 $title = htmlspecialchars($item['title']);
-                $body  = nl2br(htmlspecialchars($item['content']));
+                $content = $item['content'];
+                $body  = (strpos($content, '<') !== false)
+                       ? $content
+                       : nl2br(htmlspecialchars($content));
                 $html .= '<section id="help_'.$pid.'" class="help-section vols-tablerow" style="padding:16px 20px 20px;border-top:3px solid #4a7fbf;">';
                 $html .= '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">';
                 $html .= '<h2 style="margin:0;font-size:1.15em;color:#2c5282;letter-spacing:0.02em;">'.$title.'</h2>';
