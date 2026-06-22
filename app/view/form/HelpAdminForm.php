@@ -58,12 +58,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $this->component->restorewidths();
         $formfields .= $this->component->buildinputrow("also_covers", 8, "", 'Also covers', 'extra page IDs, comma-separated, e.g. 102,103', 40, 500, false, '', '');
         $blockrefcode = '<code id="blockref_display" style="display:none;background:#f4f4f4;padding:2px 6px;border-radius:3px;"></code>'
-                      . '<div id="blockref_copy" class="clickable action doitbg" style="display:none;width:fit-content;padding:0 10px;float:right;" onclick="'
-                      . 'var t=document.getElementById(\'blockref_display\').textContent;'
-                      . 'navigator.clipboard.writeText(t).then(function(){'
-                      . 'var b=document.getElementById(\'blockref_copy\');b.textContent=\'Copied!\';'
-                      . 'setTimeout(function(){b.textContent=\'Copy\';},1500);});'
-                      . '">Copy</div>';
+                      . '<div id="blockref_copy" class="clickable action doitbg" style="display:none;width:fit-content;padding:0 10px;float:right;" onclick="copyblockref()">Copy</div>';
         $blockrefhint = '<span id="blockref_hint" style="display:none;">Paste into another record\'s content to include this block</span>';
         $this->component->setwidths(20, 30, 50, true);
         $formfields .= $this->component->renderformrow('blockrefrow', '', 'Block ref', false, '', '', '', $blockrefcode, '', '', '', $blockrefhint);
@@ -149,6 +144,13 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             $onloadscript
         );
         $script .= <<<JS
+            function copyblockref() {
+                var t = jQuery("#blockref_display").text();
+                navigator.clipboard.writeText(t).then(function() {
+                    jQuery("#blockref_copy").text('Copied!');
+                    setTimeout(function() { jQuery("#blockref_copy").text('Copy'); }, 1500);
+                });
+            }
             function formhaserrors() {
                 let errors = 0;
                 if (!jQuery("#title").val()) {
