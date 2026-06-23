@@ -72,7 +72,8 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $formfields .= '<input type="hidden" name="date_last_updated" data-fnum="6" id="date_last_updated" value="" />';
         $formfields .= '<input type="hidden" name="modified_by"       data-fnum="7" id="modified_by"       value="" />';
 
-        $this->preparecommontop(false, false, '', '', false, '');
+        $currentid = $this->requestdata["id"] ?? '';
+        $this->preparecommontop(false, false, '', $currentid, false, '');
         return $formfields;
     }
 
