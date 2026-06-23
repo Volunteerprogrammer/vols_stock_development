@@ -64,7 +64,9 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $formfields .= $this->component->renderformrow('blockrefrow', '', 'Block ref', false, '', '', '', $blockrefcode, '', '', '', $blockrefhint);
         $this->component->restorewidths();
         $formfields .= $this->component->buildinputrow("title",      2, "", 'Title',   'Title',   40, 255, true,  '', '');
-        $formfields .= $this->component->buildtextarearow("content", 3, "", 'Content', 'Content', 50, 10, 10000, true, '', '');
+        $this->component->setwidths(20, 75, 5, true);
+        $formfields .= $this->component->buildtextarearow("content", 3, "", 'Content', 'Content', 50, 10, 10000, false, '', '');
+        $this->component->restorewidths();
 
         // Hidden audit fields (not displayed, populated by manager on save)
         $formfields .= '<input type="hidden" name="date_registered"   data-fnum="4" id="date_registered"   value="" />';
@@ -114,15 +116,30 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             tinymce.init({
                 selector: '#content',
                 plugins: 'lists link',
-                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | condblock',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | condblock elseblock',
                 menubar: false,
                 height: 380,
                 branding: false,
                 setup: function(editor) {
+                    function pageIsSelected() { return !!jQuery('#page_id').val(); }
+                    function makePageAwareSetup(api) {
+                        function update() { api.setEnabled(pageIsSelected()); }
+                        update();
+                        jQuery('#page_id').on('change', update);
+                        editor.on('focus', update);
+                        return function() { jQuery('#page_id').off('change', update); };
+                    }
                     editor.ui.registry.addButton('condblock', {
                         text: 'If right…',
                         tooltip: 'Insert a section visible only to users with a specific permission',
+                        onSetup: makePageAwareSetup,
                         onAction: function() { openCondBlockDialog(editor); }
+                    });
+                    editor.ui.registry.addButton('elseblock', {
+                        text: 'Else',
+                        tooltip: 'Insert an {{else}} marker inside a conditional block',
+                        onSetup: makePageAwareSetup,
+                        onAction: function() { editor.insertContent('<p>{{else}}</p>'); }
                     });
                     editor.on('keyup', function(e) {
                         if (e.key !== '{') return;
@@ -214,12 +231,6 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                 let errors = 0;
                 if (!jQuery("#title").val()) {
                     jQuery("#titlerow_error").html("(Required)");
-                    errors++;
-                }
-                const _fhed = tinymce.get('content');
-                if (_fhed && !_fhed.getContent({format:'text'}).trim()) {
-                    errors++;
-                } else if (!_fhed && !jQuery("#content").val().trim()) {
                     errors++;
                 }
                 return errors;

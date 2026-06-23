@@ -225,7 +225,7 @@ class MenuManager  extends \fw\controller\manager\StdManager
                             });
                         })
                         function formIsEditing() {
-                            return jQuery("#resetbutton").length && !jQuery("#resetbutton").hasClass("inactive");
+                            return jQuery("#submitbutton").length && !jQuery("#submitbutton").hasClass("inactive");
                         }
                         function confirmLeave(proceed) {
                             jQuery.volsdialog("YESNO", "<p>You have unsaved changes. Leave this page without saving?</p>",

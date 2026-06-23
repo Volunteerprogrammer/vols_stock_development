@@ -346,7 +346,7 @@ class HTMLHead extends \fw\view\head\HTMLHead
                                                            }
                                                          }
                                                },
-                                             {text: "Cancel",
+                                             {text: "No",
                                                 "class": "vols-spellcheck-button vols-cancel",
                                                 click : function() {
                                                          jQuery(this).dialog("close");
