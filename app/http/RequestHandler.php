@@ -280,6 +280,15 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             $this->manager->getmovements($stock_id, $movements, $mov_n);
                             $output = json_encode($movements);
                             break;
+                        case "help_getpageactions":
+                            $amgr = $this->managercollection->ActionManager();
+                            $amgr->init($this->session);
+                            $d       = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $page_id = (int)($d["page_id"] ?? 0);
+                            $results = []; $numrows = 0;
+                            $amgr->getactionsforpagenumber($page_id, $results, $numrows);
+                            $output = json_encode($results ?: []);
+                            break;
                         default: $output = "Unknown request action: ".$action;
                     }
                 } else {

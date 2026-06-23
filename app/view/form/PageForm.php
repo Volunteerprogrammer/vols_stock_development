@@ -55,12 +55,8 @@ class PageForm extends \fw\view\form\StdCRUDForm {
             "id"=>"",
             "pagenumber"=>"",
             "name" => "",
-            "usepagenum" => "",
             "pagetype" => "",
             "unrestricted" => "",
-            "submenu" => "",
-            "menuid" => "",
-            "menutext" => "",
             "autoextendtasks" => ""
                             );
      }
@@ -69,26 +65,19 @@ class PageForm extends \fw\view\form\StdCRUDForm {
         $formfields = $this->component->buildinputrow("pagenumber",1,"",'PageNumber','PageNumber',10,10,true,'',''); 
         $formfields .= $this->component->buildinputrow("name",2,"",'Name','name',20,64,true,'','Descriptive text only.'); 
         $formfields .= $this->component->rendersectionheading("General",inputgroup:"generalgroup");
-        $formfields .= $this->component->buildinputrow("usepagenum",3,"",'Use Pagenumber','Pagenumber',10,10,true,'','Usually 0. Only change if you need to change to another page number.'); 
         // $formfields .= $this->component->buildcheckboxrow("pagetype","1","",false,4,'Not shown in Menus','Used for system launched pages.',false,false,false);
         // $buttons should be an array of button arrays e.g. [["SMS"=>1],["Email"=>2],["Phone"=>3]];
-        $formfields .='  <input type="hidden" name="pagetype" data-fnum="4" id="pagetype"  value="" />'."\n";
+        $formfields .='  <input type="hidden" name="pagetype" data-fnum="3" id="pagetype"  value="" />'."\n";
         $buttonarray = [["Other"=>0],["System"=>1],["Roster"=>2],["Editor"=>3],["Reports"=>4]];
-        $buttons = $this->component->renderradiobuttons('pt',$buttonarray,0,'',4,true,'pt',false);    
+        $buttons = $this->component->renderradiobuttons('pt',$buttonarray,0,'',3,true,'pt',false);
         $formfields .= $this->component->renderformrow('pagetyperow','','Page type',0,'','','pagetype',$buttons);
 
-        $formfields .= $this->component->buildcheckboxrow("unrestricted","1","",false,5,'Unrestricted access','No permissions required to access this page.',false,false,false);
-        $formfields .= $this->component->buildinputrow("maxcolumns",9,"",'Maximum columns','maxcolumns',5,5,true,'','Max number of Tasks across the page.'); 
+        $formfields .= $this->component->buildcheckboxrow("unrestricted","1","",false,4,'Unrestricted access','No permissions required to access this page.',false,false,false);
+        $formfields .= $this->component->buildinputrow("maxcolumns",5,"",'Maximum columns','maxcolumns',5,5,true,'','Max number of Tasks across the page.');
         $this->component->setwidths (30,15,55);
-        $formfields .= $this->component->buildinputrow("autoextendtasks",10,"",'Auto-extend Tasks (Roster pages only)','autoextendtasks',5,5,true,'','Check that the specified leadtime and publication settings are applied for all tasks on the page whenever the Roster page loads. Note that setting this to "1" will cause any publication changes made within the Roster page to be overwritten immediately and returned to the default settings for the task.'); 
+        $formfields .= $this->component->buildinputrow("autoextendtasks",6,"",'Auto-extend Tasks (Roster pages only)','autoextendtasks',5,5,true,'','Check that the specified leadtime and publication settings are applied for all tasks on the page whenever the Roster page loads. Note that setting this to "1" will cause any publication changes made within the Roster page to be overwritten immediately and returned to the default settings for the task.');
 
-        $formfields .= $this->component->rendersectionheading("Menu",inputgroup:"menugroup");
-        $this->component->setwidths (30,30,40);
-        $formfields .= $this->component->buildinputrow("submenu",6,"",'Menu Level (0-3)','',10,10,true,'','Determines the menu row this page will appear on. -1 means don\'t show in menu.');
-        $formfields .= $this->component->buildinputrow("menuid",7,"",'Menu id','menuid',20,45,true,'','Don\'t change please'); 
-        $formfields .= $this->component->buildinputrow("menutext",8,"",'Menu text','menutext',20,45,true,'',''); 
-
-        $fn = 11;
+        $fn = 7;
         $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show linked","rightscript"=>"","leftid"=>"","lefttext"=>"","leftscript"=>""];
         $heading = "<span id='statustextspan'>ALL</span> Actions (allowed on this page)";
         $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
@@ -134,6 +123,8 @@ class PageForm extends \fw\view\form\StdCRUDForm {
 
                     jQuery("input[type='checkbox']").prop("checked",false);
                     $('input:radio').each(function () { $(this).prop('checked', false); });
+                    jQuery("#pagetype").val('');
+                    showhidepages();
         JS;
         $presavescript = <<<JS
 
@@ -156,11 +147,17 @@ class PageForm extends \fw\view\form\StdCRUDForm {
                                     $presavescript
                                     );         
         $script .= <<<JS
-            function showhidepages() { 
+            function showhidepages() {
                 setchildselectorheadingtext("","","pagetype",["0",jQuery("#pagetype").val()]);
+                const isroster = jQuery("#pagetype").val() === '2';
+                jQuery("#maxcolumnsrow, #autoextendtasksrow").toggle(isroster);
                 const element = document.getElementById("dataspace");
                 element.scrollTop = element.scrollHeight;
             }
+            jQuery(document).on('click', "input[name='pt']", function() {
+                jQuery("#pagetype").val(jQuery(this).val());
+                showhidepages();
+            });
             function formhaserrors() {
                 let errors = 0;
                 if (!jQuery("#pagenumber").val()){ 

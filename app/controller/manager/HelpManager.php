@@ -27,7 +27,8 @@ class HelpManager extends \fw\controller\manager\StdManager
     }
 
     protected function insertsetfields($data=[], $trace=false) {
-        $this->table->setfield("page_id",           $data['page_id']  ?? 0);
+        $pid = ($data['page_id'] ?? '') !== '' ? (int)$data['page_id'] : null;
+        $this->table->setfield("page_id",           $pid);
         $this->table->setfield("title",             $data['title']    ?? '');
         $this->table->setfield("content",           $data['content']  ?? '');
         $this->table->setfield("date_registered",   date("Y-m-d H:i:s"));
@@ -37,8 +38,9 @@ class HelpManager extends \fw\controller\manager\StdManager
     }
 
     protected function insertdataintotablefields($data) {
-        if (($data['page_id'] ?? '') === '') { $data['page_id'] = null; }
+        $pid = ($data['page_id'] ?? '') !== '' ? (int)$data['page_id'] : null;
         parent::insertdataintotablefields($data);
+        $this->table->setfield("page_id", $pid); // override: parent loop does null??"" which coerces to 0
     }
 
     public function getblocks(array $record_ids, &$results, &$numrows): bool {

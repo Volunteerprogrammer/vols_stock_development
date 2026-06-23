@@ -28,9 +28,9 @@ class TaskManager extends \fw\controller\manager\StdManager
      }
     protected function getparents(&$parents,$trace) {
         if ($this->trace ) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
-        $success = $this->pagetable->select("id,menutext","pagetype = '2'", "","","menutext",0,$parents,$numrows,false);
+        $success = $this->pagetable->select("id,name","pagetype = '2'", "","","name",0,$parents,$numrows,false);
         if ($success && count($parents) == 0) {
-            $success = $this->pagetable->select("id,menutext","","","","",0,$parents,$numrows,false);
+            $success = $this->pagetable->select("id,name","","","","",0,$parents,$numrows,false);
         }
         return true;
      }

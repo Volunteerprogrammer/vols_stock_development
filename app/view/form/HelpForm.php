@@ -34,7 +34,7 @@ class HelpForm extends \fw\view\form\Form
         $adminlink = in_array($mm::HELPADMINPAGE.'||UPDATE', $rights) ? '<a href="?p='.$mm::HELPADMINPAGE.'" class="help-admin-link">Edit Help Content</a>' : '';
 
         $html  = '<div id="help-display" class="vols-table">';
-        $html .= '<div class="vol-form-headingcontainer"><div class="headingrowwrap">';
+        $html .= '<div class="vol-form-headingcontainer" style="margin-top:12px;"><div class="headingrowwrap">';
         $html .= '<span class="vols-form-pageheading">Help &amp; Documentation</span>';
         if ($adminlink) {
             $html .= '&nbsp;&nbsp;'.$adminlink;

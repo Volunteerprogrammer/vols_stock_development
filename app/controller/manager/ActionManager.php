@@ -25,4 +25,12 @@ class ActionManager extends \fw\controller\manager\StdManager
         $this->table->setfield("code",$data['code']);
         $this->table->setfield("page_type",$data['page_type']??0);
     }
+
+    public function getactionsforpage(int $page_id, &$results, &$numrows): bool {
+        return $this->table->getactionsforpage($page_id, $results, $numrows);
+    }
+
+    public function getactionsforpagenumber(int $pagenumber, &$results, &$numrows): bool {
+        return $this->table->getactionsforpagenumber($pagenumber, $results, $numrows);
+    }
 }

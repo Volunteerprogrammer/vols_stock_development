@@ -11,12 +11,8 @@ class PageTable extends \fw\database\table\MySQLTable
 			"id"=>"",
 			"pagenumber"=>"",
 			"name" => "",
-			"usepagenum" => "",
 			"pagetype" => "",
 			"unrestricted" => "",
-			"submenu" => "",
-			"menuid" => "",
-			"menutext" => "",
 			"maxcolumns" => "",
 			"autoextendtasks" => ""
 		);

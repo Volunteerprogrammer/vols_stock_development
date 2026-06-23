@@ -505,7 +505,7 @@ class ViewController {
             $pages = [];
             $success = $success && $this->manager->getallpageactionroles($pageactionroles,$numrows,"role_id",false);
             $success = $success && $this->manager->getallpageactions($pageactions,$numrows,false);
-            $success = $success && $this->manager->getpageswithactions($pages,$numrows,"menutext",false,false);
+            $success = $success && $this->manager->getpageswithactions($pages,$numrows,"name",false,false);
             if ($success) {
                 $this->form->init($this->session,$data,$parents,false,$pageactions,$pageactionroles,$pages);
                 $this->bodysection = $this->bodies->standardbody();
@@ -998,6 +998,7 @@ class ViewController {
             }
             if (is_array($data) && !empty($data)) {
                 $this->resolveblocks($data);
+                $this->resolveconditionals($data, $helpfor);
             }
             $this->form->init($this->session, $data, $parents, false);
             $this->bodysection = $this->bodies->standardbody();
@@ -1011,32 +1012,66 @@ class ViewController {
         return true;
      }
 
-    private function resolveblocks(array &$items): void {
-        $blockIds = [];
-        foreach ($items as $item) {
-            preg_match_all('/\{\{block:(\d+)\}\}/', $item['content'] ?? '', $m);
-            foreach ($m[1] as $id) { $blockIds[(int)$id] = true; }
-        }
-        if (empty($blockIds)) return;
-        $blocks  = [];
-        $numrows = 0;
-        $this->manager->getblocks(array_keys($blockIds), $blocks, $numrows);
-        $map = [];
-        if (is_array($blocks)) {
-            foreach ($blocks as $b) { $map[(int)$b['id']] = $b['content'] ?? ''; }
-        }
+    private function resolveconditionals(array &$items, int $helpfor): void {
+        // Negative lookaheads ensure only the innermost block matches on each pass,
+        // so nested {{ifright}} blocks resolve correctly from inside out.
+        $blockRe  = '/<p[^>]*>\s*\{\{ifright:([A-Z0-9_]+)\}\}\s*<\/p>\s*((?:(?!<p[^>]*>\s*\{\{ifright:)[\s\S])*?)\s*<p[^>]*>\s*\{\{\/ifright\}\}\s*<\/p>/s';
+        $inlineRe = '/\{\{ifright:([A-Z0-9_]+)\}\}((?:(?!\{\{ifright:)[\s\S])*?)\{\{\/ifright\}\}/s';
+        $cb = function($m) use ($helpfor) {
+            return ($this->isadmin || in_array("{$helpfor}||{$m[1]}", $this->rights)) ? $m[2] : '';
+        };
         foreach ($items as &$item) {
-            $ownId = (int)($item['id'] ?? 0);
-            $item['content'] = preg_replace_callback(
-                '/\{\{block:(\d+)\}\}/',
-                function($m) use ($map, $ownId) {
-                    $bid = (int)$m[1];
-                    return ($bid === $ownId) ? $m[0] : ($map[$bid] ?? '');
-                },
-                $item['content'] ?? ''
-            );
+            $content = $item['content'] ?? '';
+            $passes  = 0;
+            do {
+                $prev    = $content;
+                $content = preg_replace_callback($blockRe,  $cb, $content);
+                $content = preg_replace_callback($inlineRe, $cb, $content);
+            } while ($content !== $prev && ++$passes < 10);
+            $item['content'] = $content;
         }
         unset($item);
+    }
+
+    private function resolveblocks(array &$items): void {
+        $map    = [];
+        $passes = 0;
+        do {
+            // Fetch any block IDs appearing in content that we haven't loaded yet
+            $needed = [];
+            foreach ($items as $item) {
+                preg_match_all('/\{\{block:(\d+)\}\}/', $item['content'] ?? '', $m);
+                foreach ($m[1] as $id) {
+                    if (!array_key_exists((int)$id, $map)) $needed[(int)$id] = true;
+                }
+            }
+            if (!empty($needed)) {
+                foreach ($needed as $id => $_) { $map[$id] = ''; } // sentinel so missing blocks don't re-query
+                $blocks  = [];
+                $numrows = 0;
+                $this->manager->getblocks(array_keys($needed), $blocks, $numrows);
+                if (is_array($blocks)) {
+                    foreach ($blocks as $b) { $map[(int)$b['id']] = $b['content'] ?? ''; }
+                }
+            }
+            // Substitute all known blocks; track whether anything changed
+            $changed = false;
+            foreach ($items as &$item) {
+                $ownId = (int)($item['id'] ?? 0);
+                $prev  = $item['content'];
+                $item['content'] = preg_replace_callback(
+                    '/\{\{block:(\d+)\}\}/',
+                    function($m) use ($map, $ownId) {
+                        $bid = (int)$m[1];
+                        if ($bid === $ownId || !array_key_exists($bid, $map)) return $m[0];
+                        return $map[$bid];
+                    },
+                    $item['content'] ?? ''
+                );
+                if ($item['content'] !== $prev) $changed = true;
+            }
+            unset($item);
+        } while ($changed && ++$passes < 10);
     }
 
     private function prepare_help_admin_body($user_id, &$errormessage, $trace=false) {
@@ -1047,45 +1082,9 @@ class ViewController {
             $numrows = 0;
             $success = $this->manager->getallrecords($data, "title", $parents, $numrows, false, false);
             if ($success) {
-                $mm = $this->menumanager;
-                $parents['pages'] = [
-                    $mm::ROSTER1                   => "Roster 1",
-                    $mm::ROSTER2                   => "Roster 2",
-                    $mm::ROSTER3                   => "Roster 3",
-                    $mm::ROSTER4                   => "Roster 4",
-                    $mm::ROSTER5                   => "Roster 5",
-                    $mm::ROSTER6                   => "Roster 6",
-                    $mm::ROSTER7                   => "Roster 7",
-                    $mm::ROSTER8                   => "Roster 8",
-                    $mm::ROSTER9                   => "Roster 9",
-                    $mm::ROSTER10                  => "Roster 10",
-                    $mm::PROFILEPAGE               => "My Profile",
-                    $mm::CLIENTADMINPAGE           => "Client Admin",
-                    $mm::CLIENTVOLSPAGE            => "Client Check-In",
-                    $mm::ATTENDANCEADMINPAGE       => "Attendance Admin",
-                    $mm::ATTENDANCEVOLSPAGE        => "Attendance Vols",
-                    $mm::CLIENTREPORTPAGE          => "Attendance Report",
-                    $mm::TASKPAGE                  => "Tasks",
-                    $mm::ROLEPAGE                  => "Roles",
-                    $mm::USERPAGE                  => "Users",
-                    $mm::SESSIONPAGE               => "Sessions",
-                    $mm::ACTIONPAGE                => "Actions",
-                    $mm::PAGEPAGE                  => "Pages",
-                    $mm::REPORTPAGE                => "Reports",
-                    $mm::CONFIGPAGE                => "Configuration",
-                    $mm::MENUITEMPAGE              => "Menu Items",
-                    $mm::STOCKCATEGORYPAGE         => "Stock Categories",
-                    $mm::STOCKPAGE                 => "Stock Items",
-                    $mm::LOCATIONPAGE              => "Locations",
-                    $mm::STOCKSUPPLIERPAGE         => "Suppliers",
-                    $mm::STOCKCLIENTPAGE           => "Stock Clients",
-                    $mm::STOCKSUPPLIERCATEGORYPAGE => "Supplier Categories",
-                    $mm::STOCKTAKEEVENTPAGE        => "Stocktake",
-                    $mm::DELIVERYEVENTPAGE         => "Delivery",
-                    $mm::TRANSFEREVENTPAGE         => "Transfer",
-                    $mm::ADJUSTMENTEVENTPAGE       => "Adjustment",
-                    $mm::STOCKLEVELREPORTPAGE      => "Stock Reports",
-                ];
+                $pmgr = $this->mgrs->PageManager();
+                $pmgr->init($this->session);
+                $parents['pages'] = $pmgr->getpagenames();
                 $this->form->init($this->session, $data, $parents, false);
                 $this->bodysection = $this->bodies->standardbody();
                 $this->bodysection->init($this->session, $this->form, "Help Content Administration", "", $errormessage);

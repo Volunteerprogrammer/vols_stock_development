@@ -27,4 +27,12 @@ class ActionTable extends \fw\database\table\MySQLTable
 		return $success;
 	}
 
+	public function getactionsforpagenumber(int $pagenumber, &$results, &$numrows = 0): bool {
+		$query  = "SELECT a.id as action_id,a.name,a.code FROM action a";
+		$query .= " JOIN page_action pa ON a.id = pa.action_id";
+		$query .= " JOIN page p ON pa.page_id = p.id";
+		$query .= " WHERE p.pagenumber = {$pagenumber}";
+		return $this->query($query, $results, $numrows);
+	}
+
 }

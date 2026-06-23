@@ -113,11 +113,32 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             tinymce.init({
                 selector: '#content',
                 plugins: 'lists link',
-                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | condblock',
                 menubar: false,
                 height: 380,
                 branding: false,
                 setup: function(editor) {
+                    editor.ui.registry.addButton('condblock', {
+                        text: 'If right…',
+                        tooltip: 'Insert a section visible only to users with a specific permission',
+                        onAction: function() { openCondBlockDialog(editor); }
+                    });
+                    editor.on('keyup', function(e) {
+                        if (e.key !== '{') return;
+                        var rng = editor.selection.getRng();
+                        var pre = rng.cloneRange();
+                        pre.selectNodeContents(editor.getBody());
+                        pre.setEnd(rng.endContainer, rng.endOffset);
+                        if (!pre.toString().endsWith('{{')) return;
+                        var node = rng.startContainer;
+                        if (node.nodeType !== 3 || rng.startOffset < 2) return;
+                        var delRng = editor.dom.createRng();
+                        delRng.setStart(node, rng.startOffset - 2);
+                        delRng.setEnd(node, rng.startOffset);
+                        editor.selection.setRng(delRng);
+                        editor.selection.setContent('');
+                        openCondBlockDialog(editor);
+                    });
                     editor.on('init', function() {
                         editor.mode.set('readonly');
                     });
@@ -149,6 +170,43 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                 navigator.clipboard.writeText(t).then(function() {
                     jQuery("#blockref_copy").text('Copied!');
                     setTimeout(function() { jQuery("#blockref_copy").text('Copy'); }, 1500);
+                });
+            }
+            function openCondBlockDialog(editor) {
+                var pid = jQuery('#page_id').val();
+                if (!pid) {
+                    editor.windowManager.alert('Please select a page before inserting a conditional block.');
+                    return;
+                }
+                doServerRequest(0, JSON.stringify({page_id: pid}), 'help_getpageactions').then(function(resp) {
+                    var actions = JSON.parse(resp);
+                    if (!actions || !actions.length) {
+                        editor.windowManager.alert('No permission actions are defined for this page.');
+                        return;
+                    }
+                    var items = actions.map(function(a) { return {value: a.code, text: a.name}; });
+                    editor.windowManager.open({
+                        title: 'Insert conditional block',
+                        body: {
+                            type: 'panel',
+                            items: [{
+                                type: 'selectbox',
+                                name: 'action_code',
+                                label: 'Show this section only when user has:',
+                                items: items
+                            }]
+                        },
+                        buttons: [
+                            {type: 'cancel', name: 'cancel', text: 'Cancel'},
+                            {type: 'submit', name: 'submit', text: 'Insert', primary: true}
+                        ],
+                        onSubmit: function(api) {
+                            var code = api.getData().action_code;
+                            var label = (items.find(function(i) { return i.value === code; }) || {}).text || code;
+                            editor.insertContent('<p>{{ifright:' + code + '}}</p><p>' + label + ' — replace with your help text</p><p>{{/ifright}}</p>');
+                            api.close();
+                        }
+                    });
                 });
             }
             function formhaserrors() {

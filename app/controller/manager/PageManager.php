@@ -91,5 +91,9 @@ class PageManager extends \fw\controller\manager\StdManager
     public function pageisunrestricted($pagenum){
         if ($this->trace) { echo gtab()."Enter ".__METHOD__." page {$pagenum}<br>"; }
         return   $this->pages[$pagenum]["unrestricted"]??1;
-     }  
+     }
+
+    public function getpagenames(): array {
+        return array_map(fn($p) => $p['name'], $this->pages);
+    }
 }

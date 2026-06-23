@@ -73,7 +73,7 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
     public function buildinputs($rights=[],$trace=false) {
         // Note the fieldnum parameter should equal the position of the field in the field array in the relevant table Class
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
-        $parentdata = array_combine(array_column($this->parents,"id"),array_column($this->parents,"menutext"));
+        $parentdata = array_combine(array_column($this->parents,"id"),array_column($this->parents,"name"));
         $formfields ="  <input type='hidden' name='recurrence' data-fnum='9' id='recurrence'  value='Once-only' />\n";
         $formfields .="  <input type='hidden' name='starttime' data-fnum='3' id='starttime'  value='' />\n";
         $formfields .="  <input type='hidden' name='endtime' data-fnum='4' id='endtime'  value='' />\n";
