@@ -11,36 +11,33 @@ class HelpManager extends \fw\controller\manager\StdManager
 
     public function init($session, $trace=false) {
         parent::init($session);
-        $this->table->init($this->db);
-    }
-
-    protected function updatesetclause($data=[], $trace=false) {
-        $fields = [
-            "id"                => "",
-            "page_id"           => "",
-            "title"             => "",
-            "content"           => "",
-            "date_last_updated" => date("Y-m-d H:i:s"),
-            "modified_by"       => $this->user_id,
-        ];
-        return $this->preparesetstatement($fields, $data);
-    }
-
-    protected function insertsetfields($data=[], $trace=false) {
-        $pid = ($data['page_id'] ?? '') !== '' ? (int)$data['page_id'] : null;
-        $this->table->setfield("page_id",           $pid);
-        $this->table->setfield("title",             $data['title']    ?? '');
-        $this->table->setfield("content",           $data['content']  ?? '');
-        $this->table->setfield("date_registered",   date("Y-m-d H:i:s"));
-        $this->table->setfield("registered_by",     $this->user_id);
-        $this->table->setfield("date_last_updated", date("Y-m-d H:i:s"));
-        $this->table->setfield("modified_by",       $this->user_id);
     }
 
     protected function insertdataintotablefields($data) {
         $pid = ($data['page_id'] ?? '') !== '' ? (int)$data['page_id'] : null;
         parent::insertdataintotablefields($data);
-        $this->table->setfield("page_id", $pid); // override: parent loop does null??"" which coerces to 0
+        $this->table->setfield("page_id", $pid);
+    }
+
+    private function validatepageid(&$errormessage): bool {
+        $data = $this->session->getrequestdata();
+        $pid  = ($data['page_id'] ?? '') !== '' ? (int)$data['page_id'] : null;
+        if ($pid === null) { return true; }
+        if ($this->table->pageidisused($pid, (int)$this->id)) {
+            $errormessage = "Page {$pid} already has a help record. Each page can only have one primary help record.";
+            return false;
+        }
+        return true;
+    }
+
+    public function update(&$errormessage = "", $trace = false) {
+        if (!$this->validatepageid($errormessage)) { return false; }
+        return parent::update($errormessage, $trace);
+    }
+
+    public function insert(&$id = "0", &$errormessage = "", $trace = false) {
+        if (!$this->validatepageid($errormessage)) { return false; }
+        return parent::insert($id, $errormessage, $trace);
     }
 
     public function getblocks(array $record_ids, &$results, &$numrows): bool {

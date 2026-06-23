@@ -16,6 +16,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
     protected $names;
     protected $parents;
     private   $pages       = [];
+    private   $pageMap     = [];
 
     public function __construct(protected FormComponent $component) {
         $this->singlerecord = false;
@@ -28,23 +29,24 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
 
     public function initfields() {
         $this->fields = [
-            "id"                => "",
-            "page_id"           => "",
-            "title"             => "",
-            "content"           => "",
-            "date_registered"   => "",
-            "registered_by"     => "",
-            "date_last_updated" => "",
-            "modified_by"       => "",
+            "id"          => "",
+            "page_id"     => "",
+            "title"       => "",
+            "content"     => "",
+            "also_covers" => "",
         ];
     }
 
     protected function addtonames($row) {
         $this->names[$row["id"]] = $row["title"];
+        $this->pageMap[(int)$row["id"]] = ($row["page_id"] !== null && $row["page_id"] !== '') ? (int)$row["page_id"] : null;
     }
 
     public function buildinputs($rights=[], $trace=false) {
         // Page selector
+
+        $formfields = $this->component->buildinputrow("title",      2, "", 'Title',   'Title',   40, 255, true,  '', '');
+
         $pageoptions = '<option value="">-- select a page --</option>';
         foreach ($this->pages as $pid => $pname) {
             $pageoptions .= '<option value="'.(int)$pid.'">'.htmlspecialchars($pname).' ('.$pid.')</option>';
@@ -52,31 +54,39 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $pageselect  = '<select name="page_id" id="page_id" data-fnum="1">';
         $pageselect .= $pageoptions;
         $pageselect .= '</select>';
-
-        $this->component->setwidths(20, 30, 50, true);
-        $formfields  = $this->component->renderformrow('page_idrow', '', 'Page', false, '', '', '', $pageselect, '', '', 'page_id_hint', 'Leave blank to create a shared content block');
+        $this->component->setwidths(20, 35, 45, true);
+        $formfields  .= $this->component->renderformrow('page_idrow', '', 'Page', false, '', '', '', $pageselect, '', '', 'page_id_hint', 'Leave blank to create a shared content block');
         $this->component->restorewidths();
+
         $formfields .= $this->component->buildinputrow("also_covers", 8, "", 'Also covers', 'extra page IDs, comma-separated, e.g. 102,103', 40, 500, false, '', '');
+
         $blockrefcode = '<code id="blockref_display" style="display:none;background:#f4f4f4;padding:2px 6px;border-radius:3px;"></code>'
                       . '<div id="blockref_copy" class="clickable action doitbg" style="display:none;width:fit-content;padding:0 10px;float:right;" onclick="copyblockref()">Copy</div>';
-        $blockrefhint = '<span id="blockref_hint" style="display:none;">Paste into another record\'s content to include this block</span>';
+        $blockrefhint = '<span id="blockref_hint" style="display:none;">Paste this code into another record\'s content to include this block</span>';
         $this->component->setwidths(20, 30, 50, true);
         $formfields .= $this->component->renderformrow('blockrefrow', '', 'Block ref', false, '', '', '', $blockrefcode, '', '', '', $blockrefhint);
         $this->component->restorewidths();
-        $formfields .= $this->component->buildinputrow("title",      2, "", 'Title',   'Title',   40, 255, true,  '', '');
+        
+
         $this->component->setwidths(20, 75, 5, true);
         $formfields .= $this->component->buildtextarearow("content", 3, "", 'Content', 'Content', 50, 10, 10000, false, '', '');
         $this->component->restorewidths();
 
-        // Hidden audit fields (not displayed, populated by manager on save)
-        $formfields .= '<input type="hidden" name="date_registered"   data-fnum="4" id="date_registered"   value="" />';
-        $formfields .= '<input type="hidden" name="registered_by"     data-fnum="5" id="registered_by"     value="" />';
-        $formfields .= '<input type="hidden" name="date_last_updated" data-fnum="6" id="date_last_updated" value="" />';
-        $formfields .= '<input type="hidden" name="modified_by"       data-fnum="7" id="modified_by"       value="" />';
 
         $currentid = $this->requestdata["id"] ?? '';
         $this->preparecommontop(false, false, '', $currentid, false, '');
         return $formfields;
+    }
+
+    protected function newclickscript() {
+        return <<<'JS'
+            jQuery("#content").val("");
+            const _nce = tinymce.get('content');
+            if (_nce) { _nce.setContent(''); }
+            jQuery("#blockref_display").hide();
+            jQuery("#blockref_copy").hide();
+            jQuery("#blockref_hint").hide();
+        JS;
     }
 
     protected function cancelclickscript() {
@@ -100,6 +110,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         JS;
         $postclearfieldsscript = <<<JS
             jQuery("#page_id").val("");
+            jQuery("#content").val("");
             const _pced = tinymce.get('content'); if (_pced) { _pced.setContent(''); }
             jQuery("#blockref_display").hide();
             jQuery("#blockref_copy").hide();
@@ -182,7 +193,29 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             $disablescript,
             $onloadscript
         );
+        $pageMapJson = json_encode($this->pageMap);
         $script .= <<<JS
+            const helpPageMap = {$pageMapJson};
+            function checkPageDuplicate() {
+                const selectedPage = parseInt(jQuery("#page_id").val()) || null;
+                const currentId = parseInt(jQuery("#hiddenid").val()) || 0;
+                const errorRow = jQuery("#page_idrow_error").closest(".vols-shallow-table-row");
+                if (!selectedPage) {
+                    jQuery("#page_idrow_error").html("");
+                    errorRow.removeClass("errorshowing");
+                    return false;
+                }
+                const clash = Object.entries(helpPageMap).find(([id, pid]) => pid === selectedPage && parseInt(id) !== currentId);
+                if (clash) {
+                    jQuery("#page_idrow_error").html("This page already has a help record");
+                    errorRow.addClass("errorshowing");
+                    return true;
+                }
+                jQuery("#page_idrow_error").html("");
+                errorRow.removeClass("errorshowing");
+                return false;
+            }
+            jQuery(function() { jQuery("#page_id").on("change", checkPageDuplicate); });
             function copyblockref() {
                 var t = jQuery("#blockref_display").text();
                 navigator.clipboard.writeText(t).then(function() {
@@ -233,6 +266,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                     jQuery("#titlerow_error").html("(Required)");
                     errors++;
                 }
+                if (checkPageDuplicate()) { errors++; }
                 return errors;
             }
             function displayselectedrecord() {}

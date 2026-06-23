@@ -32,8 +32,9 @@
 .vols-shallow-table-row {  
     display : none;
 }
-.vols-shallow-table-row.errorshowing {  
+.vols-shallow-table-row.errorshowing {
     display : block;
+    overflow: hidden;
     color: red;
     font-weight: 600;
     border: 2px solid red;
@@ -104,6 +105,10 @@
     max-height: 150px;
     transition: max-height .5s ease-in-out;
     scrollbar-gutter: stable both-edges;
+}
+.vols-shallow-table-row.errorshowing:not(.collapsed) {
+    overflow: hidden;
+    scrollbar-gutter: auto;
 }
 .childcontainer.collapsed {
     height:0;
