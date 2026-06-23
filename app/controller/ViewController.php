@@ -1015,10 +1015,14 @@ class ViewController {
     private function resolveconditionals(array &$items, int $helpfor): void {
         // Negative lookaheads ensure only the innermost block matches on each pass,
         // so nested {{ifright}} blocks resolve correctly from inside out.
-        $blockRe  = '/<p[^>]*>\s*\{\{ifright:([A-Z0-9_]+)\}\}\s*<\/p>\s*((?:(?!<p[^>]*>\s*\{\{ifright:)[\s\S])*?)\s*<p[^>]*>\s*\{\{\/ifright\}\}\s*<\/p>/s';
-        $inlineRe = '/\{\{ifright:([A-Z0-9_]+)\}\}((?:(?!\{\{ifright:)[\s\S])*?)\{\{\/ifright\}\}/s';
+        // Optional {{else}} clause: content after {{else}} is shown when right is absent.
+        // Block form: <p>{{ifright:CODE}}</p> ... <p>{{else}}</p> ... <p>{{/ifright}}</p>
+        // Inline form: {{ifright:CODE}}...{{else}}...{{/ifright}}
+        $blockRe  = '/<p[^>]*>\s*\{\{ifright:([A-Z0-9_]+)\}\}\s*<\/p>\s*((?:(?!<p[^>]*>\s*\{\{(?:ifright:|else\}\}))[\s\S])*?)(?:<p[^>]*>\s*\{\{else\}\}\s*<\/p>\s*((?:(?!<p[^>]*>\s*\{\{ifright:)[\s\S])*?))?\s*<p[^>]*>\s*\{\{\/ifright\}\}\s*<\/p>/s';
+        $inlineRe = '/\{\{ifright:([A-Z0-9_]+)\}\}((?:(?!\{\{ifright:|\{\{else\}\})[\s\S])*?)(?:\{\{else\}\}((?:(?!\{\{ifright:)[\s\S])*?))?\{\{\/ifright\}\}/s';
         $cb = function($m) use ($helpfor) {
-            return ($this->isadmin || in_array("{$helpfor}||{$m[1]}", $this->rights)) ? $m[2] : '';
+            $hasRight = ($this->isadmin || in_array("{$helpfor}||{$m[1]}", $this->rights));
+            return $hasRight ? $m[2] : ($m[3] ?? '');
         };
         foreach ($items as &$item) {
             $content = $item['content'] ?? '';
