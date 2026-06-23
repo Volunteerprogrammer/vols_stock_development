@@ -224,10 +224,10 @@ class RosterForm extends \fw\view\form\Form {
        if ($this->trace || $trace) { echo "Enter ".__METHOD__."<br>"; }
         $content  = '<ul class="buttonlist">';
         if ( $this->isadmin || in_array("{$pn}BOOK",$rights)) {
-            $content .='<li>Click a <div class="clickable cellavailable noclick" style="display:inline-block">Green block</div> to MAKE a new booking</li>';
+            $content .='<li>Click a <div class="clickable cellavailable noclick" style="display:inline-block;cursor:default">Green block</div> to MAKE a new booking</li>';
         }
         if ($this->isadmin || in_array("{$pn}CANCEL",$rights)) {
-            $content .='<li>Click <div class="clickable cellisyou noclick" style="display:inline-block">your name</div> to CANCEL your booking</li>';
+            $content .='<li>Click <div class="clickable cellisyou noclick" style="display:inline-block;cursor:default">your name</div> to CANCEL your booking</li>';
         }
         $content .="</li></ul>";
         $content  .='<div id="updatediv" class="displayed"><span class="logouttext">Please <div class="clickable logout" style="display:inline-block">LOGOUT</div> or choose a menu option when finished.</span></div>';

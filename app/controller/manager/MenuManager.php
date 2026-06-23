@@ -224,16 +224,27 @@ class MenuManager  extends \fw\controller\manager\StdManager
                                 menuaction(jQuery(this),'');
                             });
                         })
+                        function formIsEditing() {
+                            return jQuery("#resetbutton").length && !jQuery("#resetbutton").hasClass("inactive");
+                        }
+                        function confirmLeave(proceed) {
+                            jQuery.volsdialog("YESNO", "<p>You have unsaved changes. Leave this page without saving?</p>",
+                                proceed, null, "Unsaved Changes");
+                        }
                         function menuaction(menubutton,menuid="") {
-                            menubutton.addClass('clicked');
-                            document.body.style.cursor = 'wait'; 
-                            // menubuttonid = menubutton.prop('id');
-                            // const targetpagenum =menubuttonid.substring(0,5)=="menu_"?menubuttonid.substring(5):menubuttonid;
-                            const targetpagenum =menubutton.data("pagenumber");
-                            jQuery("#menuactionform input[name='p']").val(targetpagenum);
-                            jQuery("#menuactionform input[name='menuid']").val(menuid);
-                            jQuery("#menuactionform").trigger( "submit" );
-                        } 
+                            function proceed() {
+                                menubutton.addClass('clicked');
+                                document.body.style.cursor = 'wait';
+                                const targetpagenum = menubutton.data("pagenumber");
+                                jQuery("#menuactionform input[name='p']").val(targetpagenum);
+                                jQuery("#menuactionform input[name='menuid']").val(menuid);
+                                jQuery("#menuactionform").trigger("submit");
+                            }
+                            if (formIsEditing()) { confirmLeave(proceed); } else { proceed(); }
+                        }
+                        jQuery(window).on('beforeunload', function() {
+                            if (formIsEditing()) return 'You have unsaved changes.';
+                        });
                         function menukeyboardhover (button){
                             $("ul.meu li.hover").removeClass("hover");
                             $(button).addClass("hover");
@@ -254,9 +265,12 @@ class MenuManager  extends \fw\controller\manager\StdManager
                                 } else if (event.key == "Enter") {
                                     if ($("ul.menu li.hover.newpage").length) {
                                         const pagenum = $("ul.menu li.hover.newpage").data("pagenumber");
-                                        jQuery("#menuactionform input[name='p']").val(pagenum);
-                                        jQuery("#menuactionform input[name='menuid']").val("");
-                                        jQuery("#menuactionform").trigger( "submit" );
+                                        function doKeyNav() {
+                                            jQuery("#menuactionform input[name='p']").val(pagenum);
+                                            jQuery("#menuactionform input[name='menuid']").val("");
+                                            jQuery("#menuactionform").trigger("submit");
+                                        }
+                                        if (formIsEditing()) { confirmLeave(doKeyNav); } else { doKeyNav(); }
                                         event.stopPropagation();
                                     }
                                 }
