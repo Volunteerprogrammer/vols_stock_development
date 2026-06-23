@@ -186,19 +186,29 @@ abstract class StdCRUDForm extends Form {
                         jQuery("#dataspace input").first().focus();
                     });
                     jQuery("#cancelbutton").on( "click", function(event) {
-                        if (jQuery("#resetbutton").hasClass("inactive") || confirm("Any changes you have made will be lost. Proceed?")) {
+                        function doCancel() {
                             loadrecordfromhiddendata();
                             disactivateactionbuttons(0,0,1,1,0,1);
                             disableallinputstatus(true);
                             {$this->cancelclickscript()}
                         }
+                        if (jQuery("#resetbutton").hasClass("inactive")) {
+                            doCancel();
+                        } else {
+                            jQuery.volsdialog("YESNO", "<p>Any changes you have made will be lost. Proceed?</p>",
+                                doCancel, null, "Unsaved changes"
+                            );
+                        }
                     });
                     jQuery("#deletebutton").on( "click", function(event) {
-                        if (confirm("Delete this record? Are you sure?")) {
-                            disactivateactionbuttons(1,1,0,0,1,0);
-                            $("#action").val("delete");
-                            jQuery("#{$this->formname}").trigger("submit");
-                        }
+                        jQuery.volsdialog("YESNO", "<p>Delete this record? Are you sure?</p>",
+                            function() {
+                                disactivateactionbuttons(1,1,0,0,1,0);
+                                jQuery("#action").val("delete");
+                                jQuery("#{$this->formname}").trigger("submit");
+                            },
+                            null, "Delete record"
+                        );
                     });
                     jQuery("#showrowsbtn").on("click",function (){ 
                         // used when there is a section on form containing multiple child options for
@@ -225,16 +235,19 @@ abstract class StdCRUDForm extends Form {
         $script .= <<<JS
 
                 jQuery("#resetbutton").on( "click", function(event) {
-                    if (confirm("Any changes you have made will be lost. Proceed?")) {
-                        loadrecordfromhiddendata();
-                        setfieldinactivestatus("#resetbutton",1)
-                        {$this->resetclickscript()}
-                    } 
+                    jQuery.volsdialog("YESNO", "<p>Any changes you have made will be lost. Proceed?</p>",
+                        function() {
+                            loadrecordfromhiddendata();
+                            setfieldinactivestatus("#resetbutton", 1);
+                            {$this->resetclickscript()}
+                        },
+                        null, "Unsaved changes"
+                    );
                 });
                 jQuery("#submitbutton").on( "click", function(event) {
                     if (formhaserrors()) { 
                         jQuery("input:required, textarea:required, select:required").addClass("visited");
-                        alert("There are problems - please check the fields.");
+                        jQuery.volsdialog("OKMSG", "<p>There are problems &mdash; please check the fields.</p>", null, null, "Validation errors");
                     } else {  
                         disactivateactionbuttons(1,1,0,0,1,0);
 

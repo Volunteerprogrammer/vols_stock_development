@@ -170,14 +170,14 @@ class HTMLHead extends \fw\view\head\HTMLHead
                             400: function() {
                                 vols.cursor.default();
                                 vols.enable("body");
-                                alert("ERROR 400 - ARE YOU STILL LOGGED INTO YOUR WEBSITE?");
+                                jQuery.volsdialog("OKMSG", "<p>Error 400 &mdash; are you still logged in?</p>", null, null, "Session error");
                             }
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             vols.cursor.default();
                             vols.enable("body");
                             // console.log(textStatus + " " + errorThrown);
-                            alert(textStatus+": "+errorThrown+" status= "+jqXHR.status+"  responseText: "+jqXHR.responseText);
+                            jQuery.volsdialog("OKMSG", "<p>" + textStatus + ": " + errorThrown + "<br>Status: " + jqXHR.status + "<br>" + jqXHR.responseText + "</p>", null, null, "Server Error");
             // jQuery("#kbdmsg").html( jQuery("#kbdmsg").html() +textStatus+": "+errorThrown+"<br>status= "+jqXHR.status+"<br>responseText"+jqXHR.responseText+"<br>");
                         },
                         success: function(response) {
