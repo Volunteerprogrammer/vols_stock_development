@@ -242,9 +242,6 @@ class MenuManager  extends \fw\controller\manager\StdManager
                             }
                             if (formIsEditing()) { confirmLeave(proceed); } else { proceed(); }
                         }
-                        jQuery(window).on('beforeunload', function() {
-                            if (formIsEditing()) return 'You have unsaved changes.';
-                        });
                         function menukeyboardhover (button){
                             $("ul.meu li.hover").removeClass("hover");
                             $(button).addClass("hover");
