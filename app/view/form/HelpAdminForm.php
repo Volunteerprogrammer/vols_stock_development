@@ -202,6 +202,14 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         );
         $pageMapJson = json_encode($this->pageMap);
         $script .= <<<JS
+            (function() {
+                const _orig = disableallinputstatus;
+                disableallinputstatus = function(disabled) {
+                    _orig(disabled);
+                    const _ed = tinymce.get('content');
+                    if (_ed && disabled) { _ed.mode.set('readonly'); }
+                };
+            })();
             const helpPageMap = {$pageMapJson};
             function checkPageDuplicate() {
                 const selectedPage = parseInt(jQuery("#page_id").val()) || null;
