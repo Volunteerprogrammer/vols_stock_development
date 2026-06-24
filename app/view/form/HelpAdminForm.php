@@ -127,7 +127,8 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             jQuery("#also_covers").val(jQuery("#also_covers").val().trim().replace(/\s+/g, ''));
         JS;
         $disablescript = <<<JS
-            const _dsed = tinymce.get('content'); if (_dsed) { _dsed.mode.set('design'); }
+            const _dsed = tinymce.get('content');
+            if (_dsed) { _dsed.mode.set('design'); _dsed.fire('ResizeEditor'); }
         JS;
         $onloadscript = <<<JS
             tinymce.init({
@@ -175,7 +176,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                         openCondBlockDialog(editor);
                     });
                     editor.on('init', function() {
-                        editor.mode.set('readonly');
+                        setTimeout(function() { editor.mode.set('readonly'); }, 0);
                     });
                     editor.on('change', function() {
                         editor.save();
