@@ -48,6 +48,10 @@ class HelpManager extends \fw\controller\manager\StdManager
         return $this->table->getbypage($page_id, $results, $numrows);
     }
 
+    public function haspublishedhelp(int $pagenum): bool {
+        return $this->table->haspublishedhelp($pagenum);
+    }
+
     public function getforpages(array $page_ids, &$results, &$numrows): bool {
         return $this->table->getforpages($page_ids, $results, $numrows);
     }

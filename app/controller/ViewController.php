@@ -143,6 +143,11 @@ class ViewController {
         $errormessage .= ($errormessage==""?"":"<br><br>").$processerrormessage;
         $success = $this->prepareHTMLbody($errormessage,$trace); // do this first to catch when login is required
          if ($success) {// any errormessage will be displayed in form
+            if ($this->user_id && $this->pagenum > 0 && $this->pagenum < 600) {
+                $hmgr = $this->mgrs->HelpManager();
+                $hmgr->init($this->session);
+                $this->bodysection->setshowhelp($hmgr->haspublishedhelp((int)$this->pagenum));
+            }
             $menu  = $this->menumanager->buildmenu ($this->pagenum,$this->rights,$this->isadmin,$this->user_menu_number);
             $stockalertpopup = $this->user_id ? $this->buildstockalertpopup() : '';
             $body  = $this->bodysection->render($this->pagenum,$this->rights,$this->isadmin,$menu,$errormessage,$trace,'',$stockalertpopup);

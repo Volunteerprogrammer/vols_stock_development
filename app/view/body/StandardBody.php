@@ -6,6 +6,8 @@ class StandardBody extends HTMLBody
 // this is a generic body for a page that comprises just a form. It's used for MOST pages.
     protected $pagetitle;
     private $trace=false;
+    private $showhelp=false;
+    public function setshowhelp(bool $show): void { $this->showhelp = $show; }
     public function render($pagenum,$rights=[],$isadmin=false,$menu="",$errormessage="",$trace=false,$subheading="",$stockalertpopup="")
     {
         // lib::pr($rights);
@@ -19,7 +21,7 @@ class StandardBody extends HTMLBody
         if ($stockalertpopup !== '') {
             $html .= $stockalertpopup;
         }
-        if ($pagenum > 0 && $pagenum < 600) {
+        if ($this->showhelp) {
             $html .= '<a id="helpbtn" href="?p=600&helpfor='.(int)$pagenum.'" target="_blank" title="Help for this page" '
                    . 'style="position:fixed;bottom:18px;right:18px;width:32px;height:32px;border-radius:50%;'
                    . 'background:#4a7fbf;color:#fff;font-size:18px;font-weight:bold;text-decoration:none;'

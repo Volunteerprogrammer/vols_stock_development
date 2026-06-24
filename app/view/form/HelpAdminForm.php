@@ -34,11 +34,13 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             "title"       => "",
             "content"     => "",
             "also_covers" => "",
+            "published"   => "",
         ];
     }
 
     protected function addtonames($row) {
-        $this->names[$row["id"]] = $row["title"];
+        $suffix = $row["published"] ? '' : ' [Draft]';
+        $this->names[$row["id"]] = $row["title"] . $suffix;
         $this->pageMap[(int)$row["id"]] = ($row["page_id"] !== null && $row["page_id"] !== '') ? (int)$row["page_id"] : null;
     }
 
@@ -58,7 +60,11 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $formfields  .= $this->component->renderformrow('page_idrow', '', 'Page', false, '', '', '', $pageselect, '', '', 'page_id_hint', 'Leave blank to create a shared content block');
         $this->component->restorewidths();
 
-        $formfields .= $this->component->buildinputrow("also_covers", 8, "", 'Also covers', 'extra page IDs, comma-separated, e.g. 102,103', 40, 500, false, '', '');
+        $formfields .= $this->component->buildinputrow("also_covers", 4, "", 'Also covers', 'extra page IDs, comma-separated, e.g. 102,103', 40, 500, false, '', '');
+
+        $publishcb = '<input type="checkbox" name="published" id="published" data-fnum="5" value="1" />';
+        $formfields .= $this->component->renderformrow('publishedrow', '', 'Published', false, '', '', '', $publishcb, '', '', 'published_hint', 'Only published records appear in the help viewer');
+
 
         $blockrefcode = '<code id="blockref_display" style="display:none;background:#f4f4f4;padding:2px 6px;border-radius:3px;"></code>'
                       . '<div id="blockref_copy" class="clickable action doitbg" style="display:none;width:fit-content;padding:0 10px;float:right;" onclick="copyblockref()">Copy</div>';

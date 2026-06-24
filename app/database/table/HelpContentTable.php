@@ -13,6 +13,7 @@ class HelpContentTable extends \fw\database\table\MySQLTable
             "title"       => "",
             "content"     => "",
             "also_covers" => "",
+            "published"   => "",
         ];
         if ($this->trace) { echo 'Leave '.__METHOD__.'<br>'; }
     }
@@ -43,8 +44,15 @@ class HelpContentTable extends \fw\database\table\MySQLTable
 
     public function getbypage(int $page_id, &$results, &$numrows): bool {
         $tn    = lib::capsToUnderscores($this->tablename);
-        $query = "SELECT * FROM {$tn} WHERE page_id = {$page_id} OR FIND_IN_SET({$page_id}, also_covers) > 0 LIMIT 1";
+        $query = "SELECT * FROM {$tn} WHERE (page_id = {$page_id} OR FIND_IN_SET({$page_id}, also_covers) > 0) AND published = 1 LIMIT 1";
         return $this->query($query, $results, $numrows);
+    }
+
+    public function haspublishedhelp(int $page_id): bool {
+        $tn    = lib::capsToUnderscores($this->tablename);
+        $query = "SELECT id FROM {$tn} WHERE (page_id = {$page_id} OR FIND_IN_SET({$page_id}, also_covers) > 0) AND published = 1 LIMIT 1";
+        $this->query($query, $results, $numrows);
+        return $numrows > 0;
     }
 
     public function getforpages(array $page_ids, &$results, &$numrows): bool {
@@ -55,12 +63,11 @@ class HelpContentTable extends \fw\database\table\MySQLTable
         }
         $tn   = lib::capsToUnderscores($this->tablename);
         $list = implode(',', array_map('intval', $page_ids));
-        // Match primary page_id OR any page in also_covers
-        $query = "SELECT * FROM {$tn} WHERE page_id IN ({$list})";
+        $query = "SELECT * FROM {$tn} WHERE (page_id IN ({$list})";
         foreach (array_map('intval', $page_ids) as $pid) {
             $query .= " OR FIND_IN_SET({$pid}, also_covers) > 0";
         }
-        $query .= " ORDER BY page_id";
+        $query .= ") AND published = 1 ORDER BY page_id";
         return $this->query($query, $results, $numrows);
     }
 }
