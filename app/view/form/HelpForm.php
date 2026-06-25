@@ -14,6 +14,18 @@ class HelpForm extends \fw\view\form\Form
         $this->helpitems = is_array($data) ? $data : [];
     }
 
+    private function normalizedivs(string $html): string {
+        do {
+            $prev = $html;
+            $html = preg_replace_callback(
+                '/<div([^>]*)>((?:(?!<\/?(?:div|p)\b)[\s\S])*?)<\/div>/i',
+                fn($m) => '<p' . $m[1] . '>' . $m[2] . '</p>',
+                $html
+            );
+        } while ($html !== $prev);
+        return $html;
+    }
+
     public function render($pagenum='', $nextpage='', $subheading='', $rights=[], $isadmin=false, $menu='', $trace=false) {
         $visible = [];
         foreach ($this->helpitems as $item) {
@@ -69,6 +81,7 @@ class HelpForm extends \fw\view\form\Form
                 $body  = (strpos($content, '<') !== false)
                        ? $content
                        : nl2br(htmlspecialchars($content));
+                $body  = $this->normalizedivs($body);
                 $html .= '<section id="help_'.$pid.'" class="help-section" style="padding:16px 20px 20px;border-top:3px solid #4a7fbf;">';
                 $html .= '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">';
                 $html .= '<h2 style="margin:0;font-size:1.15em;color:#2c5282;letter-spacing:0.02em;">'.$title.'</h2>';
