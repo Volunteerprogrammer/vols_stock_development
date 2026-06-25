@@ -37,11 +37,14 @@ class HTMLBody extends \fw\view\body\HTMLBody
         if ($this->trace) { echo gtab(0)."Enter ".__METHOD__."<br>"; }
         $this->bodytag = '<body id="body" class="body">'."\n";
      }
-    public function renderfooter(){
+    public function renderfooter($helplink = ''){
         $footer  = "<div id='footercontainer'>";
-        $footer .= '<div  class="footerspan"><span>© <span id="currentYear"></span> Woodend Neighbourhood House Inc. A0001670N &nbsp;|&nbsp;'; 
+        $footer .= '<div  class="footerspan"><span>© <span id="currentYear"></span> Woodend Neighbourhood House Inc. A0001670N &nbsp;|&nbsp;';
         $footer .= '<span style="text-decoration:underline;"><a href="https://www.woodendnh.org.au/privacy-policy" target="_blank" >Privacy Policy</a></span></span></div>';
-        $footer .= '<div  class="footerspan"><span >Website by SarumSites</span></div>'; 
+        $footer .= '<div  class="footerspan"><span >Website by SarumSites</span></div>';
+        if ($helplink) {
+            $footer .= '<a href="'.htmlspecialchars($helplink).'" target="_blank" class="footer-help-btn">Help</a>';
+        }
         $footer .= '<script>jQuery(function () {var currentYear = new Date().getFullYear();document.getElementById("currentYear").textContent = currentYear;})</script>';
         $footer .= '</div>';
         return $footer;

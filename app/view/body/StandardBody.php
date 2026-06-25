@@ -21,16 +21,10 @@ class StandardBody extends HTMLBody
         if ($stockalertpopup !== '') {
             $html .= $stockalertpopup;
         }
-        if ($this->showhelp) {
-            $html .= '<a id="helpbtn" href="?p=600&helpfor='.(int)$pagenum.'" target="_blank" title="Help for this page" '
-                   . 'style="position:fixed;bottom:18px;right:18px;width:32px;height:32px;border-radius:50%;'
-                   . 'background:#e87722;color:#fff;font-size:18px;font-weight:bold;text-decoration:none;'
-                   . 'display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.3);'
-                   . 'z-index:900;" >?</a>';
-        }
         $html .= '<div id="content_panel" class="content_panel">'."\n";
         $html .= $this->form->render($pagenum,'',$subheading,$rights,$isadmin,$menu,$trace)."\n";
-        $html .= $this->renderfooter();
+        $helplink = $this->showhelp ? '?p=600&helpfor='.(int)$pagenum : '';
+        $html .= $this->renderfooter($helplink);
         $html .= "</div><!--content_panel-->\n";
         $html .= "</body>\n";
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }

@@ -370,6 +370,7 @@ input
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
+  position: relative;
 }
 #footercontainer .footerspan {
   justify-self: center;
@@ -387,6 +388,19 @@ input
   color: white;
   text-decoration: none;
 }
+.footer-help-btn {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e87722;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 7px 22px;
+  border-radius: 4px;
+}
+.footer-help-btn:hover { background: #cf6210; }
 .vols-width-auto { width: auto; }
 .vols-width-0 { width: 0%; } 
 .vols-width-5 { width: 5%; } 
