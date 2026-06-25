@@ -13,6 +13,11 @@ class HelpManager extends \fw\controller\manager\StdManager
         parent::init($session);
     }
 
+    protected function setdefaults(&$fields, $trace=false) {
+        $fields['published'] = '0';
+        $fields['pagetype']  = '0';
+    }
+
     protected function insertdataintotablefields($data) {
         $pid = ($data['page_id'] ?? '') !== '' ? (int)$data['page_id'] : null;
         parent::insertdataintotablefields($data);

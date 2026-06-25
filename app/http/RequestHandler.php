@@ -283,10 +283,13 @@ class RequestHandler   // extends \fw\http\RequestHandler
                         case "help_getpageactions":
                             $amgr = $this->managercollection->ActionManager();
                             $amgr->init($this->session);
-                            $d       = json_decode($this->requestdata["thedata"] ?? '{}', true);
-                            $page_id = (int)($d["page_id"] ?? 0);
-                            $results = []; $numrows = 0;
-                            $amgr->getactionsforpagenumber($page_id, $results, $numrows);
+                            $d        = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                            $results  = []; $numrows = 0;
+                            if (!empty($d["page_id"])) {
+                                $amgr->getactionsforpagenumber((int)$d["page_id"], $results, $numrows);
+                            } elseif (isset($d["pagetype"])) {
+                                $amgr->getactionsforpagetype((int)$d["pagetype"], $results, $numrows);
+                            }
                             $output = json_encode($results ?: []);
                             break;
                         default: $output = "Unknown request action: ".$action;

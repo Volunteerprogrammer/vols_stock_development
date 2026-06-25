@@ -2736,3 +2736,33 @@ input
     cursor: default;
 }
 .vols-usagereport-qty        { font-weight: bold; }
+/* Help display: override white-space:pre that TinyMCE pastes onto spans */
+.help-content span { white-space: normal !important; }
+/* Help display: give pasted <div> blocks the same spacing as <p> */
+.help-content div { margin: 1em 0; }
+/* Help Q&A */
+.help-qanda-toc {
+    background: #f0f4fa;
+    border: 1px solid #c8d8ee;
+    border-radius: 4px;
+    padding: 10px 16px 12px;
+    margin-bottom: 1.4em;
+    font-size: 0.95em;
+}
+.help-qanda-toc::before {
+    content: 'Questions on this page:';
+    display: block;
+    font-weight: 600;
+    font-size: 0.82em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4a7fbf;
+    margin-bottom: 6px;
+}
+.help-qanda-toc ol { margin: 0; padding-left: 1.4em; line-height: 1.9; }
+.help-qanda-toc a { color: #2c5282; text-decoration: none; }
+.help-qanda-toc a:hover { text-decoration: underline; }
+.help-question { font-weight: 600; color: #2c5282; }
+.help-q-top { font-size: 0.78em; color: #4a7fbf; text-decoration: none; white-space: nowrap; margin-left: 10px; }
+.help-q-top:hover { text-decoration: underline; }
+.help-q-anchor { display: block; visibility: hidden; height: 0; overflow: hidden; scroll-margin-top: 16px; }

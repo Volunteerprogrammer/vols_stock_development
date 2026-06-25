@@ -14,6 +14,7 @@ class HelpContentTable extends \fw\database\table\MySQLTable
             "content"     => "",
             "also_covers" => "",
             "published"   => "",
+            "pagetype"    => "",
         ];
         if ($this->trace) { echo 'Leave '.__METHOD__.'<br>'; }
     }

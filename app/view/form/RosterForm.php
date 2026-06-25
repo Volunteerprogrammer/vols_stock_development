@@ -200,7 +200,7 @@ class RosterForm extends \fw\view\form\Form {
             BUTTONS;        
         }
         if ($this->isadmin || in_array("{$pn}CHANGEDEPTH",$rights)) {
-            $depths = [1,4,6,8,10,12,24,48];
+            $depths = [1=>1, 4=>4, 6=>6, 8=>8, 10=>10, 12=>12, 24=>24, 48=>48];
             $selectoptions = '';
             $pagedepthselector = $this->component->renderdropdown("pagedepthselector",1,$selectoptions,false,false,false,false,$depths,$this->pagedepth,true,'vols-form-select','',$trace);
             $content .= "<div id='pagedepthcontainer' >Rows per page {$pagedepthselector}</div>";
@@ -712,7 +712,7 @@ class RosterForm extends \fw\view\form\Form {
             $script .= <<<JS
 
                     jQuery("#rosternav #pagedepthselector" ).on("change",function() {
-                        jQuery("#refreshform input:hidden[name='pagedepth']").val($(this).find(":selected").text());
+                        jQuery("#refreshform input:hidden[name='pagedepth']").val(jQuery(this).val());
                         jQuery("#refreshform").trigger( "submit" );
                     });
 

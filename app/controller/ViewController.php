@@ -146,7 +146,9 @@ class ViewController {
             if ($this->user_id && $this->pagenum > 0 && $this->pagenum < 600) {
                 $hmgr = $this->mgrs->HelpManager();
                 $hmgr->init($this->session);
-                $this->bodysection->setshowhelp($hmgr->haspublishedhelp((int)$this->pagenum));
+                if (method_exists($this->bodysection, 'setshowhelp')) {
+                    $this->bodysection->setshowhelp($hmgr->haspublishedhelp((int)$this->pagenum));
+                }
             }
             $menu  = $this->menumanager->buildmenu ($this->pagenum,$this->rights,$this->isadmin,$this->user_menu_number);
             $stockalertpopup = $this->user_id ? $this->buildstockalertpopup() : '';
@@ -234,7 +236,7 @@ class ViewController {
                 case $c2v($mm::DELIVERYEVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->DeliveryEventForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::TRANSFEREVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->TransferEventForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::ADJUSTMENTEVENTPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->AdjustmentEventForm(),$errormessage,"",$trace);break;
-            case $c2v($mm::HELPDISPLAYPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpForm(),$errormessage,'',$trace); break;
+            case $c2v($mm::HELPDISPLAYPAGE) : $this->setthispage(1,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpForm(),$errormessage,'',$trace); break;
             case $c2v($mm::HELPADMINPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpAdminForm(),$errormessage,'title',$trace); break;
             default: die(__METHOD__." Unknown pagenum : {$this->pagenum}");
         }
@@ -1004,6 +1006,7 @@ class ViewController {
             if (is_array($data) && !empty($data)) {
                 $this->resolveblocks($data);
                 $this->resolveconditionals($data, $helpfor);
+                $this->resolveqanda($data);
             }
             $this->form->init($this->session, $data, $parents, false);
             $this->bodysection = $this->bodies->standardbody();
@@ -1031,6 +1034,7 @@ class ViewController {
         };
         foreach ($items as &$item) {
             $content = $item['content'] ?? '';
+            if (strpos($content, '{{ifright:') === false) { continue; }
             $passes  = 0;
             do {
                 $prev    = $content;
@@ -1042,7 +1046,50 @@ class ViewController {
         unset($item);
     }
 
+    private function resolveqanda(array &$items): void {
+        foreach ($items as &$item) {
+            $content = $item['content'] ?? '';
+            if (strpos($content, '{{Q}}') === false) { continue; }
+
+            $questions = [];
+            $counter   = 0;
+            $prefix    = 'hq' . (int)($item['id'] ?? 0);
+
+            // Match {{Q}} and lazily capture up to the next closing block tag.
+        $processed = preg_replace_callback(
+                '/\{\{Q\}\}(.*?)(?=<\/(?:p|div)\b|$)/si',
+                function ($m) use (&$questions, &$counter, $prefix) {
+                    $counter++;
+                    $id        = $prefix . '-' . $counter;
+                    $innerHtml = rtrim(preg_replace('/^(\s|&nbsp;)*/', '', $m[1]));
+                    $plainText = trim(strip_tags($innerHtml));
+                    $questions[] = ['id' => $id, 'text' => $plainText];
+                    return '<a id="' . $id . '" class="help-q-anchor"></a>'
+                         . '<span class="help-question">' . $innerHtml . '</span>'
+                         . '&nbsp;<a href="#' . $prefix . '-toc" class="help-q-top">&#9650; Top</a>';
+                },
+                $content
+            );
+
+            if (empty($questions)) { $item['content'] = $processed; continue; }
+
+            $toc = '<nav id="' . $prefix . '-toc" class="help-qanda-toc"><ol>';
+            foreach ($questions as $q) {
+                $toc .= '<li><a href="#' . $q['id'] . '">' . htmlspecialchars($q['text'], ENT_QUOTES) . '</a></li>';
+            }
+            $toc .= '</ol></nav>';
+
+            $item['content'] = $toc . $processed;
+        }
+        unset($item);
+    }
+
     private function resolveblocks(array &$items): void {
+        $hasAny = false;
+        foreach ($items as $item) {
+            if (strpos($item['content'] ?? '', '{{block:') !== false) { $hasAny = true; break; }
+        }
+        if (!$hasAny) { return; }
         $map    = [];
         $passes = 0;
         do {
@@ -1066,6 +1113,7 @@ class ViewController {
             // Substitute all known blocks; track whether anything changed
             $changed = false;
             foreach ($items as &$item) {
+                if (strpos($item['content'] ?? '', '{{block:') === false) { continue; }
                 $ownId = (int)($item['id'] ?? 0);
                 $prev  = $item['content'];
                 $item['content'] = preg_replace_callback(

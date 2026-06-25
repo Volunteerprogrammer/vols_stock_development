@@ -35,4 +35,10 @@ class ActionTable extends \fw\database\table\MySQLTable
 		return $this->query($query, $results, $numrows);
 	}
 
+	public function getactionsforpagetype(int $pagetype, &$results, &$numrows = 0): bool {
+		$query  = "SELECT DISTINCT a.name, a.code FROM action a";
+		$query .= " WHERE a.page_type IN (0, {$pagetype}) ORDER BY a.name";
+		return $this->query($query, $results, $numrows);
+	}
+
 }

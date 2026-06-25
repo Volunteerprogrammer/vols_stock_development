@@ -17,6 +17,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
     protected $parents;
     private   $pages       = [];
     private   $pageMap     = [];
+    private   $pageTypeMap = [];
 
     public function __construct(protected FormComponent $component) {
         $this->singlerecord = false;
@@ -35,13 +36,15 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             "content"     => "",
             "also_covers" => "",
             "published"   => "",
+            "pagetype"    => "",
         ];
     }
 
     protected function addtonames($row) {
         $suffix = $row["published"] ? '' : ' [Draft]';
         $this->names[$row["id"]] = $row["title"] . $suffix;
-        $this->pageMap[(int)$row["id"]] = ($row["page_id"] !== null && $row["page_id"] !== '') ? (int)$row["page_id"] : null;
+        $this->pageMap[(int)$row["id"]]     = ($row["page_id"] !== null && $row["page_id"] !== '') ? (int)$row["page_id"] : null;
+        $this->pageTypeMap[(int)$row["id"]] = (int)($row["pagetype"] ?? 0);
     }
 
     public function buildinputs($rights=[], $trace=false) {
@@ -58,6 +61,12 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
         $pageselect .= '</select>';
         $this->component->setwidths(20, 35, 45, true);
         $formfields  .= $this->component->renderformrow('page_idrow', '', 'Page', false, '', '', '', $pageselect, '', '', 'page_id_hint', 'Leave blank to create a shared content block');
+        $pagetypehtml  = '<select name="pagetype" id="pagetype"><option value="0">-- select a type --</option>';
+        foreach ([1 => 'System', 2 => 'Roster', 3 => 'Editor', 4 => 'Reports'] as $ptv => $ptl) {
+            $pagetypehtml .= '<option value="' . $ptv . '">' . $ptl . '</option>';
+        }
+        $pagetypehtml .= '</select>';
+        $formfields  .= $this->component->renderformrow('pagetyperow', '', 'Page type', false, '', '', '', $pagetypehtml, '', '', 'pagetype_hint', 'Select a type to enable the &#8220;If right&#8230;&#8221; button for shared blocks');
         $this->component->restorewidths();
 
         $formfields .= $this->component->buildinputrow("also_covers", 4, "", 'Also covers', 'extra page IDs, comma-separated, e.g. 102,103', 40, 500, false, '', '');
@@ -113,6 +122,10 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                 jQuery("#blockref_copy").hide();
                 jQuery("#blockref_hint").hide();
             }
+            const _ptid = parseInt(_bid) || 0;
+            const _ptype = _ptid ? (helpPageTypeMap[_ptid] || 0) : 0;
+            jQuery('#pagetype').val(_ptype);
+            jQuery('#pagetyperow').toggle(!jQuery('#page_id').val());
         JS;
         $postclearfieldsscript = <<<JS
             jQuery("#page_id").val("");
@@ -121,9 +134,14 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             jQuery("#blockref_display").hide();
             jQuery("#blockref_copy").hide();
             jQuery("#blockref_hint").hide();
+            jQuery('#pagetype').val('0');
+            jQuery('#pagetyperow').show();
         JS;
         $presavescript = <<<JS
-            const _psed = tinymce.get('content'); if (_psed) { _psed.save(); }
+            const _psed = tinymce.get('content');
+            if (_psed) { jQuery('#content').prop('disabled', false).val(_psed.getContent()); }
+            jQuery('#published').prop('disabled', false);
+            jQuery('#pagetype').prop('disabled', false);
             jQuery("#also_covers").val(jQuery("#also_covers").val().trim().replace(/\s+/g, ''));
         JS;
         $disablescript = <<<JS
@@ -134,19 +152,45 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             tinymce.init({
                 selector: '#content',
                 plugins: 'lists link',
-                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | condblock elseblock',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | qheading | condblock elseblock',
                 menubar: false,
+                width: '100%',
                 height: 380,
                 branding: false,
+                forced_root_block: 'p',
+                invalid_styles: { 'span': 'white-space' },
+                content_style: 'body { overflow-wrap: break-word; word-wrap: break-word; overflow-x: hidden; } span { white-space: normal !important; } div { margin: 1em 0; }',
                 setup: function(editor) {
-                    function pageIsSelected() { return !!jQuery('#page_id').val(); }
+                    var _setupContent = jQuery('#content').val();
+                    function pageIsSelected() { return !!jQuery('#page_id').val() || parseInt(jQuery('#pagetype').val()) > 0; }
                     function makePageAwareSetup(api) {
-                        function update() { api.setEnabled(pageIsSelected()); }
+                        function update() {
+                            var on = pageIsSelected();
+                            if (typeof api.setEnabled === 'function') { api.setEnabled(on); }
+                            else { api.setDisabled(!on); }
+                        }
                         update();
                         jQuery('#page_id').on('change', update);
+                        jQuery('#pagetype').on('change', update);
                         editor.on('focus', update);
-                        return function() { jQuery('#page_id').off('change', update); };
+                        return function() {
+                            jQuery('#page_id').off('change', update);
+                            jQuery('#pagetype').off('change', update);
+                        };
                     }
+                    editor.ui.registry.addButton('qheading', {
+                        text: 'Heading',
+                        tooltip: 'Insert {{Q}} marker at start of paragraph to create a Q&A question heading',
+                        onAction: function() {
+                            var node  = editor.selection.getNode();
+                            var block = editor.dom.getParent(node, 'p,div,h1,h2,h3,h4,h5,h6') || node;
+                            var rng   = editor.dom.createRng();
+                            rng.selectNodeContents(block);
+                            rng.collapse(true);
+                            editor.selection.setRng(rng);
+                            editor.insertContent('{{Q}} ');
+                        }
+                    });
                     editor.ui.registry.addButton('condblock', {
                         text: 'If right…',
                         tooltip: 'Insert a section visible only to users with a specific permission',
@@ -176,6 +220,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                         openCondBlockDialog(editor);
                     });
                     editor.on('init', function() {
+                        if (_setupContent) { editor.setContent(_setupContent); }
                         setTimeout(function() { editor.mode.set('readonly'); }, 0);
                     });
                     editor.on('change', function() {
@@ -200,7 +245,8 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             $disablescript,
             $onloadscript
         );
-        $pageMapJson = json_encode($this->pageMap);
+        $pageMapJson     = json_encode($this->pageMap);
+        $pageTypeMapJson = json_encode($this->pageTypeMap);
         $script .= <<<JS
             (function() {
                 const _orig = disableallinputstatus;
@@ -210,7 +256,8 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                     if (_ed && disabled) { _ed.mode.set('readonly'); }
                 };
             })();
-            const helpPageMap = {$pageMapJson};
+            const helpPageMap     = {$pageMapJson};
+            const helpPageTypeMap = {$pageTypeMapJson};
             function checkPageDuplicate() {
                 const selectedPage = parseInt(jQuery("#page_id").val()) || null;
                 const currentId = parseInt(jQuery("#hiddenid").val()) || 0;
@@ -230,7 +277,14 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                 errorRow.removeClass("errorshowing");
                 return false;
             }
-            jQuery(function() { jQuery("#page_id").on("change", checkPageDuplicate); });
+            jQuery(function() {
+                jQuery("#page_id").on("change", checkPageDuplicate);
+                jQuery("#page_id").on("change", function() {
+                    var _hasPid = !!jQuery(this).val();
+                    jQuery('#pagetyperow').toggle(!_hasPid);
+                    if (_hasPid) { jQuery('#pagetype').val('0'); }
+                });
+            });
             function copyblockref() {
                 var t = jQuery("#blockref_display").text();
                 navigator.clipboard.writeText(t).then(function() {
@@ -239,15 +293,21 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                 });
             }
             function openCondBlockDialog(editor) {
-                var pid = jQuery('#page_id').val();
-                if (!pid) {
-                    editor.windowManager.alert('Please select a page before inserting a conditional block.');
+                var pid   = jQuery('#page_id').val();
+                var ptype = parseInt(jQuery('#pagetype').val()) || 0;
+                var payload;
+                if (pid) {
+                    payload = {page_id: pid};
+                } else if (ptype > 0) {
+                    payload = {pagetype: ptype};
+                } else {
+                    editor.windowManager.alert('Please select a page or page type before inserting a conditional block.');
                     return;
                 }
-                doServerRequest(0, JSON.stringify({page_id: pid}), 'help_getpageactions').then(function(resp) {
+                doServerRequest(0, JSON.stringify(payload), 'help_getpageactions').then(function(resp) {
                     var actions = JSON.parse(resp);
                     if (!actions || !actions.length) {
-                        editor.windowManager.alert('No permission actions are defined for this page.');
+                        editor.windowManager.alert('No permission actions are defined for this page or page type.');
                         return;
                     }
                     var items = actions.map(function(a) { return {value: a.code, text: a.name}; });

@@ -33,4 +33,8 @@ class ActionManager extends \fw\controller\manager\StdManager
     public function getactionsforpagenumber(int $pagenumber, &$results, &$numrows): bool {
         return $this->table->getactionsforpagenumber($pagenumber, $results, $numrows);
     }
+
+    public function getactionsforpagetype(int $pagetype, &$results, &$numrows): bool {
+        return $this->table->getactionsforpagetype($pagetype, $results, $numrows);
+    }
 }

@@ -495,13 +495,13 @@ class RosterManager
                             }));
         return (($psc = ($pastsessioncount % $pd)) == 0) ? $pd : $psc;  
      }
-    private function stripsessions($sessions,&$startdaystr,$direction,$trace=false) {
-        if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>";} 
+    private function stripsessions($sessions,&$startdaystr,$direction,$pagedepth=0,$trace=false) {
+        if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>";}
        // we assume that all sessions supplied have the same parent task
-        // lib::v($sessions); 
+        // lib::v($sessions);
         $dateformat = 'Y-m-d';
         $recurrenceperiod = $sessions[0]["recurrence"];
-        $pd = $sessions[0]["sessiondepth"];
+        $pd = (int)$pagedepth ?: (int)$sessions[0]["sessiondepth"];
         $firstday = $this->movetostartofrecurrenceperiod ($startdaystr,$sessions[0],$trace);
         // lib::v("A",$firstday);
         switch ($direction) {
@@ -605,7 +605,7 @@ class RosterManager
        if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>pagenum = $pagenum<br>";} 
         $requestdata = $this->session->getrequestdata();
        if ($this->trace || $trace ) { lib::v("loadroster",$requestdata);} 
-        $pagedepth = $pagedepth==""?$this->rosterpagerows:$pagedepth;
+        $pagedepth = trim($requestdata["pagedepth"] ?? "") ?: $this->rosterpagerows;
         $startdatestr =  $requestdata["firstdate"] ?? date('Y-m-d');
         $direction = trim($requestdata["direction"] ?? "");
         $success = $this->pagetable->selectononefield("pagenumber",$pagenum,$page,$numrows,false,false);
@@ -646,7 +646,7 @@ class RosterManager
                     $startdatestr = $holddate;
                     // lib::v(count($tasksessions),$holddate,$startdatestr,$periodstartday->format('y-m-d')); 
                     // lib::pr(count($tasksessions),$tasksessions); 
-                    $datesortedresults = $this->stripsessions($datesortedresults,$startdatestr,$direction);
+                    $datesortedresults = $this->stripsessions($datesortedresults,$startdatestr,$direction,$pagedepth);
                     // lib::pr(count($tasksessions),$tasksessions); 
                     // $datesortedresults = $this->stripsessions($datesortedresults,$startdatestr,$direction);
                                    if ($this->trace || $trace ) { lib::v("C",count($datesortedresults));} 

@@ -427,7 +427,7 @@ abstract class StdCRUDForm extends Form {
                                 if(jfield[i].indexOf("'") != -1 ) {
                                     jfield[i] = jfield[i].replace("'","\\\\'");
                                 }
-                                $("#{$this->formname} input:radio[data-fnum=\'" + i + jfield[i] +"\']" ).prop("checked", true)    //RADIOS the fieldnumber is in the data-fnum field
+                                try { $("#{$this->formname} input:radio[data-fnum=\'" + i + jfield[i] +"\']" ).prop("checked", true); } catch(e) {}    //RADIOS the fieldnumber is in the data-fnum field
                                 $("#{$this->formname} input:checkbox[data-fnum=\'" + i +"\']" ).prop("checked", jfield[i]==1)    //checkboxes
                                 $("#{$this->formname} select[data-fnum=\'" + i + "\']").val(jfield[i])    //the fieldnumber  is in the data-fnum field
                             } 

@@ -42,7 +42,7 @@ class HelpForm extends \fw\view\form\Form
         $html .= '</div></div>';
 
         if (empty($visible)) {
-            $html .= '<div class="vols-tablerow" style="padding:20px;">';
+            $html .= '<div style="padding:20px;">';
             $html .= '<p>No help content has been written for the pages you can access yet.</p>';
             if (in_array($mm::HELPADMINPAGE.'||UPDATE', $rights)) {
                 $html .= '<p>Use the <a href="?p='.$mm::HELPADMINPAGE.'">Help Content Admin</a> page to add content.</p>';
@@ -51,7 +51,7 @@ class HelpForm extends \fw\view\form\Form
         } else {
             // Table of contents — only shown when displaying multiple sections
             if (count($visible) > 1) {
-                $html .= '<div class="help-toc vols-tablerow" style="padding:14px 20px;background:#f4f8fd;border-bottom:1px solid #c8d8ee;">';
+                $html .= '<div class="help-toc" style="padding:14px 20px;background:#f4f8fd;border-bottom:1px solid #c8d8ee;">';
                 $html .= '<strong style="font-size:0.9em;text-transform:uppercase;letter-spacing:0.05em;color:#4a7fbf;">Contents</strong>';
                 $html .= '<ul style="margin:8px 0 0 18px;line-height:1.9;">';
                 foreach ($visible as $item) {
@@ -69,12 +69,12 @@ class HelpForm extends \fw\view\form\Form
                 $body  = (strpos($content, '<') !== false)
                        ? $content
                        : nl2br(htmlspecialchars($content));
-                $html .= '<section id="help_'.$pid.'" class="help-section vols-tablerow" style="padding:16px 20px 20px;border-top:3px solid #4a7fbf;">';
+                $html .= '<section id="help_'.$pid.'" class="help-section" style="padding:16px 20px 20px;border-top:3px solid #4a7fbf;">';
                 $html .= '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">';
                 $html .= '<h2 style="margin:0;font-size:1.15em;color:#2c5282;letter-spacing:0.02em;">'.$title.'</h2>';
                 $html .= '<a href="#help-display" style="font-size:0.78em;color:#4a7fbf;text-decoration:none;white-space:nowrap;margin-left:16px;margin-right:18px;" title="Back to top">&#9650; top</a>';
                 $html .= '</div>';
-                $html .= '<div class="help-content" style="line-height:1.7;color:#333;">'.$body.'</div>';
+                $html .= '<div class="help-content" style="line-height:1.7;color:#333;overflow-wrap:break-word;word-wrap:break-word;">'.$body.'</div>';
                 $html .= '</section>';
             }
         }
