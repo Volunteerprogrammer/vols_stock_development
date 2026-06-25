@@ -87,7 +87,7 @@ class HelpForm extends \fw\view\form\Form
                 $html .= '<h2 style="margin:0;font-size:1.15em;color:#2c5282;letter-spacing:0.02em;">'.$title.'</h2>';
                 $html .= '<a href="#help-display" style="font-size:0.78em;color:#4a7fbf;text-decoration:none;white-space:nowrap;margin-left:16px;margin-right:18px;" title="Back to top">&#9650; top</a>';
                 $html .= '</div>';
-                $html .= '<div class="help-content" style="line-height:1.7;color:#333;overflow-wrap:break-word;word-wrap:break-word;">'.$body.'</div>';
+                $html .= '<div class="help-content" style="color:#333;overflow-wrap:break-word;word-wrap:break-word;">'.$body.'</div>';
                 $html .= '</section>';
             }
         }
