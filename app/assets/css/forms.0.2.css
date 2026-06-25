@@ -2765,6 +2765,7 @@ input
 .help-qanda-toc a { color: #2c5282; text-decoration: none; }
 .help-qanda-toc a:hover { text-decoration: underline; }
 .help-question { font-weight: 600; color: #2c5282; }
+.help-content p:has(.help-question) { margin-top: 2em; }
 .help-q-top { font-size: 0.78em; color: #4a7fbf; text-decoration: none; white-space: nowrap; margin-left: 10px; }
 .help-q-top:hover { text-decoration: underline; }
 .help-q-anchor { display: block; visibility: hidden; height: 0; overflow: hidden; scroll-margin-top: 16px; }
