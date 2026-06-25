@@ -2739,7 +2739,9 @@ input
 /* Help display: override white-space:pre that TinyMCE pastes onto spans */
 .help-content span { white-space: normal !important; }
 /* Help display: give pasted <div> blocks the same spacing as <p> */
-.help-content div { margin: 1em 0; }
+.help-content div { margin: 0 0 1em 0; }
+/* Help display: prevent adjacent <p> margin collapsing — bottom-only margin */
+.help-content p { margin: 0 0 1em 0; }
 /* Help Q&A */
 .help-qanda-toc {
     background: #f0f4fa;

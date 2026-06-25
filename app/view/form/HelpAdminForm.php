@@ -159,7 +159,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                 branding: false,
                 forced_root_block: 'p',
                 invalid_styles: { 'span': 'white-space' },
-                content_style: 'body { overflow-wrap: break-word; word-wrap: break-word; overflow-x: hidden; } span { white-space: normal !important; } div { margin: 1em 0; }',
+                content_style: 'body { overflow-wrap: break-word; word-wrap: break-word; overflow-x: hidden; } span { white-space: normal !important; } div, p { margin: 0 0 1em 0; }',
                 setup: function(editor) {
                     var _setupContent = jQuery('#content').val();
                     function pageIsSelected() { return !!jQuery('#page_id').val() || parseInt(jQuery('#pagetype').val()) > 0; }
