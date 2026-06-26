@@ -601,12 +601,14 @@ class ViewController {
             $numrows = 0;
             $userroles = [];
             $roles = [];
+            $roleactiondata = [];
             $success = $this->manager->getallrecords($data,"given_name",$parents,$numrows,false,false);
             $success = $success && $this->manager->getalluserroles($userroles,$numrows,"user_id",false);
             $success = $success && $this->manager->getallroles($roles,$numrows,"name",false);
+            $success = $success && $this->manager->getallroleactiondata($roleactiondata,$numrows,false);
         // lib::pr($roles,$userroles);
             if ($success) {
-                $this->form->init($this->session,$data,$parents,false,$roles,$userroles,$this->pagenum);
+                $this->form->init($this->session,$data,$parents,false,$roles,$userroles,$this->pagenum,$roleactiondata);
                 $this->bodysection = $this->bodies->standardbody();
                 $this->bodysection->init($this->session,$this->form,$this->manager->getname(),"",$errormessage);
             } else {

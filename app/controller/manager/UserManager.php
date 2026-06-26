@@ -189,6 +189,20 @@ class UserManager extends \fw\controller\manager\StdManager
         if ($this->trace  || $trace ) {echo "Enter/Leave ".__METHOD__."<br>";}
         return $this->usertable->selectonmultiplefields($fielddata,$records,$numrows,$withlock,$trace);
      }
+    public    function getallroleactiondata(&$data, &$numrows, $trace=false) {
+        $data  = [];
+        $query = <<<SQL
+            SELECT rpa.role_id, pa.id AS pageaction_id,
+                   CONCAT(p.name,'&nbsp; --- &nbsp;',a.name) AS name,
+                   a.name AS actionname, p.id AS pageid
+            FROM role_pageaction rpa
+            JOIN page_action pa ON pa.id = rpa.pageaction_id
+            JOIN page p ON p.id = pa.page_id
+            JOIN action a ON a.id = pa.action_id
+            ORDER BY p.pagenumber, a.name
+        SQL;
+        return $this->table->query($query, $data, $numrows, false);
+     }
     public    function getallroles(&$roles,&$numrows=0,$orderby="",$trace=false){
         if ($this->trace  || $trace ) { echo "Enter ".__METHOD__."<br>\n"; }
         $roles = array();

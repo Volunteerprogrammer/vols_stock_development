@@ -24,7 +24,8 @@ class UserForm extends \fw\view\form\StdCRUDForm {
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
         $this->singlerecord = false;
      }
-    public function init($session,$users=[],$parents="",$trace=false,$roles=[],$userroles=[],$pagenum='') {
+    protected $roleactiondata = [];
+    public function init($session,$users=[],$parents="",$trace=false,$roles=[],$userroles=[],$pagenum='',$roleactiondata=[]) {
         if ($this->trace||$trace) { echo "Enter ".__METHOD__."<br>"; }
         if (count($userroles)) {  // add the role_ids for the user's roles in a new element in each $user array
             $this->addlinkstodata($users,$roles,$userroles,$trace);
@@ -35,6 +36,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
         $this->roles = $roles;
         $this->userroles = $userroles;
         $this->pagenum = $pagenum;
+        $this->roleactiondata = $roleactiondata;
         $this->userid = $this->requestdata["id"]??"";
      }
     public function addlinkstodata(&$users=[],$roles=[],$userroles=[],$trace=false) {
@@ -92,7 +94,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
             if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
                 $fn = 10;
 // =============================================================================================
-                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"","lefttext"=>"","leftscript"=>""];
+                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportuserrightsbtn","lefttext"=>"Export CSV","leftdata"=>"","leftscript"=>""];
                 $heading = "<span id='statustextspan'>ALL</span> Roles";
                 $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
                 $this->component->setwidths (40,55,5);
@@ -162,8 +164,76 @@ class UserForm extends \fw\view\form\StdCRUDForm {
                                     '',  //$multisubmit
                                     $presavescript
                                     ); 
+        $rolesB64      = base64_encode(json_encode(array_values($this->roles)));
+        $usersB64      = base64_encode(json_encode(array_values($this->alldata)));
+        $roleactionB64 = base64_encode(json_encode(array_values($this->roleactiondata)));
+        $script .= "var _rolesData=JSON.parse(atob('{$rolesB64}'));var _usersData=JSON.parse(atob('{$usersB64}'));var _roleActionData=JSON.parse(atob('{$roleactionB64}'));\n";
         $script .= <<<JS
-            function showhidepages() { 
+            jQuery('#exportuserrightsbtn').on('click', function() {
+                // Build unique ordered pages and action columns
+                var pageOrder = [], pageNames = {}, actionCols = [];
+                _roleActionData.forEach(function(row) {
+                    if (!pageNames[row.pageid]) {
+                        pageNames[row.pageid] = (row.name.split('&nbsp; --- &nbsp;')[0] || '').trim();
+                        pageOrder.push(row.pageid);
+                    }
+                    if (actionCols.indexOf(row.actionname) === -1) { actionCols.push(row.actionname); }
+                });
+                actionCols.sort();
+
+                var header = ['""','"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(',');
+                var lines  = [header];
+
+                _usersData.forEach(function(user) {
+                    // Map this user's roles to letters A, B, C...
+                    var letterMap = {}, roleList = [], idx = 0;
+                    _rolesData.forEach(function(role) {
+                        if (user['role' + role.id] == 1) {
+                            var letter = idx < 26 ? String.fromCharCode(65 + idx) : String(idx + 1);
+                            letterMap[role.id] = letter;
+                            roleList.push(letter + ' = ' + role.name);
+                            idx++;
+                        }
+                    });
+                    if (!roleList.length) { return; }
+
+                    // Build page rows — skip pages where this user has no rights
+                    var roleLines = [];
+                    pageOrder.forEach(function(pid) {
+                        var cells = [], hasAny = false;
+                        actionCols.forEach(function(col) {
+                            var letters = [];
+                            _roleActionData.forEach(function(row) {
+                                if (row.pageid == pid && row.actionname === col && letterMap[row.role_id] !== undefined) {
+                                    letters.push(letterMap[row.role_id]);
+                                }
+                            });
+                            letters.sort();
+                            if (letters.length) { hasAny = true; }
+                            cells.push('"' + letters.join('') + '"');
+                        });
+                        if (hasAny) {
+                            roleLines.push(['""', '"' + pageNames[pid].replace(/"/g,'""') + '"'].concat(cells).join(','));
+                        }
+                    });
+                    if (!roleLines.length) { return; }
+
+                    lines.push('');
+                    lines.push('User: ' + user.given_name + ' ' + user.family_name);
+                    roleList.forEach(function(r){ lines.push(r); });
+                    roleLines.forEach(function(r){ lines.push(r); });
+                });
+
+                var blob = new Blob([lines.join('\\r\\n')], { type: 'text/csv;charset=utf-8' });
+                var a    = document.createElement('a');
+                a.href     = URL.createObjectURL(blob);
+                a.download = 'user_rights.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+            });
+            function showhidepages() {
                 setchildselectorheadingtext();
                 const element = document.getElementById("dataspace");
                 element.scrollTop = element.scrollHeight;
