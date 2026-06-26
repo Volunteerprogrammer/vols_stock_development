@@ -181,7 +181,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
                 });
                 actionCols.sort();
 
-                var header = ['""','"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(',');
+                var header = ['"User"','"Roles"','"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(',');
                 var lines  = [header];
 
                 _usersData.forEach(function(user) {
@@ -213,14 +213,17 @@ class UserForm extends \fw\view\form\StdCRUDForm {
                             cells.push('"' + letters.join('') + '"');
                         });
                         if (hasAny) {
-                            roleLines.push(['""', '"' + pageNames[pid].replace(/"/g,'""') + '"'].concat(cells).join(','));
+                            roleLines.push(['""','""', '"' + pageNames[pid].replace(/"/g,'""') + '"'].concat(cells).join(','));
                         }
                     });
                     if (!roleLines.length) { return; }
 
                     lines.push('');
-                    lines.push('User: ' + user.given_name + ' ' + user.family_name);
-                    roleList.forEach(function(r){ lines.push(r); });
+                    var userName = (user.given_name + ' ' + user.family_name).replace(/"/g,'""');
+                    roleList.forEach(function(r, i) {
+                        var userCol = i === 0 ? '"' + userName + '"' : '""';
+                        lines.push([userCol, '"' + r.replace(/"/g,'""') + '"', '""'].concat(actionCols.map(function(){ return '""'; })).join(','));
+                    });
                     roleLines.forEach(function(r){ lines.push(r); });
                 });
 
