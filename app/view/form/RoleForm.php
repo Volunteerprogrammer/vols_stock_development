@@ -72,7 +72,7 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
 // =============================================================================================
         $pagedata = array_combine(array_column($this->pages,"id"),array_column($this->pages,"name"));
         $pageselector = $this->component->renderdropdown("childselector",1,$buildoptionlist,false,false,false,false,$pagedata,'21',false,'vols-form-select nondatainput','',false);
-        $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show LINKED","rightdata"=>" data-state='all'","leftid"=>"exportrightsbtn","lefttext"=>"Export CSV","leftscript"=>""];
+        $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show LINKED","rightdata"=>" data-state='all'","leftid"=>"exportrightsbtn","lefttext"=>"Export CSV","leftdata"=>"","leftscript"=>""];
         $buildoptionlist = '';
         $heading = "<span id='statustextspan'>ALL</span> Rights on the {$pageselector} page.";
         $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
@@ -142,8 +142,9 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                                     $disablescript,
                                     $onloadscript
                                     ); 
-        $rolesJson   = json_encode(array_values($this->alldata));
-        $actionsJson = json_encode(array_values($this->pageactions));
+        $flags       = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+        $rolesJson   = json_encode(array_values($this->alldata),   $flags);
+        $actionsJson = json_encode(array_values($this->pageactions), $flags);
         $script .= "var _rightsRoles={$rolesJson};var _rightsActions={$actionsJson};\n";
         $script .= <<<JS
             jQuery('#exportrightsbtn').on('click', function() {
