@@ -72,7 +72,7 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
 // =============================================================================================
         $pagedata = array_combine(array_column($this->pages,"id"),array_column($this->pages,"name"));
         $pageselector = $this->component->renderdropdown("childselector",1,$buildoptionlist,false,false,false,false,$pagedata,'21',false,'vols-form-select nondatainput','',false);
-        $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show LINKED","rightdata"=>" data-state='all'","leftid"=>"","lefttext"=>"","leftscript"=>""];
+        $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show LINKED","rightdata"=>" data-state='all'","leftid"=>"exportrightsbtn","lefttext"=>"Export CSV","leftscript"=>""];
         $buildoptionlist = '';
         $heading = "<span id='statustextspan'>ALL</span> Rights on the {$pageselector} page.";
         $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
@@ -142,7 +142,27 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                                     $disablescript,
                                     $onloadscript
                                     ); 
+        $rolesJson   = json_encode(array_values($this->alldata));
+        $actionsJson = json_encode(array_values($this->pageactions));
+        $script .= "var _rightsRoles={$rolesJson};var _rightsActions={$actionsJson};\n";
         $script .= <<<JS
+            jQuery('#exportrightsbtn').on('click', function() {
+                var lines = [];
+                _rightsRoles.forEach(function(role) {
+                    lines.push('Role: ' + role.name);
+                    lines.push('');
+                    lines.push('Page,Action,Granted');
+                    _rightsActions.forEach(function(action) {
+                        var parts  = action.name.split(':');
+                        var page   = (parts[0] || '').trim().replace(/"/g,'""');
+                        var act    = (action.actionname || (parts[1] || '')).trim().replace(/"/g,'""');
+                        var granted = (role['pageaction' + action.id] == 1) ? 'Y' : '';
+                        lines.push('"' + page + '","' + act + '","' + granted + '"');
+                    });
+                    lines.push('');
+                });
+                fw_DownloadDataFile('rights_by_role.csv', lines.join('\r\n'));
+            });
             function showhidepages() {
                 const selectedpageid = jQuery("#childselector").find(":selected").val();
                 setchildselectorheadingtext("pageid",selectedpageid);
