@@ -158,7 +158,7 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                 });
                 actionCols.sort();
 
-                var header = ['""','"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(',');
+                var header = ['"Role"','"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(',');
                 var lines  = [header];
                 _rightsRoles.forEach(function(role) {
                     var roleLines = [];
@@ -176,7 +176,7 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                     });
                     if (roleLines.length) {
                         lines.push('');
-                        lines.push('Role: ' + role.name);
+                        lines.push('"' + role.name.replace(/"/g,'""') + '"');
                         roleLines.forEach(function(r){ lines.push(r); });
                     }
                 });
