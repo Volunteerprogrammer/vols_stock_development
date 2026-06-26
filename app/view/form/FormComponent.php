@@ -163,7 +163,7 @@ class FormComponent  extends \fw\view\form\FormComponent{
         }
 
          if (($buttons["leftid"]??"") !== "") {
-            $leftcell = '<div class="vols-tablecell aligncenter vols-width-17 vols-leftcell"><div id="'.$buttons["leftid"].'" class="clickable action  doitbg "'.$buttons["leftdata"]??"".' >'.$buttons["lefttext"].'</div></div>';
+            $leftcell = '<div class="vols-tablecell aligncenter vols-width-17 vols-leftcell"><div id="'.$buttons["leftid"].'" class="clickable action  doitbg " '.($buttons["leftdata"]??'').'>'.$buttons["lefttext"].'</div></div>';
         } else {
             $leftcell = '<div class="vols-tablecell  vols-width-17 vols-leftcell">&nbsp;</div>';
         }
