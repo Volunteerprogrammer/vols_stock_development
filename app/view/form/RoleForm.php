@@ -158,22 +158,27 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                 });
                 actionCols.sort();
 
-                var lines = [];
+                var header = ['"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(',');
+                var lines  = [header];
                 _rightsRoles.forEach(function(role) {
-                    lines.push('Role: ' + role.name);
-                    lines.push('');
-                    // Header row
-                    lines.push(['"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(','));
-                    // One row per page
+                    var roleLines = [];
                     pageOrder.forEach(function(pid) {
-                        var row = ['"' + pageNames[pid].replace(/"/g,'""') + '"'];
+                        var cells = [], hasY = false;
                         actionCols.forEach(function(col) {
                             var pa = _rightsActions.find(function(a){ return a.pageid==pid && a.actionname===col; });
-                            row.push(pa && role['pageaction'+pa.id]==1 ? '"Y"' : '""');
+                            var y  = pa && role['pageaction'+pa.id]==1;
+                            if (y) { hasY = true; }
+                            cells.push(y ? '"Y"' : '""');
                         });
-                        lines.push(row.join(','));
+                        if (hasY) {
+                            roleLines.push(['"' + pageNames[pid].replace(/"/g,'""') + '"'].concat(cells).join(','));
+                        }
                     });
-                    lines.push('');
+                    if (roleLines.length) {
+                        lines.push('');
+                        lines.push('Role: ' + role.name);
+                        roleLines.forEach(function(r){ lines.push(r); });
+                    }
                 });
                 var csv  = lines.join('\\r\\n');
                 var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
