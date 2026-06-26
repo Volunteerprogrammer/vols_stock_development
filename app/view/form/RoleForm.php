@@ -142,10 +142,9 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                                     $disablescript,
                                     $onloadscript
                                     ); 
-        $flags       = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
-        $rolesJson   = json_encode(array_values($this->alldata),   $flags);
-        $actionsJson = json_encode(array_values($this->pageactions), $flags);
-        $script .= "var _rightsRoles={$rolesJson};var _rightsActions={$actionsJson};\n";
+        $rolesB64   = base64_encode(json_encode(array_values($this->alldata)));
+        $actionsB64 = base64_encode(json_encode(array_values($this->pageactions)));
+        $script .= "var _rightsRoles=JSON.parse(atob('{$rolesB64}'));var _rightsActions=JSON.parse(atob('{$actionsB64}'));\n";
         $script .= <<<JS
             jQuery('#exportrightsbtn').on('click', function() {
                 var lines = [];
