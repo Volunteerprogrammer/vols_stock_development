@@ -161,7 +161,15 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
                     });
                     lines.push('');
                 });
-                fw_DownloadDataFile('rights_by_role.csv', lines.join('\\r\\n'));
+                var csv  = lines.join('\\r\\n');
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                var a    = document.createElement('a');
+                a.href     = URL.createObjectURL(blob);
+                a.download = 'rights_by_role.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
             });
             function showhidepages() {
                 const selectedpageid = jQuery("#childselector").find(":selected").val();
