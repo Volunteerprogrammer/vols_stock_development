@@ -147,17 +147,31 @@ class RoleForm extends \fw\view\form\StdCRUDForm {
         $script .= "var _rightsRoles=JSON.parse(atob('{$rolesB64}'));var _rightsActions=JSON.parse(atob('{$actionsB64}'));\n";
         $script .= <<<JS
             jQuery('#exportrightsbtn').on('click', function() {
+                // Build ordered page list and unique action columns from pageactions data
+                var pageOrder = [], pageNames = {}, actionCols = [];
+                _rightsActions.forEach(function(a) {
+                    if (!pageNames[a.pageid]) {
+                        pageNames[a.pageid] = (a.name.split('&nbsp; --- &nbsp;')[0] || '').trim();
+                        pageOrder.push(a.pageid);
+                    }
+                    if (actionCols.indexOf(a.actionname) === -1) { actionCols.push(a.actionname); }
+                });
+                actionCols.sort();
+
                 var lines = [];
                 _rightsRoles.forEach(function(role) {
                     lines.push('Role: ' + role.name);
                     lines.push('');
-                    lines.push('Page,Action,Granted');
-                    _rightsActions.forEach(function(action) {
-                        var parts  = action.name.split(':');
-                        var page   = (parts[0] || '').trim().replace(/"/g,'""');
-                        var act    = (action.actionname || (parts[1] || '')).trim().replace(/"/g,'""');
-                        var granted = (role['pageaction' + action.id] == 1) ? 'Y' : '';
-                        lines.push('"' + page + '","' + act + '","' + granted + '"');
+                    // Header row
+                    lines.push(['"Page"'].concat(actionCols.map(function(c){ return '"'+c+'"'; })).join(','));
+                    // One row per page
+                    pageOrder.forEach(function(pid) {
+                        var row = ['"' + pageNames[pid].replace(/"/g,'""') + '"'];
+                        actionCols.forEach(function(col) {
+                            var pa = _rightsActions.find(function(a){ return a.pageid==pid && a.actionname===col; });
+                            row.push(pa && role['pageaction'+pa.id]==1 ? '"Y"' : '""');
+                        });
+                        lines.push(row.join(','));
                     });
                     lines.push('');
                 });
