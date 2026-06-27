@@ -90,12 +90,14 @@ class RosterManager
                 $email["Subject"] = "Food Bank LATE CHANGE NOTICE";
                 $this->emailmanager->sendmail($email,$user_id,$session_id,$response,$this->errorhandler,$trace);
             } else {
-                $sessfinish = new DateTime($session["finish"]); 
+                $sessfinish = new DateTime($session["finish"]);
+                $siteUrl   = $this->config["app"]["SITEURL"]   ?? '';
+                $siteTitle = $this->config["app"]["SITETITLE"] ?? '';
                 $email["TextPart"]= <<<TEXT
                     {$heading["text"]}
                     Dear {$user['given_name']},
                     $textmessage
-                    If this is a mistake, you did not do this, or you have any questions, please contact {$this->config["app"]["RECEPTION"]} on {$this->config["app"]["RECEPTIONPHONE"]} ({$this->config["app"]["OFFICEHOURS"]}). Alternatively, to make or cancel your roster bookings, you can login to the Volunteers Roster at {$this->config["app"]["SITEURL"]}.               
+                    If this is a mistake, you did not do this, or you have any questions, please contact {$this->config["app"]["RECEPTION"]} on {$this->config["app"]["RECEPTIONPHONE"]} ({$this->config["app"]["OFFICEHOURS"]}). Alternatively, to make or cancel your roster bookings, you can login to the Volunteers Roster at {$siteUrl}.               
                     Please remember, Volunteer sessions run from {$sessdate->format('H:i')} to about {$sessfinish->format('H:i')}. This allows for set up before, and cleanup after, the {$this->config["app"]["DEPARTMENT"]} opening times.
                     {$footer["text"]}
                     TEXT;
@@ -103,7 +105,7 @@ class RosterManager
                     {$heading["html"]}
                     <p>Dear {$user['given_name']},</p>
                     $htmlmessage
-                    <p>If this is a mistake, you did not do this, or you have any questions, please contact {$this->config["app"]["RECEPTION"]} on {$this->config["app"]["RECEPTIONPHONE"]} ({$this->config["app"]["OFFICEHOURS"]}). Alternatively, to make or cancel your roster bookings, you can login to the Volunteers Roster at <a href=" {$this->config["app"]["SITEURL"]}">{$this->config["app"]["SITETITLE"]}</a>.</p>
+                    <p>If this is a mistake, you did not do this, or you have any questions, please contact {$this->config["app"]["RECEPTION"]} on {$this->config["app"]["RECEPTIONPHONE"]} ({$this->config["app"]["OFFICEHOURS"]}). Alternatively, to make or cancel your roster bookings, you can login to the Volunteers Roster at <a href="{$siteUrl}">{$siteTitle}</a>.</p>
                     <p>Please remember, Volunteer sessions run from {$sessdate->format('H:i')} to about {$sessfinish->format('H:i')}. This allows for set up before, and cleanup after, the {$this->config["app"]["DEPARTMENT"]} opening times.</p>
                     {$footer["html"]}
                     TEXT;
