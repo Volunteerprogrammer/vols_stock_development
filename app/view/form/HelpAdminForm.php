@@ -149,7 +149,18 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             if (_dsed) { _dsed.mode.set('design'); _dsed.fire('ResizeEditor'); }
         JS;
         $onloadscript = <<<JS
-            var _tinyHeight = Math.max(300, window.innerHeight - (document.getElementById('content').getBoundingClientRect().top + window.scrollY) - 90);
+            var _tinyTopOffset = document.getElementById('content').getBoundingClientRect().top + window.scrollY;
+            function _resizeTiny() {
+                var ed = tinymce.get('content');
+                if (!ed) return;
+                var container = ed.getContainer();
+                var header    = container.querySelector('.tox-editor-header');
+                var h = Math.max(300, window.innerHeight - _tinyTopOffset - 90);
+                container.style.height = h + 'px';
+                ed.getContentAreaContainer().style.height = (h - (header ? header.offsetHeight : 0)) + 'px';
+            }
+            jQuery(window).on('resize', _resizeTiny);
+            var _tinyHeight = Math.max(300, window.innerHeight - _tinyTopOffset - 90);
             tinymce.init({
                 selector: '#content',
                 plugins: 'lists link',
@@ -223,6 +234,7 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                     editor.on('init', function() {
                         if (_setupContent) { editor.setContent(_setupContent); }
                         setTimeout(function() { editor.mode.set('readonly'); }, 0);
+                        setTimeout(_resizeTiny, 0);
                     });
                     editor.on('change', function() {
                         editor.save();
