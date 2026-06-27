@@ -163,14 +163,16 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             var _tinyHeight = Math.max(300, window.innerHeight - _tinyTopOffset - 90);
             tinymce.init({
                 selector: '#content',
-                plugins: 'lists link',
-                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | qheading | condblock elseblock',
+                plugins: 'lists link code',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | qheading | condblock elseblock | code',
                 menubar: false,
                 width: '100%',
                 height: _tinyHeight,
                 branding: false,
                 forced_root_block: 'p',
                 invalid_styles: { 'span': 'white-space' },
+                extended_valid_elements: 'svg[*],path[*],circle[*],rect[*],line[*],polyline[*],polygon[*],g[*],defs[*],use[*],symbol[*]',
+                valid_children: '+p[svg],+span[svg],+div[svg]',
                 content_style: 'body { overflow-wrap: break-word; word-wrap: break-word; overflow-x: hidden; } span { white-space: normal !important; } div, p { margin: 0 0 1em 0; }',
                 setup: function(editor) {
                     var _setupContent = jQuery('#content').val();
