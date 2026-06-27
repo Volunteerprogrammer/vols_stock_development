@@ -434,6 +434,7 @@ class RosterForm extends \fw\view\form\Form {
                         <input type="hidden" name="formname" value="cancelbookingform"/>
                         <input type="hidden" name="booking_id" value=""/>
                         <input type="hidden" name="deleted_by" value="{$this->session->getuserid()}"/>
+                        <input type="hidden" name="pagedepth" value="{$this->pagedepth}"/>
                     </form>
             FORMS;
         }    
@@ -444,6 +445,7 @@ class RosterForm extends \fw\view\form\Form {
                         <input type="hidden" name="formname" value="makebookingform"/>
                         <input type="hidden" name="booked_by" value="{$this->session->getuserid()}"/>
                         <input type="hidden" name="session_role_id" value="">
+                        <input type="hidden" name="pagedepth" value="{$this->pagedepth}"/>
                     </form>
             FORMS;
         }    
