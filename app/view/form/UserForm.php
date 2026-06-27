@@ -94,7 +94,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
             if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
                 $fn = 10;
 // =============================================================================================
-                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportbtngroup","lefttext"=>'<div id="exportuserrightsbtn" style="float:left;width:47%;text-align:center;">Export<br>Rights</div><div id="exportroleusersbtn" style="float:right;width:47%;text-align:center;">Export<br>Roles</div>',"leftdata"=>'style="font-size:0.75em;line-height:1.2;overflow:hidden;"',"leftscript"=>""];
+                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportbtngroup","lefttext"=>'<div id="exportuserrightsbtn" style="float:left;width:47%;text-align:center;padding-top:3px;">Export<br>Rights</div><div id="exportroleusersbtn" style="float:right;width:47%;text-align:center;padding-top:3px;">Export<br>Roles</div>',"leftdata"=>'style="font-size:0.75em;line-height:1.2;overflow:hidden;"',"leftscript"=>""];
                 $heading = "<span id='statustextspan'>ALL</span> Roles";
                 $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
                 $this->component->setwidths (40,55,5);
