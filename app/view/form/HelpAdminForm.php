@@ -149,13 +149,14 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
             if (_dsed) { _dsed.mode.set('design'); _dsed.fire('ResizeEditor'); }
         JS;
         $onloadscript = <<<JS
+            var _tinyHeight = Math.max(300, window.innerHeight - (document.getElementById('content').getBoundingClientRect().top + window.scrollY) - 24);
             tinymce.init({
                 selector: '#content',
                 plugins: 'lists link',
                 toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | qheading | condblock elseblock',
                 menubar: false,
                 width: '100%',
-                height: 380,
+                height: _tinyHeight,
                 branding: false,
                 forced_root_block: 'p',
                 invalid_styles: { 'span': 'white-space' },
