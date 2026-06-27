@@ -94,7 +94,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
             if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
                 $fn = 10;
 // =============================================================================================
-                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportuserrightsbtn","lefttext"=>"Export CSV","leftdata"=>"","leftscript"=>""];
+                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportbtngroup","lefttext"=>'<span id="exportuserrightsbtn">Export Rights</span>&ensp;<span id="exportroleusersbtn">Export Roles</span>',"leftdata"=>"","leftscript"=>""];
                 $heading = "<span id='statustextspan'>ALL</span> Roles";
                 $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
                 $this->component->setwidths (40,55,5);
@@ -231,6 +231,25 @@ class UserForm extends \fw\view\form\StdCRUDForm {
                 var a    = document.createElement('a');
                 a.href     = URL.createObjectURL(blob);
                 a.download = 'user_rights.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+            });
+            jQuery('#exportroleusersbtn').on('click', function() {
+                var header = ['"User"'].concat(_rolesData.map(function(r){ return '"' + r.name.replace(/"/g,'""') + '"'; })).join(',');
+                var lines  = [header];
+                _usersData.forEach(function(user) {
+                    var userName = (user.given_name + ' ' + user.family_name).replace(/"/g,'""');
+                    var cells = _rolesData.map(function(role) {
+                        return user['role' + role.id] == 1 ? '"Y"' : '""';
+                    });
+                    lines.push(['"' + userName + '"'].concat(cells).join(','));
+                });
+                var blob = new Blob([lines.join('\\r\\n')], { type: 'text/csv;charset=utf-8' });
+                var a    = document.createElement('a');
+                a.href     = URL.createObjectURL(blob);
+                a.download = 'role_assignments.csv';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
