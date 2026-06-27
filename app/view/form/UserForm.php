@@ -94,7 +94,7 @@ class UserForm extends \fw\view\form\StdCRUDForm {
             if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
                 $fn = 10;
 // =============================================================================================
-                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportbtngroup","lefttext"=>'<span id="exportuserrightsbtn">Export Rights</span>&ensp;<span id="exportroleusersbtn">Export Roles</span>',"leftdata"=>"","leftscript"=>""];
+                $buttons = ["rightid"=>"showrowsbtn","righttext"=>'Show <span style="text-decoration: underline;">L</span>INKED',"rightscript"=>"","rightdata"=>" data-state='all'","leftid"=>"exportbtngroup","lefttext"=>'<span id="exportuserrightsbtn">Export Rights</span>&ensp;<span id="exportroleusersbtn">Export Roles</span>',"leftdata"=>'style="width:fit-content;white-space:nowrap;"',"leftscript"=>""];
                 $heading = "<span id='statustextspan'>ALL</span> Roles";
                 $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
                 $this->component->setwidths (40,55,5);
