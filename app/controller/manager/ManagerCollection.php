@@ -30,6 +30,9 @@ class ManagerCollection {
     public function RosterManager(): RosterManager {
         return $this->instances[RosterManager::class] ??= $this->factory->getClass(RosterManager::class);
     }
+    public function RosterAdminManager(): RosterAdminManager {
+        return $this->instances[RosterAdminManager::class] ??= $this->factory->getClass(RosterAdminManager::class);
+    }
     public function RoleManager(): RoleManager {
         return $this->instances[RoleManager::class] ??= $this->factory->getClass(RoleManager::class);
     }

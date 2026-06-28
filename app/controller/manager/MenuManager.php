@@ -21,7 +21,9 @@ class MenuManager  extends \fw\controller\manager\StdManager
     const ROSTER9 = 109;
     const ROSTER10 = 110;
     const PROFILEPAGE       = 200;
+    const ROSTERBASE        = 100;
     const TASKPAGE          = 310;
+    const ROSTERADMINPAGE   = 315;
     const ROLEPAGE          = 320;
     const USERPAGE          = 330;
     const CLIENTADMINPAGE   = 331;

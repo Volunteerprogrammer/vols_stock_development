@@ -181,24 +181,6 @@ class ViewController {
                                                 $this->setthispage(1,0,$this->usermanager,$this->form,$errormessage,'', $trace);
                                                 break;
 
-            case $c2v($mm::ROSTER10)        : //$permission = in_array($mm::ROSTER10."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER9)         : //$permission = $permission || in_array($mm::ROSTER9."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER8)         : //$permission = $permission || in_array($mm::ROSTER8."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER7)         : //$permission = $permission || in_array($mm::ROSTER7."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER6)         : //$permission = $permission || in_array($mm::ROSTER6."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER5)         : //$permission = $permission || in_array($mm::ROSTER5."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER4)         : //$permission = $permission || in_array($mm::ROSTER4."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER3)         : //$permission = $permission || in_array($mm::ROSTER3."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER2)         : //$permission = $permission || in_array($mm::ROSTER2."||VIEW",$this->rights);
-            case $c2v($mm::ROSTER1)         : //$permission = $permission || in_array($mm::ROSTER1."||VIEW",$this->rights);
-                                                if ($this->setthispage(0,$this->pagenum,$this->usermanager,$this->forms->Rosterform(),$errormessage, $trace)) {
-                                                    $this->rolemanager = $this->mgrs->RoleManager();
-                                                    $this->rolemanager->init($this->session);
-                                                    $this->rostermanager = $this->mgrs->RosterManager();
-                                                    $this->rostermanager->init($this->session);
-                                                    $this->form->init($this->session);
-                                                }
-                                                break;
             case $c2v($mm::CLIENTADMINPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->ClientManager(),$this->forms->ClientAdminForm(),$errormessage,"given_name",$trace);
                                                 break;
             case $c2v($mm::CLIENTVOLSPAGE)  : $this->setthispage(0,$this->pagenum,$this->mgrs->ClientManager(),$this->forms->ClientVolsForm(),$errormessage,"given_name",$trace);
@@ -238,7 +220,19 @@ class ViewController {
                 case $c2v($mm::ADJUSTMENTEVENTPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->AdjustmentEventForm(),$errormessage,"",$trace);break;
             case $c2v($mm::HELPDISPLAYPAGE) : $this->setthispage(1,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpForm(),$errormessage,'',$trace); break;
             case $c2v($mm::HELPADMINPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpAdminForm(),$errormessage,'title',$trace); break;
-            default: die(__METHOD__." Unknown pagenum : {$this->pagenum}");
+            case $c2v($mm::ROSTERADMINPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->RosterAdminManager(),$this->forms->RosterAdminForm(),$errormessage,"name",$trace); break;
+            default:
+                if ($this->pagenum > $mm::ROSTERBASE && $this->pagenum < $mm::ROSTERBASE + 100) {
+                    if ($this->setthispage(0,$this->pagenum,$this->usermanager,$this->forms->Rosterform(),$errormessage,$trace)) {
+                        $this->rolemanager = $this->mgrs->RoleManager();
+                        $this->rolemanager->init($this->session);
+                        $this->rostermanager = $this->mgrs->RosterManager();
+                        $this->rostermanager->init($this->session);
+                        $this->form->init($this->session);
+                    }
+                } else {
+                    die(__METHOD__." Unknown pagenum : {$this->pagenum}");
+                }
         }
        if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
      }    
@@ -272,16 +266,6 @@ class ViewController {
             case $c2v($mm::ENTERCODEPAGE)         : 
             case $c2v($mm::ENTERNEWPWPAGE)        : 
             case $c2v($mm::LOGINPAGE)             :$success = $this->prepare_login_body($errormessage); break;
-            case $c2v($mm::ROSTER10)              :
-            case $c2v($mm::ROSTER9)               :
-            case $c2v($mm::ROSTER8)               :
-            case $c2v($mm::ROSTER7)               :
-            case $c2v($mm::ROSTER6)               :
-            case $c2v($mm::ROSTER5)               :
-            case $c2v($mm::ROSTER4)               :
-            case $c2v($mm::ROSTER3)               :
-            case $c2v($mm::ROSTER2)               :
-            case $c2v($mm::ROSTER1)               :$success = $this->prepare_roster_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::ATTENDANCEADMINPAGE)   :$success = $this->prepare_attendance_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::ATTENDANCEVOLSPAGE)    :$success = $this->prepare_attendance_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::CLIENTREPORTPAGE)      :$success = $this->prepare_attendancereport_body($user_id,$errormessage,$trace); break;
@@ -305,7 +289,12 @@ class ViewController {
             case $c2v($mm::ADJUSTMENTEVENTPAGE)   :$success = $this->prepare_stockevent_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::HELPDISPLAYPAGE)       :$success = $this->prepare_help_display_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::HELPADMINPAGE)         :$success = $this->prepare_help_admin_body($user_id,$errormessage,$trace); break;
-            default                               :$success = $this->prepare_std_body($user_id,$this->orderby,$errormessage,$trace);
+            default:
+                if ($this->pagenum > $mm::ROSTERBASE && $this->pagenum < $mm::ROSTERBASE + 100) {
+                    $success = $this->prepare_roster_body($user_id,$errormessage,$trace);
+                } else {
+                    $success = $this->prepare_std_body($user_id,$this->orderby,$errormessage,$trace);
+                }
         }
         if ($this->trace ) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
         return $success;

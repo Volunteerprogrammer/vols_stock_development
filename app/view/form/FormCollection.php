@@ -30,6 +30,9 @@ class FormCollection {
     public function RosterForm(): RosterForm {
         return $this->instances[RosterForm::class] ??= $this->factory->getClass(RosterForm::class);
     }
+    public function RosterAdminForm(): RosterAdminForm {
+        return $this->instances[RosterAdminForm::class] ??= $this->factory->getClass(RosterAdminForm::class);
+    }
     public function UserProfileForm(): UserProfileForm {
         return $this->instances[UserProfileForm::class] ??= $this->factory->getClass(UserProfileForm::class);
     }
