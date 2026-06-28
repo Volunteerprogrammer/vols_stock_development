@@ -17,6 +17,7 @@ class RosterManager
     public function __construct(protected \apptable\SessionTable $sessiontable,
                                 protected \apptable\TaskTable $tasktable,
                                 protected \apptable\PageTable $pagetable,
+                                protected \apptable\RosterTable $rostertable,
                                 protected \apptable\TaskRoleTable $taskroletable,
                                 protected \apptable\SessionRoleTable $sessionroletable,
                                 protected \apptable\BookingTable $bookingtable,
@@ -42,6 +43,7 @@ class RosterManager
         $this->sessiontable->init($this->db);
         $this->tasktable->init($this->db);
         $this->pagetable->init($this->db);
+        $this->rostertable->init($this->db);
         $this->taskroletable->init($this->db);
         $this->sessionroletable->init($this->db);
         $this->bookingtable->init($this->db);
@@ -216,9 +218,10 @@ class RosterManager
         $page_id = $data["page_id"];
         $errormessage = "";
         $query  = <<<QUERYSTR
-                SELECT * 
-                FROM task 
-                WHERE page_id = {$page_id}
+                SELECT t.*, ro.leadtime, ro.publishedleadtime, ro.startdate, ro.enddate, ro.sessiondepth
+                FROM task t
+                JOIN roster ro ON ro.id = t.page_id
+                WHERE t.page_id = {$page_id}
                 QUERYSTR;
         $success = $this->tasktable->query($query,$tasks, $numrows, false);
         if ($numrows) {
@@ -395,11 +398,12 @@ class RosterManager
        if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>";} 
         $andonlyifpublished = $include_unpublished?"":" AND sess.published = 1";
         $query = <<<QUERYSTR
-            SELECT  p.id as page_id
-                   ,p.maxcolumns as maxcols 
+            SELECT  ro.id as page_id
+                   ,ro.maxcolumns as maxcols
+                   ,ro.startdate AS taskstartdate
+                   ,ro.sessiondepth AS sessiondepth
                    ,t.id as task_id
                    ,t.name AS task_name
-                   ,t.startdate AS taskstartdate
                    ,t.recurrence AS recurrence
                    ,t.dailyoption AS task_recurrence
                    ,t.dailyinterval AS dailyinterval
@@ -414,7 +418,6 @@ class RosterManager
                    ,t.taskgroup AS taskgroup
                    ,t.groupindex AS groupindex
                    ,t.cellsperrow AS cellsperrow
-                   ,t.sessiondepth AS sessiondepth
                    ,sess.id AS session_id
                    ,sess.published AS published
                    ,sess.start AS session_start
@@ -422,12 +425,12 @@ class RosterManager
                    ,sess.is_holiday AS session_is_holiday
                    ,sess.holiday_name AS session_holiday_name
                    ,GROUP_CONCAT(CONCAT_WS("|",r.name,sr.id,sr.min_quantity,sr.max_quantity,r.id,r.cellname,r.rosterindex) ORDER BY r.rosterindex  SEPARATOR "~~" ) AS roles
-            FROM page p 
-            JOIN task t ON p.id = t.page_id 
+            FROM roster ro
+            JOIN task t ON ro.id = t.page_id
             JOIN session sess ON t.id = sess.task_id
             JOIN session_role sr ON sess.id = sr.session_id
-            JOIN role r ON r.id = sr.role_id 
-            WHERE p.id = {$page_id} 
+            JOIN role r ON r.id = sr.role_id
+            WHERE ro.id = {$page_id}
                   {$andonlyifpublished}
             GROUP BY sess.id
             ORDER BY sess.start;
@@ -612,11 +615,12 @@ class RosterManager
         $direction = trim($requestdata["direction"] ?? "");
         $success = $this->pagetable->selectononefield("pagenumber",$pagenum,$page,$numrows,false,false);
         if ($success && $numrows==1) {
-            $page_id = $page[0]["id"]; 
+            $page_id = $page[0]["id"];
             $taskcount = $this->counttasks($page[0]["id"],$trace);
-                                   if ($this->trace || $trace ) {  lib::v("f",$page,$pagedepth,$taskcount,"====");} 
-            if ($page[0]["autoextendtasks"]) {
-                $query = "SELECT  * FROM task WHERE page_id = {$page_id};";
+                                   if ($this->trace || $trace ) {  lib::v("f",$page,$pagedepth,$taskcount,"====");}
+            $this->rostertable->selectonID($page_id, $roster, $rnumrows, false, false);
+            if ($rnumrows && $roster[0]["autoextendtasks"]) {
+                $query = "SELECT * FROM task WHERE page_id = {$page_id};";
                 if ($this->tasktable->query($query,$tasks,$numrows,$trace)) {
                     foreach ($tasks as $task) {
                         $this->taskextendermanager->extendsessions($task["id"],$this->errorhandler,"Page {$pagenum} launch.",$trace);

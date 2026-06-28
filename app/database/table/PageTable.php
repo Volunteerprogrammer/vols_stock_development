@@ -13,8 +13,6 @@ class PageTable extends \fw\database\table\MySQLTable
 			"name" => "",
 			"pagetype" => "",
 			"unrestricted" => "",
-			"maxcolumns" => "",
-			"autoextendtasks" => ""
 		);
 		if ( $this->trace ) { echo 'Leave '.__METHOD__.'<br>'; }
 	}

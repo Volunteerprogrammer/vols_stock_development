@@ -27,8 +27,8 @@ class PageManager extends \fw\controller\manager\StdManager
         if ($this->trace  || $trace) { echo gtab(-1)."Leave ".__METHOD__." page count = ".count($this->pages)."<br>\n"; }
      } 
     protected function setdefaults(&$fields,$trace=false){
-        $fields["unrestricted"] = $fields["autoextendtasks"] = 0;
-     }    
+        $fields["unrestricted"] = 0;
+     }
 // ======================================= functions related to managing linked objects (Action)
     public function loadlinkedobjects($page_id,&$actions,$numrows,$trace=false){
         if ($this->trace  || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>\n"; }
@@ -77,15 +77,6 @@ class PageManager extends \fw\controller\manager\StdManager
         $actionpages = array();
         $success = $this->pageactiontable->selectall($actionpages,$numrows,$orderby,$trace);
         if ($this->trace  || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
-        return $success;
-     }
-    public function getmaxcols(&$maxcols,&$numrows,$pagenum,$trace=false){
-        if ($this->trace  || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
-        // called from fiewcontroller
-        
-        $success = $this->table->select('maxcolumns',"`pagenumber` = {$pagenum}","","","",0,$results,$numrows,false,false);
-        $maxcols = $results[0]['maxcolumns'];
-        if ($this->trace  || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>"; }
         return $success;
      }
     public function pageisunrestricted($pagenum){

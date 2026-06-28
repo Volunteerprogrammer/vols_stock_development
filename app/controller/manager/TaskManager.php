@@ -8,7 +8,7 @@ class TaskManager extends \fw\controller\manager\StdManager
     protected $linkedobject = "role";
     protected $db;
     public function __construct(protected \apptable\TaskTable $table,
-                                protected \apptable\PageTable $pagetable,
+                                protected \apptable\RosterTable $rostertable,
                                 protected \apptable\TaskRoleTable $taskroletable,
                                 protected \apptable\RoleTable $roletable,
                                 protected \app\controller\manager\SessionManager $sessionmanager,
@@ -22,17 +22,14 @@ class TaskManager extends \fw\controller\manager\StdManager
         parent::init($session);
         $this->sessionmanager->init($this->session);
         $this->taskextendermanager->init($this->session);
-        $this->pagetable->init($this->db); 
+        $this->rostertable->init($this->db);
         $this->taskroletable->init($this->db); 
         $this->roletable->init($this->db); 
      }
     protected function getparents(&$parents,$trace) {
         if ($this->trace ) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
-        $success = $this->pagetable->select("id,name","pagetype = '2'", "","","name",0,$parents,$numrows,false);
-        if ($success && count($parents) == 0) {
-            $success = $this->pagetable->select("id,name","","","","",0,$parents,$numrows,false);
-        }
-        return true;
+        $success = $this->rostertable->selectall($parents, $numrows, "name", $trace);
+        return $success;
      }
     protected function setdefaults(&$fields,$trace=false){
         $fields['dailyoption'] = "1";

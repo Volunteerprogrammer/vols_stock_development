@@ -51,13 +51,12 @@ class PageForm extends \fw\view\form\StdCRUDForm {
      }
     public function initfields() {
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
-        $this->fields = array(  
+        $this->fields = array(
             "id"=>"",
             "pagenumber"=>"",
             "name" => "",
             "pagetype" => "",
             "unrestricted" => "",
-            "autoextendtasks" => ""
                             );
      }
     public function buildinputs($rights=[],$trace=false) {
@@ -73,11 +72,8 @@ class PageForm extends \fw\view\form\StdCRUDForm {
         $formfields .= $this->component->renderformrow('pagetyperow','','Page type',0,'','','pagetype',$buttons);
 
         $formfields .= $this->component->buildcheckboxrow("unrestricted","1","",false,4,'Unrestricted access','No permissions required to access this page.',false,false,false);
-        $formfields .= $this->component->buildinputrow("maxcolumns",5,"",'Maximum columns','maxcolumns',5,5,true,'','Max number of Tasks across the page.');
-        $this->component->setwidths (30,15,55);
-        $formfields .= $this->component->buildinputrow("autoextendtasks",6,"",'Auto-extend Tasks (Roster pages only)','autoextendtasks',5,5,true,'','Check that the specified leadtime and publication settings are applied for all tasks on the page whenever the Roster page loads. Note that setting this to "1" will cause any publication changes made within the Roster page to be overwritten immediately and returned to the default settings for the task.');
 
-        $fn = 7;
+        $fn = 5;
         $buttons = ["rightid"=>"showrowsbtn","righttext"=>"Show linked","rightscript"=>"","leftid"=>"","lefttext"=>"","leftscript"=>""];
         $heading = "<span id='statustextspan'>ALL</span> Actions (allowed on this page)";
         $formfields .= $this->component->rendersectionheading($heading,buttons:$buttons);
@@ -150,7 +146,6 @@ class PageForm extends \fw\view\form\StdCRUDForm {
             function showhidepages() {
                 setchildselectorheadingtext("","","pagetype",["0",jQuery("#pagetype").val()]);
                 const isroster = jQuery("#pagetype").val() === '2';
-                jQuery("#maxcolumnsrow, #autoextendtasksrow").toggle(isroster);
                 const element = document.getElementById("dataspace");
                 element.scrollTop = element.scrollHeight;
             }

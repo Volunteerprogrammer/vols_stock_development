@@ -24,7 +24,12 @@ class TaskExtenderManager {
         if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>";} 
         $this->today = new \DateTimeImmutable();
         $this->todaydow = $this->today->format("w");
-        $success = $this->sessionmanager->sessiontablequery("SELECT  * FROM task;",$tasks,$numrows,$trace);
+        $success = $this->sessionmanager->sessiontablequery(
+            "SELECT t.*, ro.leadtime, ro.publishedleadtime, ro.startdate, ro.enddate, ro.sessiondepth
+             FROM task t
+             LEFT JOIN roster ro ON ro.id = t.page_id;",
+            $tasks, $numrows, $trace
+        );
         if ($success) {
             foreach ($tasks as $task) {
                if ($task_id == 0 || $task["id"] == $task_id) {

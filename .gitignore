@@ -7,3 +7,4 @@ app/config/**
 *.sql
 !sql/regenerate_audit_triggers.sql
 !sql/help_content_setup.sql
+!sql/roster_setup.sql
