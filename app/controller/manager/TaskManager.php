@@ -115,7 +115,7 @@ class TaskManager extends \fw\controller\manager\StdManager
             FROM roster_alert ra
             JOIN task_role tr ON tr.id = ra.task_role_id
             JOIN role r ON r.id = tr.role_id
-            ORDER BY tr.task_id, ra.period
+            ORDER BY tr.task_id, r.name, ra.period
         SQL;
         $success = $this->rosteralerttable->query($query, $alerts, $numrows, $trace);
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."  success={$success}<br>"; }

@@ -65,10 +65,10 @@ class TaskForm extends \fw\view\form\StdCRUDForm {
         $rd = $this->recorddelimiter;
         $trashicon = $this->component->geticon("trash");
         $template = <<<HTML
-            <div id="alert_row##alertid" class="vols-tablerow ##oddeven alertrow childcontainer">
+            <div id="alert_row##alertid" class="vols-tablerow ##oddeven alertrow childcontainer grouped alertgroup">
                 <input type="hidden" name="alert_id##alertid" value="##alertid">
                 <div class="vols-tablecell vols-vertical-center vols-width-5"></div>
-                <div class="vols-tablecell vols-vertical-center vols-width-90">
+                <div class="vols-tablecell vols-vertical-center vols-width-85">
                     For <select id="alert_role##alertid" name="alert_role##alertid" class="vols-form-select"></select>
                     send alert if fewer than
                     <input type="number" id="alert_lev##alertid" name="alert_lev##alertid" class="vols-form-input" style="width:2.5em" size="2" maxlength="2" value="##level">
@@ -76,7 +76,7 @@ class TaskForm extends \fw\view\form\StdCRUDForm {
                     <input type="number" id="alert_per##alertid" name="alert_per##alertid" class="vols-form-input" style="width:3em" size="3" maxlength="4" value="##period">
                     days before.
                 </div>
-                <div class="vols-tablecell vols-vertical-center vols-width-5">
+                <div class="vols-tablecell childdeletecell">
                     <div id="delete_alert##alertid" class="floatright activeicon trashsvgcontainer childdeleteicon">{$trashicon}</div>
                 </div>
             </div>
@@ -219,16 +219,12 @@ class TaskForm extends \fw\view\form\StdCRUDForm {
                         const yearlyoptionid = "#yo"+jQuery("#yearlyoption").val();
                         jQuery(yearlyoptionid).prop("checked", true)
 
-                        if (jQuery("#showrowsbtn").text() === "Show linked") {
-                            jQuery("#dataspace [id^=link_role]").removeClass("hidden");
-                        } else {
-                            jQuery("#dataspace [id^=link_role]").addClass("hidden");
-                            jQuery("#dataspace [id^=link_role] input[type='checkbox']:checked").parent().parent().removeClass("hidden");
-                        }
                         displayweeklyindex(jfield[8],jfield[25]);
+                        jQuery("#showrowsbtn").data("state", "linked");
                         showhidepages();
                         // --- load booking alert rows ---
                         jQuery("#dataspace div.alertrow.childcontainer").remove();
+                        window.currentTaskId = selectedid;
                         const fd = "{$this->fielddelimiter}";
                         const rd = "{$this->recorddelimiter}";
                         const alertTaskIds = makearray("#js-alerttaskids", rd);
@@ -405,28 +401,32 @@ class TaskForm extends \fw\view\form\StdCRUDForm {
                 const rd = "{$this->recorddelimiter}";
                 const raw = jQuery("#js-taskroledata").text().trim();
                 const records = raw ? raw.split(rd).filter(r => r !== "") : [];
-                const taskRoles = records.filter(r => r.split(fd)[1] === selectedid);
+                const taskRoles = records.filter(r => r.split(fd)[1] === window.currentTaskId);
                 return taskRoles.map(r => {
                     const parts = r.split(fd);
                     const sel = String(parts[0]) === String(selectedTaskRoleId) ? " selected" : "";
-                    return `<option value="${parts[0]}"${sel}>${parts[2]}</option>`;
+                    return `<option value="\${parts[0]}"\${sel}>\${parts[2]}</option>`;
                 }).join("");
             }
             function addtogroup(task) {
                 const target = jQuery(task.currentTarget);
                 const groupname = target.prop("id");
                 if (groupname === "rosteralert") {
+                    if (!window.currentTaskId) { return; }
                     let newrow = jQuery("#alerttemplate").html();
                     const randid = (-1 * getRandomInt()).toString();
                     newrow = newrow.replaceAll("##alertid", randid)
                                    .replaceAll("##period",  "")
                                    .replaceAll("##level",   "")
                                    .replaceAll("##oddeven", "");
-                    jQuery("#alerts").after(newrow);
+                    target.closest(".vols-tablerow").after(newrow);
                     jQuery("#alert_role" + randid).html(buildRoleOptions(""));
                     jQuery("#alert_row" + randid + " .childdeleteicon").off().on("click", function(event) {
                         deletechild(jQuery(this), event);
                     });
+                    if (target.prev(".groupsvgcontainer").hasClass("collapsed")) {
+                        target.prev(".groupsvgcontainer").trigger("click");
+                    }
                 }
             }
             function deletechild(target, event) {
