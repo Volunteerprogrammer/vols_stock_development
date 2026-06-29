@@ -552,13 +552,15 @@ class ViewController {
             $numrows = 0;
             $taskroles = [];
             $roles = [];
+            $alerts = [];
             $success = $this->manager->getallrecords($data,"name",$parents,$numrows,false,false);$c=$c+$success;
             $success = $success && is_array($parents) && count($parents);$c=$c+$success; // without parents a foreign key error will result
             $success = $success && $this->manager->getalltaskroles($taskroles,$numrows,"task_id",false);$c=$c+$success;
             $success = $success && $this->manager->getallroles($roles,$numrows,"name",false);$c=$c+$success;
+            $success = $success && $this->manager->getalltaskalerts($alerts,$numrows,"task_id, period",false);$c=$c+$success;
             if ($success) {
             // lib::pr($parents);
-                $this->form->init($this->session,$data,$parents,false,$roles,$taskroles);
+                $this->form->init($this->session,$data,$parents,false,$roles,$taskroles,$alerts);
                 $this->bodysection = $this->bodies->standardbody();
                 $this->bodysection->init($this->session,$this->form,$this->manager->getname(),"",$errormessage);
             } else {

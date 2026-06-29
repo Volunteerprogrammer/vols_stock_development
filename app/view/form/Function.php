@@ -72,30 +72,22 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
         $input = $this->component->renderdateinput("endtime","time","","","",1,false,"","",4,false,false,false);
         $formfields .= $this->component->renderformrow(0,0,"End Time",false,"","","endtime",$input);
         $this->component->setwidths (30,20,50);
-        $formfields .= $this->component->buildinputrow("eventgroup",28,"",'Event group','',3,3,false,'','The numbered Group that contains this event in a multi-group, multi-event roster page (1,2,...)? Events within a Group will display across the page if the screen width allows it.');
-        $formfields .= $this->component->buildinputrow("groupindex",29,"",'Group Index','',3,3,true,'','The position of this Event in its Event Group (1,2,...).');
-        $formfields .= $this->component->buildinputrow("cellsperrow",30,"",'Cells per row','',3,3,false,'','The number of Volunteer cells to display per row in the Roster page (max 6). This impacts the width of the event. If more Volunteers are required per session, the sessions will contain multiple rows of Volunteer cells, as required.');
-        $formfields .= $this->component->buildinputrow("sessiondepth",31,"",'Session depth','',3,3,true,'','This determines how many sessions will be displayed for the parent event per roster page?');
+        $formfields .= $this->component->buildinputrow("eventgroup",26,"",'Event group','',3,3,false,'','The numbered Group that contains this event in a multi-group, multi-event roster page (1,2,...)? Events within a Group will display across the page if the screen width allows it.');
+        $formfields .= $this->component->buildinputrow("groupindex",27,"",'Group Index','',3,3,true,'','The position of this Event in its Event Group (1,2,...).');
+        $formfields .= $this->component->buildinputrow("cellsperrow",28,"",'Cells per row','',3,3,false,'','The number of Volunteer cells to display per row in the Roster page (max 6). This impacts the width of the event. If more Volunteers are required per session, the sessions will contain multiple rows of Volunteer cells, as required.');
+        $formfields .= $this->component->buildinputrow("sessiondepth",29,"",'Session depth','',3,3,true,'','This determines how many sessions will be displayed for the parent event per roster page?');
         $formfields .= $this->component->buildinputrow("leadtime",5,"",'Leadtime (weeks)','',3,3,true,'','How many weeks ahead of today should the system <strong>generate</strong> sessions?');
         $formfields .= $this->component->buildinputrow("publishedleadtime",6,"",'Published Leadtime','',3,3,true,'','How many weeks ahead of today should the system <strong>publish</strong> sessions?');
-        $hint1 = <<<HINT
-        These "<STRONG>Booking Alert ...</STRONG>" fields should contain comma-separated values. They are used by the daily scheduled process that generates emails appealing for more volunteers, as required.<BR>"<STRONG>Booking Alert Periods</STRONG>" specifies the number of days after 'today' that will be checked for insufficient bookings. If the field contains e.g. "2,7,21", that specifies 3 periods - days 1 and 2, days 3 to 7, and days 8 to 21. The first interval is "URGENT". Thereafter, sessions get normal listing.<BR>
-        HINT;
-        $hint2 = <<<HINT
-        "<STRONG>Booking Alert Levels</STRONG>" specifies the minimum number of volunteers required for bookings in the equivalent period - any session with fewer than this number will be included in the appeal email.<BR>If the field contains e.g. "3,3,2", that specifies that fewer than 3 volunteers in the URGENT period, 3 volunteers on days 3 to 7, or 2 volunteers on days 8 to 21 will trigger an appeal email.<BR>The two fields must hold the same number of values.<BR>
-        HINT;
-        $formfields .= $this->component->buildinputrow("bookingalertperiods",8,"",'Booking Alert Periods','',10,20,false,'',$hint1);
-        $formfields .= $this->component->buildinputrow("bookingalertlevels",7,"",'Booking Alert Levels','',10,20,false,'',$hint2);
         $cellclass = " vols-overflow-show ";
-        $fromdate = $this->component->renderdateinput("startdate",'','','','','',false,'',"",26,false,false,false); 
-        $formfields .= $this->component->renderformrow("startdate","","First Date",false,'','','',$fromdate,'',$cellclass,'','The date of the first session for this event.','','','','','','','','vols-tablerow '); 
-        $todate = $this->component->renderdateinput("enddate",'','','','','',false,'',"",27,false,false,false); 
+        $fromdate = $this->component->renderdateinput("startdate",'','','','','',false,'',"",24,false,false,false);
+        $formfields .= $this->component->renderformrow("startdate","","First Date",false,'','','',$fromdate,'',$cellclass,'','The date of the first session for this event.','','','','','','','','vols-tablerow ');
+        $todate = $this->component->renderdateinput("enddate",'','','','','',false,'',"",25,false,false,false);
         $formfields .= $this->component->renderformrow("enddate","","Final Date",false,'','','',$todate,'',$cellclass,'','The date of the last session for this event. Use 31/12/2099 to represent an indefinite period.','','','','','','','','vols-tablerow ');
 
         // ======================================recurrence section
         $formfields .= $this->component->rendersectionheading("Recurrence","","","","","","","","",true);
         $this->component->setwidths (30,70,0);
-        $formfields .="  <input type='hidden' name='recurrence' data-fnum='9' id='recurrence'  value='' />\n";
+        $formfields .="  <input type='hidden' name='recurrence' data-fnum='7' id='recurrence'  value='' />\n";
         // because the recurrence field is an enum, the value for the radion button must be the text element, not its index
         $buttons = [["Once-only"=>"Once-only"],["Daily"=>"Daily"],["Weekly"=>"Weekly"],["Monthly"=>"Monthly"]]; //,["Yearly"=>"Yearly"]
         $rb  = $this->component->renderradiobuttons("rb",$buttons,0,"",999,true,"rb");
@@ -107,8 +99,8 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
 
         // DAILY OPTIONS==================================================================   10/11
         $formfields .= '<div id="dailyrecurrence" class="periodic-ocurrence">';
-            $formfields .="  <input type='hidden' data-fnum='10' name='dailyoption' id='dailyoption'  value='' />\n";
-            $dailyinterval =  $this->component->rendertextinput("dailyinterval",3,3,"1",false,"",'','vols-form-input',11,false,false,false,1,);
+            $formfields .="  <input type='hidden' data-fnum='8' name='dailyoption' id='dailyoption'  value='' />\n";
+            $dailyinterval =  $this->component->rendertextinput("dailyinterval",3,3,"1",false,"",'','vols-form-input',9,false,false,false,1,);
             $dailyintervalinput =  " Every &nbsp; {$dailyinterval} &nbsp; day(s)";
             $buttons = [[$dailyintervalinput => 0],["Every weekday"=>1]];
             $dailyoptions  = $this->component->renderradiobuttons("dayopt",$buttons,0,"",999,false,'do',false);        
@@ -117,8 +109,8 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
         // WEEKLY OPTIONS===============================================================  12/13
         $formfields .= '<div id="weeklyrecurrence" class="periodic-ocurrence">';
             $weeklygroup  =  '<div class="vols-form-radiobuttons vols-width-100 ">';
-            $weeklygroup  .=  "Recur every &nbsp; ".$this->component->rendertextinput("weeklyinterval",3,3,"1",false,"",'','vols-form-input',12,false,false,false,1,' week(s) on: ')."</div>";
-            $weeklygroup .= $this->component->dayofweekcheckboxes("weeklydow",13,"","",0,false,$this->loaddowfieldscript,$this->loaddowvariablescript,"wdow",true);
+            $weeklygroup  .=  "Recur every &nbsp; ".$this->component->rendertextinput("weeklyinterval",3,3,"1",false,"",'','vols-form-input',10,false,false,false,1,' week(s) on: ')."</div>";
+            $weeklygroup .= $this->component->dayofweekcheckboxes("weeklydow",11,"","",0,false,$this->loaddowfieldscript,$this->loaddowvariablescript,"wdow",true);
             $formfields  .= $this->component->renderformrow('weeklyrow',"","Details",false,'','','',$weeklygroup,'',$cellclass,'','','','','','','','','','vols-tablerow ');
         $formfields .= '</div>';
         // MONTHLY OPTIONS=============================================================== 14..19
@@ -126,14 +118,14 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
         $daynames = [0=>"day",1=>"weekday",2=>"weekend day",3=>"Sunday",4=>"Monday",5=>"Tuesday",6=>"Wenesday",7=>"Thursday",8=>"Friday",9=>"Saturday"];
 
         $formfields .= '<div id="monthlyrecurrence" class="periodic-ocurrence">';
-            $formfields .="  <input type='hidden' data-fnum='14' name='monthlyoption' id='monthlyoption' value='' />\n";
-            $monthdaynums = $this->component->renderdropdown("monthlydayofmonth",1,$optn,false,false,false,false,$dom,'',false,'','',false,15);
-            $monthlyinterval0 = $this->component->rendertextinput("monthlyinterval0",3,3,"1",false,"",'','vols-form-input',16,false,false,false,1,'month(s)');
+            $formfields .="  <input type='hidden' data-fnum='12' name='monthlyoption' id='monthlyoption' value='' />\n";
+            $monthdaynums = $this->component->renderdropdown("monthlydayofmonth",1,$optn,false,false,false,false,$dom,'',false,'','',false,13);
+            $monthlyinterval0 = $this->component->rendertextinput("monthlyinterval0",3,3,"1",false,"",'','vols-form-input',14,false,false,false,1,'month(s)');
             $monthlyoption0 = "Day ".$monthdaynums." of every ".$monthlyinterval0;
 
-            $monthordinaldropdown = $this->component->renderdropdown("monthlywhichdow",1,$optn,false,false,false,false,$ordinalvals,'',false,'','',false,17);
-            $monthdaynamesdropdown = $this->component->renderdropdown("monthlydow",1,$optn,false,false,false,false,$daynames,'',false,'','',false,18);
-            $monthlyinterval1 = $this->component->rendertextinput("monthlyinterval1",3,3,"1",false,"",'','vols-form-input',19,false,false,false,1,'month(s)');
+            $monthordinaldropdown = $this->component->renderdropdown("monthlywhichdow",1,$optn,false,false,false,false,$ordinalvals,'',false,'','',false,15);
+            $monthdaynamesdropdown = $this->component->renderdropdown("monthlydow",1,$optn,false,false,false,false,$daynames,'',false,'','',false,16);
+            $monthlyinterval1 = $this->component->rendertextinput("monthlyinterval1",3,3,"1",false,"",'','vols-form-input',17,false,false,false,1,'month(s)');
             $monthlyoption1 = $monthordinaldropdown." &nbsp; ".$monthdaynamesdropdown." &nbsp; of every &nbsp; ".$monthlyinterval1;
             $buttons = [[$monthlyoption0=>0],[$monthlyoption1 =>1]];
             $monthlygroup  = $this->component->renderradiobuttons("monopt",$buttons,0,"",999,false,'mo',false);
@@ -157,7 +149,7 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
         // $formfields .= '</div>';
         $this->resetwidths();        
         if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
-            $fn = 32;
+            $fn = 33;
             $script = <<<JS
                     jQuery("#showrowsbtn").on("click",function (){
                         if ($(this).text() === "Show linked") {

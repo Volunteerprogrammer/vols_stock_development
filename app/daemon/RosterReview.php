@@ -120,24 +120,29 @@ class RosterReview {
         if ($this->trace || $trace ) { echo "Enter ".__METHOD__."<br>";} 
         $this->report .= date('Y-m-d H:i:s').": running shortfall(){$this->nl}";
         $today = date("Y-m-d H:i:s");
-        $query = <<<  BOOKINGS
-                SELECT  
-                     s.id as session_id
-                     ,s.start as sessdate
-                     ,s.is_holiday
-                     ,s.holiday_name
-                     ,e.name as taskname
-                     ,e.bookingalertperiods as alertperiods
-                     ,e.bookingalertlevels as alertlevels
-                     ,p.pagenumber as pagenumber
-                     ,count(b.id) AS bookings
-                FROM session s 
-                JOIN task e ON e.id = s.task_id
-                JOIN page p ON p.id = e.page_id
-                JOIN session_role sr ON s.id = sr.session_id
-                LEFT OUTER JOIN booking b on b.status = 'booked' AND  sr.id = b.session_role_id
-                WHERE (s.start >= "{$today}") 
-                GROUP BY s.id
+        $query = <<<BOOKINGS
+                SELECT
+                     s.id              AS session_id
+                    ,s.start           AS sessdate
+                    ,s.is_holiday
+                    ,s.holiday_name
+                    ,t.name            AS taskname
+                    ,p.pagenumber      AS pagenumber
+                    ,r.name            AS role_name
+                    ,GROUP_CONCAT(ra.period ORDER BY ra.period ASC SEPARATOR ',') AS alertperiods
+                    ,GROUP_CONCAT(ra.level  ORDER BY ra.period ASC SEPARATOR ',') AS alertlevels
+                    ,(SELECT COUNT(b2.id)
+                      FROM session_role sr2
+                      JOIN booking b2 ON b2.session_role_id = sr2.id AND b2.status = 'booked'
+                      WHERE sr2.session_id = s.id AND sr2.role_id = tr.role_id) AS bookings
+                FROM session s
+                JOIN task t           ON t.id  = s.task_id
+                JOIN page p           ON p.id  = t.page_id
+                JOIN task_role tr     ON tr.task_id = t.id
+                JOIN role r           ON r.id = tr.role_id
+                JOIN roster_alert ra  ON ra.task_role_id = tr.id
+                WHERE s.start >= "{$today}"
+                GROUP BY s.id, s.start, s.is_holiday, s.holiday_name, t.name, p.pagenumber, tr.id, r.name, tr.role_id
                 ORDER BY p.pagenumber, s.start
                 BOOKINGS;
         $success = $this->bookingtable->query($query,$sessions,$numrows,$trace);

@@ -61,8 +61,6 @@ class EventManager extends \fw\controller\manager\StdManager
         $set .= ", `yearlymonth1` = '".($this->requestdata['yearlymonth1']??0)."'";
         $set .= ", `pageindex` = '".($this->requestdata['pageindex']??0)."'";
         $set .= ", `pagedepth` = '".($this->requestdata['pagedepth']??0)."'";
-        $set .= ", `bookingalertlevels` = '".($this->requestdata['bookingalertlevels']??"")."'";
-        $set .= ", `bookingalertperiods` = '".($this->requestdata['bookingalertperiods']??"")."'";
         $set .= ", `startdate` = '{$this->requestdata['startdate']}'";
         return $set;
      }
@@ -73,9 +71,6 @@ class EventManager extends \fw\controller\manager\StdManager
         $this->table->setfield("endtime",$this->requestdata['endtime']);
         $this->table->setfield("leadtime",$this->requestdata['leadtime']);
         $this->table->setfield("publishedleadtime",$this->requestdata['publishedleadtime']);
-
-        $this->table->setfield("bookingalertlevels",($this->requestdata['bookingalertlevels']??0));
-        $this->table->setfield("bookingalertperiods",($this->requestdata['bookingalertperiods']??0));
 
         $this->table->setfield("recurrence",$this->requestdata['recurrence']);
  

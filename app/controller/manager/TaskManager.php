@@ -11,10 +11,12 @@ class TaskManager extends \fw\controller\manager\StdManager
                                 protected \apptable\RosterTable $rostertable,
                                 protected \apptable\TaskRoleTable $taskroletable,
                                 protected \apptable\RoleTable $roletable,
+                                protected \apptable\RosterAlertTable $rosteralerttable,
                                 protected \app\controller\manager\SessionManager $sessionmanager,
                                 protected \app\controller\manager\TaskExtenderManager $taskextendermanager
                             ) {
         if ($this->trace ) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        $this->child = "rosteralert";
         if ($this->trace ) {echo gtab(-1)."Leave ".__METHOD__."<br>";}
      }
     public function init($session){
@@ -23,8 +25,9 @@ class TaskManager extends \fw\controller\manager\StdManager
         $this->sessionmanager->init($this->session);
         $this->taskextendermanager->init($this->session);
         $this->rostertable->init($this->db);
-        $this->taskroletable->init($this->db); 
-        $this->roletable->init($this->db); 
+        $this->taskroletable->init($this->db);
+        $this->roletable->init($this->db);
+        $this->rosteralerttable->init($this->db);
      }
     protected function getparents(&$parents,$trace) {
         if ($this->trace ) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
@@ -102,6 +105,62 @@ class TaskManager extends \fw\controller\manager\StdManager
             $success = $this->sessionmanager->checkSessionrolesAgainstTaskRoles($main_id,$errormessage,$trace);
         }
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__." success={$success}<br>{$errormessage}"; }
+        return $success;
+     }
+    public function getalltaskalerts(&$alerts, &$numrows, $orderby = "tr.task_id, ra.period", $trace = false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>\n"; }
+        $alerts = [];
+        $query = <<<SQL
+            SELECT ra.id, ra.task_role_id, ra.period, ra.level, tr.task_id, r.name AS role_name
+            FROM roster_alert ra
+            JOIN task_role tr ON tr.id = ra.task_role_id
+            JOIN role r ON r.id = tr.role_id
+            ORDER BY tr.task_id, ra.period
+        SQL;
+        $success = $this->rosteralerttable->query($query, $alerts, $numrows, $trace);
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."  success={$success}<br>"; }
+        return $success;
+     }
+    protected function updatechildren($taskid, $data, &$errormessage, $trace = false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        $success = true;
+        // Load existing alert rows for this task via JOIN through task_role
+        $query = "SELECT ra.id FROM roster_alert ra JOIN task_role tr ON tr.id = ra.task_role_id WHERE tr.task_id = {$taskid}";
+        $this->rosteralerttable->query($query, $current, $numrows, false);
+        if (is_array($current)) {
+            foreach ($current as $row) {
+                if (!($data["alert_id".$row["id"]] ?? false)) {
+                    $this->rosteralerttable->delete("`id` = ".$row["id"], $numrows, false);
+                }
+            }
+        }
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, 8) !== "alert_id") { continue; }
+            $id           = substr($key, 8);
+            $task_role_id = (int)trim($data["alert_role".$id] ?? "0");
+            $period       = trim($data["alert_per".$id] ?? "");
+            $level        = trim($data["alert_lev".$id] ?? "");
+            if ($period === "" && $level === "") {
+                if ((int)$id > 0) {
+                    $this->rosteralerttable->delete("`id` = ".(int)$id, $numrows, false);
+                }
+                continue;
+            }
+            if ((int)$id < 0) {
+                $this->rosteralerttable->clear();
+                $this->rosteralerttable->setfield("task_role_id", $task_role_id);
+                $this->rosteralerttable->setfield("period",       (int)$period);
+                $this->rosteralerttable->setfield("level",        (int)$level);
+                $success = $this->rosteralerttable->insert(true, $newid, false, $errormessage) && $success;
+            } else {
+                $success = $this->rosteralerttable->execute_params(
+                    "UPDATE roster_alert SET task_role_id = ?, period = ?, level = ? WHERE id = ?",
+                    [$task_role_id, (int)$period, (int)$level, (int)$id],
+                    $result, $numrows, $errormessage, 1
+                ) && $success;
+            }
+        }
+        if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__." success={$success}<br>"; }
         return $success;
      }
     public function performaction($action,&$outcomemessage,$trace=false) {

@@ -74,16 +74,15 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
         // Note the fieldnum parameter should equal the position of the field in the field array in the relevant table Class
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
         $parentdata = array_combine(array_column($this->parents,"id"),array_column($this->parents,"name"));
-        $formfields ="  <input type='hidden' name='recurrence' data-fnum='9' id='recurrence'  value='Once-only' />\n";
+        $formfields ="  <input type='hidden' name='recurrence' data-fnum='7' id='recurrence'  value='Once-only' />\n";
         $formfields .="  <input type='hidden' name='starttime' data-fnum='3' id='starttime'  value='' />\n";
         $formfields .="  <input type='hidden' name='endtime' data-fnum='4' id='endtime'  value='' />\n";
-        $formfields .="  <input type='hidden' name='eventgroup' data-fnum='28' id='eventgroup'  value='0' />\n";
-        $formfields .="  <input type='hidden' name='groupindex' data-fnum='29' id='groupindex'  value='0' />\n";
-        $formfields .="  <input type='hidden' name='cellsperrow' data-fnum='30' id='cellsperrow'  value='6' />\n";
-        $formfields .="  <input type='hidden' name='sessiondepth' data-fnum='31' id='sessiondepth'  value='99' />\n";
-        $formfields .="  <input type='hidden' name='leadtime' data-fnum='5' id='sessiondepth'  value='99' />\n";
-        $formfields .="  <input type='hidden' name='publishedleadtime' data-fnum='6' id='sessiondepth'  value='99' />\n";
-        $formfields .="  <input type='hidden' name='bookingalertlevels' data-fnum='7' id='bookingalertlevels'  value='99' />\n";
+        $formfields .="  <input type='hidden' name='eventgroup' data-fnum='26' id='eventgroup'  value='0' />\n";
+        $formfields .="  <input type='hidden' name='groupindex' data-fnum='27' id='groupindex'  value='0' />\n";
+        $formfields .="  <input type='hidden' name='cellsperrow' data-fnum='28' id='cellsperrow'  value='6' />\n";
+        $formfields .="  <input type='hidden' name='sessiondepth' data-fnum='29' id='sessiondepth'  value='99' />\n";
+        $formfields .="  <input type='hidden' name='leadtime' data-fnum='5' id='leadtime'  value='99' />\n";
+        $formfields .="  <input type='hidden' name='publishedleadtime' data-fnum='6' id='publishedleadtime'  value='99' />\n";
         $optn = [];
         // $button = '<div class="vols-tablecell vols-width-100 aligncenter"><div id="buildsessions" class="clickable action doitbg" style"height: auto">Build</div></div>';
         // $heading = '<div style="display:inline-grid;grid-template-columns:1fr 1fr;align-items:center;"><div style="margin-right:20px">Build sessions:  </div>'.$button.'</div>';
@@ -94,16 +93,12 @@ class FunctionForm extends \fw\view\form\StdCRUDForm {
         $fromdate = $this->component->renderdateinput("startdate",'','','','','',false,'',"",26,false,false,false); 
         $formfields .= $this->component->renderformrow("startdate","","Date",false,'','','',$fromdate,'',$cellclass,'','','','','','','','','','vols-tablerow '); 
         $this->component->setwidths (30,20,50);
-        $hint1 = <<<HINT
-        These "<STRONG>Booking Alert ...</STRONG>" fields should contain comma-separated values. They are used by the daily scheduled process that generates emails appealing for more volunteers, as required.<BR>"<STRONG>Booking Alert Periods</STRONG>" specifies the number of days ore before a session that will be checked for insufficient bookings. If the field contains e.g. "7,21", that specifies 2 periods - days 1 to 7, and days 8 to 21. The first interval is "URGENT". Thereafter, sessions get normal listing.<BR> In Functions, any number of bookings less than the minimum volunteers specified for the session will trigger a Booking Alert.  
-        HINT;
-        $formfields .= $this->component->buildinputrow("bookingalertperiods",8,"",'Booking Alert Periods','',10,20,false,'',$hint1);
-        $formfields .="  <input type='hidden' name='enddate' data-fnum='27' id='enddate'  value='99' />\n";
+        $formfields .="  <input type='hidden' name='enddate' data-fnum='25' id='enddate'  value='99' />\n";
         // ======================================recurrence section
         $formfields .= '</div>';
         $this->resetwidths();        
         if ($this->isadmin || in_array($this->pagenum."||ROLES",$rights)) {
-            $fn = 32;
+            $fn = 30;
             $script = <<<JS
                     jQuery("#showrowsbtn").on("click",function (){
                         if ($(this).text() === "Show linked") {
