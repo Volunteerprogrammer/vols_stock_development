@@ -618,8 +618,9 @@ class RosterManager
             $page_id = $page[0]["id"];
             $taskcount = $this->counttasks($page[0]["id"],$trace);
                                    if ($this->trace || $trace ) {  lib::v("f",$page,$pagedepth,$taskcount,"====");}
+            $roster = [];
             $this->rostertable->selectonID($page_id, $roster, $rnumrows, false, false);
-            if ($rnumrows && $roster[0]["autoextendtasks"]) {
+            if ($rnumrows && ($roster[0]["autoextendtasks"] ?? false)) {
                 $query = "SELECT * FROM task WHERE page_id = {$page_id};";
                 if ($this->tasktable->query($query,$tasks,$numrows,$trace)) {
                     foreach ($tasks as $task) {

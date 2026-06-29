@@ -56,43 +56,8 @@ class MenuitemForm extends \fw\view\form\StdCRUDForm {
         return $formfields;
      }
     public function formscript() {
-        // passive validation of email and phone number when being entered
-          //    Thus the SUBCLASS should do the following:
-          //        1.   CALL parentscript() . The parameters passed with this call will determine some other subclass requirements:
-          //        2.   IMPLEMENT ITS OWN $(document).ready() IF REQUIRED e.g. assign form-specific event handlers, initialise form-specific (third party) components
-          //        3.   IMPLEMENT validateform() AS AT LEAST A STUB (return true), or as needed by the form - this function is required in all subclasses
-          //        4.   IMPLEMENT thiseditexisting() as needed by the form - this function is required if $singlerecord = false
-          //        5.   IMPLEMENT thisaddnewrecord() as needed by the form - this function is required if $singlerecord = false
-          //        6.   IMPLEMENT updatefields() - this function is required if $updatefields=true
-          //        7.   IMPLEMENT refreshmulti() - this function is required if $inclmulti=true
-          //        8.   IMPLEMENT displayselectedrecord() - this function is required if $idselection=false
         $postloadfieldsscript = <<<JS
-                        // this script is already built by the component class as it creates the DOW check boxes
-                        {$this->loaddowfieldscript} 
-                        // find the Recurrence period radio button to check based on the data 
-                        const recurrenceval = jQuery("#recurrence").val();  // loaded from the hidden fields or set by user
-                        // let radioarray =  ["Once-only","Daily","Weekly","Monthly","Yearly"];
-                        // let btnnum = radioarray.indexOf(recurrenceval); 
-                        const radioid = "#rb"+ recurrenceval; // this is the button to be checked
-                        jQuery(radioid).prop("checked", true).trigger("click"); 
-                        showoptions(recurrenceval);
-
-                        const dailyoptionid = "#do"+jQuery("#dailyoption").val();
-                        jQuery(dailyoptionid).prop("checked", true)
-                        const monthoptionid = "#mo"+jQuery("#monthlyoption").val();
-                        jQuery(monthoptionid).prop("checked", true)
-                        const yearlyoptionid = "#yo"+jQuery("#yearlyoption").val();
-                        jQuery(yearlyoptionid).prop("checked", true)
-
-                        if (jQuery("#showrowsbtn").text() === "Show linked") {
-                            jQuery("#dataspace [id^=link_role]").removeClass("hidden");
-                        } else {
-                            jQuery("#dataspace [id^=link_role]").addClass("hidden");
-                            jQuery("#dataspace [id^=link_role] input[type='checkbox']:checked").parent().parent().removeClass("hidden");        
-                        }
-                        displayweeklyindex(jfield[12],jfield[32]);
                         showhidepages();
-
          JS;
         $postclearfieldsscript = <<<JS
 
@@ -100,113 +65,53 @@ class MenuitemForm extends \fw\view\form\StdCRUDForm {
                         $('input:radio').each(function () { $(this).prop('checked', false); });
         JS;
         $presavescript = <<<JS
-
                         jQuery("#formerror").html("") ;
-                        {$this->loaddowvariablescript}
-                        // now recover the index from the 'checked' radio to 
-                        let thisval = jQuery("input[type='radio'][name='rb']:checked").val();
-                        jQuery("#recurrence").val(thisval);
-                        
-                        thisval = jQuery("input[type='radio'][name='dayopt']:checked").val();
-                        jQuery("#dailyoption")   .val(thisval);
-                        
-                        thisval = jQuery("input[type='radio'][name='monopt']:checked").val();
-                        jQuery("#monthlyoption") .val(thisval);
-                        
-                        thisval = jQuery("input[type='radio'][name='yearopt']:checked").val();
-                        jQuery("#yearlyoption") .val(thisval);
-
         JS;
         $disablescript = "";
-        $onloadscript = <<<JS
-                        // need to display the appropriate recurrence options based on the recurrence period
-                        jQuery("input[type='radio'][name='rb']").click(function() {
-                            const recurrenceval = jQuery("input[type='radio'][name='rb']:checked").val();
-                            showoptions(recurrenceval);
-                        }) 
-                        jQuery("#buildsessions").on( "click", function(event) {
-                            setallinactivestatus(1,1,0,0,0,0);
-                            $("#action").val("buildsessions");
-                            jQuery("#{$this->formname}").trigger("submit");
-                        });
-                        jQuery("#weeklyinterval").on("change", function() {
-                            const interval = $(this).val();
-                            const index = jQuery("#weeklyindex").val(); 
-                            displayweeklyindex(interval,index);
-                        });
-        JS;
-        $script  = $this->vols_masterscript($this->formname, 
-                                    $this->objname, //$objectname
-                                    true, //$idselection=
-                                    true,  //$adjustnamerow=
-                                    true, //$updatefields=
-                                    false, //$inclmulti=
-                                    '',  //$postajaxscript=
-                                    $postloadfieldsscript,  //
-                                    $postclearfieldsscript, //$postclearfieldsscript=
-                                    false, //$trace=
-                                    '',  //$multisubmit
+        $script  = $this->vols_masterscript($this->formname,
+                                    $this->objname,
+                                    true,  //$idselection
+                                    true,  //$adjustnamerow
+                                    true,  //$updatefields
+                                    false, //$inclmulti
+                                    '',    //$postajaxscript
+                                    $postloadfieldsscript,
+                                    $postclearfieldsscript,
+                                    false, //$trace
+                                    '',    //$multisubmit
                                     $presavescript,
                                     $disablescript,
-                                    $onloadscript
-                                    ); 
+                                    );
         $script .= <<<JS
-            function showhidepages() { 
+            function showhidepages() {
                 setchildselectorheadingtext();
                 const element = document.getElementById("dataspace");
                 element.scrollTop = element.scrollHeight;
             }
-            function ordinalwords( cardinal ) {
-                const ordinals = [ 'zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'nineth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth'];
-                const tens = {
-                    20: 'twenty',
-                    30: 'thirty',
-                    40: 'forty', 
-                    50: 'fifty',
-                    60: 'sixty', 
-                    70: 'seventy',
-                    80: 'eighty', 
-                    90: 'ninety',
-                };
-                const ordinalTens = {
-                    20: 'twentieth',
-                    30: 'thirtieth',
-                    40: 'fortieth',
-                    50: 'fiftieth', 
-                    60: 'sixtieth',
-                    70: 'seventieth',
-                    80: 'eightieth', 
-                    90: 'ninetieth',
-                };
-
-                if( cardinal <= 20 ) {                    
-                    return ordinals[ cardinal ];
-                }
-
-                if( cardinal % 10 === 0 ) {
-                    return ordinalTens[ cardinal ];
-                }
-
-                return tens[ cardinal - ( cardinal % 10 ) ] + ordinals[ cardinal % 10 ];
+            function ordinalwords(cardinal) {
+                const ordinals = ['zeroth','first','second','third','fourth','fifth','sixth','seventh','eighth','nineth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth','twentieth'];
+                const tens = {20:'twenty',30:'thirty',40:'forty',50:'fifty',60:'sixty',70:'seventy',80:'eighty',90:'ninety'};
+                const ordinalTens = {20:'twentieth',30:'thirtieth',40:'fortieth',50:'fiftieth',60:'sixtieth',70:'seventieth',80:'eightieth',90:'ninetieth'};
+                if (cardinal <= 20) return ordinals[cardinal];
+                if (cardinal % 10 === 0) return ordinalTens[cardinal];
+                return tens[cardinal - (cardinal % 10)] + ordinals[cardinal % 10];
             }
-            function displayweeklyindex(weeklyinterval,weeklyindex) {
-                // this updates the weeklyindex dropdown with the appropriate <options> for the value of weeklyinterval
-                // it's called when a record is loaded and when weeklyinterval changes 
+            function displayweeklyindex(weeklyinterval, weeklyindex) {
                 if (weeklyinterval > 1) {
-                    let options  = '<option id="weeklyindex-0" value="0" '+(weeklyindex==0?'selected':'') +'>First</option>';
-                    options += '<option id="weeklyindex-1" value="1" '+(weeklyindex==1?'selected':'') +'>Second</option>';
-                    for (i=3;i<=weeklyinterval;i++) {
+                    let options = '<option id="weeklyindex-0" value="0" '+(weeklyindex==0?'selected':'')+'>First</option>';
+                    options += '<option id="weeklyindex-1" value="1" '+(weeklyindex==1?'selected':'')+'>Second</option>';
+                    for (let i=3; i<=weeklyinterval; i++) {
                         const ordinal = ordinalwords(i);
-                        options += '<option id="weeklyindex-'+(i-1)+'" value="'+(i-1)+'" '+(weeklyindex==(i-1)?'selected':'') +'>'+ordinal+'</option>';
+                        options += '<option id="weeklyindex-'+(i-1)+'" value="'+(i-1)+'" '+(weeklyindex==(i-1)?'selected':'')+'>'+ordinal+'</option>';
                     }
                     jQuery("#weeklyindex").html(options).removeClass("hidden");
                 } else {
                     jQuery("#weeklyindex").html("").addClass("hidden");
                 }
-             }
+            }
             function formhaserrors() {
                 let errors = 0;
-                if (!jQuery("#menucode").val()){
+                if (!jQuery("#menucode").val()) {
                     jQuery("#menucoderow_error").html("(This is a required field.)");
                     errors++;
                 }
@@ -218,24 +123,22 @@ class MenuitemForm extends \fw\view\form\StdCRUDForm {
                 }
                 return errors;
             }
-            function displayselectedrecord() {
-            }
+            function displayselectedrecord() {}
             function showoptions(recurrenceval) {
                 let optionblock;
                 switch (recurrenceval) {
                     case "Once-only": break;
-                    case "Daily": optionblock = "#dailyrecurrence"; break;
-                    case "Weekly": optionblock = "#weeklyrecurrence"; break;
+                    case "Daily":   optionblock = "#dailyrecurrence"; break;
+                    case "Weekly":  optionblock = "#weeklyrecurrence"; break;
                     case "Monthly": optionblock = "#monthlyrecurrence"; break;
-                    /* case "Yearly": optionblock = "#yearlyrecurrence"; break; */
-                    default: optionblock = ""
+                    default:        optionblock = "";
                 }
                 jQuery(".periodic-ocurrence").removeClass("show").addClass("hide");
                 if (optionblock !== "") {
                     jQuery(optionblock).removeClass("hide").addClass("show");
-                }                 
+                }
             }
-            function getchildnames() { return ["role","Roles"]}
+            function getchildnames() { return ["role","Roles"]; }
          JS;
         return $script;
      }

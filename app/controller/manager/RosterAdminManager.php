@@ -18,48 +18,97 @@ class RosterAdminManager extends \fw\controller\manager\StdManager {
         $this->pagetable->init($this->db);
         if ($this->trace) { echo "Leave ".__METHOD__."<br>"; }
      }
-    protected function getparents(&$parents, $trace=false) {
-        // roster pages (pagetype=2) that do not yet have a roster record
-        $query = "SELECT p.id, p.name FROM page p
-                  WHERE p.pagetype = 2
-                  AND p.id NOT IN (SELECT id FROM roster)
-                  ORDER BY p.name";
-        $success = $this->table->query($query, $parents, $numrows, $trace);
-        return $success;
+    public function getallrecords(&$data, $orderby, &$parents, &$numrows, $trace=false, $active=false) {
+        $order = $orderby ? "r.{$orderby}" : "r.name";
+        $this->table->query(
+            "SELECT r.id, r.name, r.maxcolumns, r.autoextendtasks, r.leadtime,
+                    r.publishedleadtime, r.startdate, r.enddate, r.sessiondepth,
+                    p.pagenumber
+             FROM roster r
+             JOIN page p ON p.id = r.id
+             ORDER BY {$order}",
+            $data, $numrows
+        );
+        return true;
      }
     public function insert(&$id="0", &$errormessage="", $trace=false) {
         if ($this->trace || $trace) { echo "Enter ".__METHOD__."<br>"; }
         $data = $this->session->getrequestdata();
-        $page_id      = (int)($data["page_id"]      ?? 0);
-        $new_page_name = trim($data["new_page_name"] ?? "");
-        if ($page_id > 0) {
-            $roster_id = $page_id;
-        } elseif ($new_page_name !== "") {
-            $roster_id = $this->createnewrosterpage($new_page_name, $errormessage);
-            if (!$roster_id) { return false; }
-        } else {
-            $errormessage = "Please select an existing page or enter a new page name.";
+        $name = trim($data["name"] ?? "");
+        if ($name === "") {
+            $errormessage = "Please enter a roster name.";
             return false;
         }
-        $this->insertdataintotablefields($data);
-        $this->table->setfield("id", $roster_id);
-        $success = $this->table->insert(true, $id, $trace, $errormessage);
+        $roster_id = $this->createnewrosterpage($name, $errormessage);
+        if (!$roster_id) { return false; }
+        $nulldate = fn($v) => (trim((string)$v) === '') ? null : $v;
+        $sql = "INSERT INTO roster
+                    (id, name, maxcolumns, autoextendtasks, leadtime, publishedleadtime, startdate, enddate, sessiondepth)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $params = [
+            $roster_id,
+            $name,
+            $data["maxcolumns"]        ?: null,
+            (int)($data["autoextendtasks"] ?? 0),
+            $data["leadtime"]          ?: null,
+            $data["publishedleadtime"] ?: null,
+            $nulldate($data["startdate"] ?? ""),
+            $nulldate($data["enddate"]   ?? ""),
+            $data["sessiondepth"]      ?: null,
+        ];
+        $success = $this->table->execute_params($sql, $params, $result, $numrows, $errormessage, 1, $trace);
         if ($success) {
+            $id = (string)$roster_id;
             $this->session->putrequestid($id);
         }
         if ($this->trace || $trace) { echo "Leave ".__METHOD__."<br>"; }
         return $success;
      }
+    public function update(&$errormessage="", $trace=false) {
+        if ($this->trace || $trace) { echo "Enter ".__METHOD__."<br>"; }
+        $data      = $this->session->getrequestdata();
+        $roster_id = (int)($data["id"]   ?? 0);
+        $new_name  = trim($data["name"]  ?? "");
+        $success   = parent::update($errormessage, $trace);
+        if ($success && $roster_id > 0 && $new_name !== "") {
+            $this->pagetable->setfield("id",   $roster_id);
+            $this->pagetable->setfield("name", $new_name, true, $errormessage);
+        }
+        if ($this->trace || $trace) { echo "Leave ".__METHOD__."<br>"; }
+        return $success;
+     }
+    public function delete(&$errormessage="", $trace=false) {
+        if ($this->trace || $trace) { echo "Enter ".__METHOD__."<br>"; }
+        $data      = $this->session->getrequestdata();
+        $roster_id = (int)($data["id"] ?? 0);
+        $success   = parent::delete($errormessage, $trace);
+        if ($success && $roster_id > 0) {
+            $whereclause = "id = '{$roster_id}'";
+            $this->pagetable->delete($whereclause, $numrows, false);
+        }
+        if ($this->trace || $trace) { echo "Leave ".__METHOD__."<br>"; }
+        return $success;
+     }
     private function createnewrosterpage($name, &$errormessage) {
-        // Find next available page number for roster pages
-        $query = "SELECT COALESCE(MAX(pagenumber), 100) + 1 AS next_num FROM page WHERE pagetype = 2";
-        $this->pagetable->query($query, $result, $numrows);
+        // Reuse an existing unassigned roster page with this name (e.g. from a prior partial save)
+        $esc = $this->pagetable->real_escape_string($name);
+        $this->pagetable->query(
+            "SELECT id FROM page WHERE name = '{$esc}' AND pagetype = 2 AND id NOT IN (SELECT id FROM roster) LIMIT 1",
+            $existing, $existing_count
+        );
+        if ($existing_count > 0) {
+            return (int)$existing[0]["id"];
+        }
+        // Auto-number: next available pagenumber for pagetype=2 pages
+        $this->pagetable->query(
+            "SELECT COALESCE(MAX(pagenumber), 100) + 1 AS next_num FROM page WHERE pagetype = 2",
+            $result, $numrows
+        );
         $next_num = (int)($result[0]["next_num"] ?? 101);
-        // Insert the new page
         $this->pagetable->clear();
-        $this->pagetable->setfield("pagenumber",  $next_num);
-        $this->pagetable->setfield("name",        $name);
-        $this->pagetable->setfield("pagetype",    2);
+        $this->pagetable->setfield("pagenumber",   $next_num);
+        $this->pagetable->setfield("name",         $name);
+        $this->pagetable->setfield("pagetype",     2);
         $this->pagetable->setfield("unrestricted", 0);
         $success = $this->pagetable->insert(true, $new_page_id, false, $errormessage);
         return $success ? (int)$new_page_id : 0;
