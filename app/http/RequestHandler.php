@@ -339,6 +339,18 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             }
                             ob_end_clean(); // discard buffered noise so only $output is returned
                             break;
+                        case "location_setdefault":
+                            $default_type = $this->requestdata['default_type'] ?? '';
+                            $location_id  = (int)($this->requestdata['location_id'] ?? 0);
+                            $lmgr  = $this->managercollection->LocationManager();
+                            $lmgr->init($this->session);
+                            $errmsg = '';
+                            if ($lmgr->setlocationdefault($default_type, $location_id, $errmsg)) {
+                                $output = json_encode(['ok' => true]);
+                            } else {
+                                $output = json_encode(['ok' => false, 'error' => $errmsg]);
+                            }
+                            break;
                         default: $output = "Unknown request action: ".$action;
                     }
                 } else {

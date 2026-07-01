@@ -91,6 +91,10 @@ class LocationManager extends \fw\controller\manager\StdManager
         return true;
     }
 
+    public function setlocationdefault(string $type, int $location_id, string &$errormessage): bool {
+        return $this->table->setdefault($type, $location_id, $errormessage);
+    }
+
     public function delete(&$errormessage="", $trace=false) {
         $id      = (int)($this->requestdata['id']);
         $results = [];

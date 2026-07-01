@@ -94,7 +94,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
     //
 
     // Builds a <select> of locations with a blank first option.
-    protected function renderlocationselect(string $id, string $label, string $class = ''): string {
+    // Pass $default_key ('delivery','transfer_from','transfer_to') to show a "Set as default" checkbox.
+    protected function renderlocationselect(string $id, string $label, string $class = '', string $default_key = ''): string {
         $html  = '<label for="' . $id . '">' . htmlspecialchars($label) . '</label>';
         $html .= '<select id="' . $id . '" name="' . $id . '"' . ($class ? ' class="' . $class . '"' : '') . '>';
         $html .= '<option value="">-- Select --</option>';
@@ -104,6 +105,14 @@ abstract class StockEventForm extends \fw\view\form\Form {
                    . htmlspecialchars($loc['name']) . '</option>';
         }
         $html .= '</select>';
+        if ($default_key && !$this->resume_event_id) {
+            $cbid  = 'se-default-' . htmlspecialchars($default_key);
+            $html .= '<label class="se-default-label" for="' . $cbid . '">'
+                   . '<input type="checkbox" id="' . $cbid . '" class="se-default-cb"'
+                   . ' data-default-key="' . htmlspecialchars($default_key) . '"'
+                   . ' data-select-id="' . htmlspecialchars($id) . '">'
+                   . ' Set as default</label>';
+        }
         return $html;
     }
 
@@ -818,6 +827,52 @@ function getinprogressevent(event_type, location1_id, location2_id, supplier_id,
         } catch(ex) { console.error(ex, resp); }
     });
 }
+
+// ---- Set-as-default checkbox ----
+function updateDefaultCheckboxes() {
+    var defaults = jQuery('.se-event-page').data('defaults') || {};
+    jQuery('.se-default-cb').each(function() {
+        var cb       = jQuery(this);
+        var key      = cb.data('default-key');
+        var selId    = cb.data('select-id');
+        var defVal   = parseInt(defaults[key] || 0);
+        var selVal   = parseInt(jQuery('#' + selId).val() || 0);
+        cb.prop('checked', selVal > 0 && selVal === defVal);
+    });
+}
+
+jQuery(document).on('change', '.se-location-select', function() {
+    updateDefaultCheckboxes();
+});
+
+jQuery(document).on('change', '.se-default-cb', function() {
+    var cb        = jQuery(this);
+    var key       = cb.data('default-key');
+    var selId     = cb.data('select-id');
+    var locId     = parseInt(jQuery('#' + selId).val() || 0);
+    if (cb.prop('checked') && !locId) { cb.prop('checked', false); return; }
+    var payload   = cb.prop('checked') ? locId : 0;
+    jQuery.post('?ajax=1', { action_id: 'location_setdefault', default_type: key, location_id: payload })
+        .done(function(resp) {
+            var r = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if (r.ok) {
+                var defs = jQuery('.se-event-page').data('defaults') || {};
+                if (payload) { defs[key] = payload; } else { delete defs[key]; }
+                jQuery('.se-event-page').data('defaults', defs);
+            } else {
+                cb.prop('checked', !cb.prop('checked'));
+                jQuery.volsdialog('OKMSG', r.error || 'Could not update default.', undefined, undefined, 'Error');
+            }
+        })
+        .fail(function() {
+            cb.prop('checked', !cb.prop('checked'));
+            jQuery.volsdialog('OKMSG', 'Could not update default.', undefined, undefined, 'Error');
+        });
+});
+
+jQuery(document).ready(function() {
+    setTimeout(updateDefaultCheckboxes, 0);
+});
 JS;
     }
 }

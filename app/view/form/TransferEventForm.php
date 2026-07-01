@@ -13,10 +13,10 @@ class TransferEventForm extends StockEventForm {
     protected function rendereventdefinition(): string {
         $html  = '<div id="se-event-def" class="se-event-def">';
         $html .= '<div class="se-event-def-row">';
-        $html .= $this->renderlocationselect('se-location1', 'From location', 'se-location-select');
+        $html .= $this->renderlocationselect('se-location1', 'From location', 'se-location-select', 'transfer_from');
         $html .= '</div>';
         $html .= '<div class="se-event-def-row">';
-        $html .= $this->renderlocationselect('se-location2', 'To location', 'se-location-select');
+        $html .= $this->renderlocationselect('se-location2', 'To location', 'se-location-select', 'transfer_to');
         $html .= '</div>';
         $html .= $this->renderpreviouseventsrow();
         $html .= '</div>';

@@ -13,7 +13,7 @@ class DeliveryEventForm extends StockEventForm {
     protected function rendereventdefinition(): string {
         $html  = '<div id="se-event-def" class="se-event-def">';
         $html .= '<div class="se-event-def-row">';
-        $html .= $this->renderlocationselect('se-location1', 'Receiving location', 'se-location-select');
+        $html .= $this->renderlocationselect('se-location1', 'Receiving location', 'se-location-select', 'delivery');
         $html .= '</div>';
         $html .= '<div class="se-event-def-row">';
         $html .= $this->rendersupplierselect('se-supplier', 'Supplier');

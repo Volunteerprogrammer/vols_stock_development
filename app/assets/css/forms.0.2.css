@@ -2357,6 +2357,22 @@ input
     border: 1px solid #bbb;
     border-radius: 3px;
 }
+.se-default-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: 1rem;
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: var(--midgrey, #666);
+    white-space: nowrap;
+    cursor: pointer;
+    min-width: unset;
+}
+.se-default-label input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
 .se-location-select,
 .se-event-def select {
     min-width: 18rem;
