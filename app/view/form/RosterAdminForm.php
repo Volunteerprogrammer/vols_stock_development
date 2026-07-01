@@ -32,8 +32,13 @@ class RosterAdminForm extends \fw\view\form\StdCRUDForm {
         ];
      }
     public function buildinputs($rights=[], $trace=false) {
+        $formfields  = RosterWizardModal::render();
+        $formfields .= '<div style="margin-bottom:0.8rem;">'
+                     . '<button type="button" onclick="openRosterWizard()" class="vols-button">&#43;&nbsp;New Roster (Wizard)</button>'
+                     . ' <button type="button" id="edit-in-wizard-btn" class="vols-button" style="display:none;">&rArr;&nbsp;Edit in Wizard</button>'
+                     . '</div>';
         $this->component->setwidths(30, 40, 30, true);
-        $formfields  = $this->component->buildinputrow("name",             1, "", "Roster Name",                 "name",             25, 25, true,  "", "");
+        $formfields .= $this->component->buildinputrow("name",             1, "", "Roster Name",                 "name",             25, 25, true,  "", "");
         $this->component->restorewidths();
         $formfields .= $this->component->renderformrow(
                          'pagenumberrow', 'pagenumberprompt', 'Page number', false,
@@ -51,7 +56,8 @@ class RosterAdminForm extends \fw\view\form\StdCRUDForm {
         return $formfields;
      }
     public function formscript() {
-        $script = $this->vols_masterscript(
+        $script = RosterWizardModal::renderscript();
+        $script .= $this->vols_masterscript(
             $this->formname,
             $this->objname,
             true,   // idselection
@@ -59,8 +65,10 @@ class RosterAdminForm extends \fw\view\form\StdCRUDForm {
             true,   // updatefields
             false,  // inclmulti
             '',     // postajaxscript
-            'jQuery("#roster_pagenumber").text(jfield[9] || "");',  // postloadfieldsscript
-            'jQuery("#roster_pagenumber").text("");',                // postclearfieldsscript
+            'jQuery("#roster_pagenumber").text(jfield[9] || "");'
+            . 'jQuery("#edit-in-wizard-btn").show().off("click").on("click",function(){openRosterWizard(parseInt(selectedid),jQuery("#name").val());});',
+            'jQuery("#roster_pagenumber").text("");'
+            . 'jQuery("#edit-in-wizard-btn").hide();',
         );
         $script .= <<<JS
             function formhaserrors() {

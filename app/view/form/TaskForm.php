@@ -157,7 +157,7 @@ class TaskForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '<div id="weeklyrecurrence" class="periodic-ocurrence">';
             $weeklygroup  =  '<div class="vols-form-radiobuttons vols-width-95 ">';
             $weeklygroup  .=  "Recur every &nbsp; ".$this->component->rendertextinput("weeklyinterval",3,3,"1",false,"",'','vols-form-input',8,false,false,false,1,' week(s) on the: ')."</div>";
-            $windex = "<div id='weeklyindexwrapper' class='vols-float-left'><select name='weeklyindex' id='weeklyindex' class='vols-form-select hide' size='1' required='' data-fnum='25' disabled=''></select></div>";
+            $windex = "<div id='weeklyindexwrapper' class='vols-float-left'><select name='weeklyindex' id='weeklyindex' class='vols-form-select hidden' size='1' required='' data-fnum='25' disabled=''></select></div>";
             $weeklygroup .= $this->component->dayofweekcheckboxes("weeklydow",9,$windex,"",0,false,$this->loaddowfieldscript,$this->loaddowvariablescript,"wdow",true);
             $formfields  .= $this->component->renderformrow('weeklyrow',"","Details",false,'','','',$weeklygroup,'',$cellclass,'','','','','','','','','','vols-tablerow ');
         $formfields .= '</div>';

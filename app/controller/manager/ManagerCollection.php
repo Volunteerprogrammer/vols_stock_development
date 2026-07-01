@@ -102,4 +102,13 @@ class ManagerCollection {
     public function HelpManager(): HelpManager {
         return $this->instances[HelpManager::class] ??= $this->factory->getClass(HelpManager::class);
     }
+    public function TaskExtenderManager(): TaskExtenderManager {
+        return $this->instances[TaskExtenderManager::class] ??= $this->factory->getClass(TaskExtenderManager::class);
+    }
+    public function RosterWizardManager(): RosterWizardManager {
+        return $this->instances[RosterWizardManager::class] ??= $this->factory->getClass(RosterWizardManager::class);
+    }
+    public function StockEventSummaryManager(): StockEventSummaryManager {
+        return $this->instances[StockEventSummaryManager::class] ??= $this->factory->getClass(StockEventSummaryManager::class);
+    }
 }

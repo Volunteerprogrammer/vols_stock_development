@@ -237,6 +237,16 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                         if (_setupContent) { editor.setContent(_setupContent); }
                         setTimeout(function() { editor.mode.set('readonly'); }, 0);
                         setTimeout(_resizeTiny, 0);
+                        var _moEnabled = false;
+                        setTimeout(function() { _moEnabled = true; }, 200);
+                        var _mo = new MutationObserver(function() {
+                            if (!_moEnabled) return;
+                            var ed = tinymce.get('content');
+                            if (ed && ed.mode.get() === 'design') {
+                                jQuery('#resetbutton').removeClass('inactive');
+                            }
+                        });
+                        _mo.observe(editor.getBody(), { childList: true, subtree: true, characterData: true });
                     });
                     editor.on('change', function() {
                         editor.save();
@@ -298,6 +308,9 @@ class HelpAdminForm extends \fw\view\form\StdCRUDForm
                     var _hasPid = !!jQuery(this).val();
                     jQuery('#pagetyperow').toggle(!_hasPid);
                     if (_hasPid) { jQuery('#pagetype').val('0'); }
+                });
+                jQuery(document).on('change', '#editarea select', function() {
+                    jQuery('#resetbutton').removeClass('inactive');
                 });
             });
             function copyblockref() {

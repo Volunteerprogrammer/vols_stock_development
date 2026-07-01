@@ -210,6 +210,7 @@ class ViewController {
                 case $c2v($mm::STOCKCATEGORYPAGE): $this->setthispage(0,$this->pagenum,$this->mgrs->StockCategoryManager(),$this->forms->StockCategoryForm(),$errormessage,"Name",$trace);break;
                 case $c2v($mm::STOCKPAGE)       : $this->setthispage(0,$this->pagenum,$this->mgrs->StockManager(),$this->forms->StockForm(),$errormessage,"Name",$trace);break;
                 case $c2v($mm::STOCKLEVELREPORTPAGE): $this->setthispage(0,$this->pagenum,$this->mgrs->StockLevelReportManager(),$this->forms->StockLevelReportForm(),$errormessage,"",$trace);break;
+                case $c2v($mm::STOCKEVENTSUMMARYPAGE): $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventSummaryManager(),$this->forms->StockEventSummaryForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::LOCATIONPAGE)        : $this->setthispage(0,$this->pagenum,$this->mgrs->LocationManager(),$this->forms->LocationForm(),$errormessage,"name",$trace);break;
                 case $c2v($mm::STOCKSUPPLIERCATEGORYPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->StockSupplierCategoryManager(),$this->forms->StockSupplierCategoryForm(),$errormessage,"name",$trace);break;
                 case $c2v($mm::STOCKSUPPLIERPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockSupplierManager(),$this->forms->StockSupplierForm(),$errormessage,"name",$trace);break;
@@ -281,6 +282,7 @@ class ViewController {
             case $c2v($mm::MENUITEMPAGE)          :$success = $this->prepare_menuitem_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::CONFIGPAGE)            :$success = $this->prepare_config_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::STOCKLEVELREPORTPAGE)  :$success = $this->prepare_stocklevelreport_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::STOCKEVENTSUMMARYPAGE) :$success = $this->prepare_stockeventsummary_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::LOCATIONPAGE)          :$success = $this->prepare_location_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::STOCKCLIENTPAGE)       :$success = $this->prepare_std_body($user_id,"name",$errormessage,$trace); break;
             case $c2v($mm::STOCKTAKEEVENTPAGE)    :
@@ -832,6 +834,17 @@ class ViewController {
             unset($cat);
 
             $this->form->init($this->session, $locations, $suppliers, $categories);
+            $resume_for_page     = (int)($this->requestdata['resume_page']          ?? 0);
+            $resume_event_id     = (int)($this->requestdata['resume_event_id']     ?? 0);
+            $resume_location1_id = (int)($this->requestdata['resume_location1_id'] ?? 0);
+            $resume_location2_id = (int)($this->requestdata['resume_location2_id'] ?? 0);
+            $resume_supplier_id  = (int)($this->requestdata['resume_supplier_id']  ?? 0);
+            if ($resume_event_id > 0 && $resume_for_page === $this->pagenum) {
+                $this->form->setresumeeventid($resume_event_id);
+                if ($resume_location1_id > 0) $this->form->setresumelocation1id($resume_location1_id);
+                if ($resume_location2_id > 0) $this->form->setresumelocation2id($resume_location2_id);
+                if ($resume_supplier_id  > 0) $this->form->setresumesupplierid($resume_supplier_id);
+            }
             $this->bodysection = $this->bodies->standardbody();
             $this->bodysection->init($this->session, $this->form, $this->form->getformname(), "", $errormessage);
         } catch(\Exception $e) {
@@ -900,7 +913,7 @@ class ViewController {
         if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
         try {
             $report_type = $this->requestdata['report_type'] ?? 'stocklevels';
-            if (!in_array($report_type, ['stocklevels', 'stocktakevariance', 'usagereport', 'deliveriesreport', 'belowminimumreport'])) $report_type = 'stocklevels';
+            if (!in_array($report_type, ['stocklevels', 'stocktakevariance', 'usagereport', 'deliveriesreport', 'belowminimumreport', 'eventhistory'])) $report_type = 'stocklevels';
 
             if ($report_type === 'deliveriesreport') {
                 $this->manager = $this->mgrs->DeliveriesReportManager();
@@ -952,6 +965,19 @@ class ViewController {
                 $event_id = $this->requestdata['event_id'] ?? '';
                 if (!preg_match('/^\d*$/', $event_id)) $event_id = '';
                 $this->manager->setevent($event_id);
+            } elseif ($report_type === 'eventhistory') {
+                $this->manager = $this->mgrs->StockEventSummaryManager();
+                $this->manager->init($this->session, $trace);
+                $this->form = $this->forms->StockEventSummaryForm();
+
+                $location_id = $this->requestdata['location_id'] ?? '';
+                if (!preg_match('/^\d*$/', $location_id)) $location_id = '';
+                $from = $this->requestdata['from'] ?? '';
+                $to   = $this->requestdata['to']   ?? '';
+                if ($from && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) $from = '';
+                if ($to   && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $to))   $to   = '';
+                $this->manager->setlocation($location_id);
+                $this->manager->setdaterange($from, $to);
             } else {
                 $location_id = $this->requestdata['location_id'] ?? '';
                 if (!preg_match('/^\d*$/', $location_id)) $location_id = '';
@@ -982,6 +1008,24 @@ class ViewController {
         }
         if ($this->trace || $trace) { echo gtab(-1)."Leave ".__METHOD__."<br>\n"; }
         return true;
+     }
+    private function prepare_stockeventsummary_body($user_id, &$errormessage, $trace=false) {
+        if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
+        try {
+            $location_id = $this->requestdata['location_id'] ?? '';
+            if (!preg_match('/^\d*$/', $location_id)) $location_id = '';
+            $from = $this->requestdata['from'] ?? '';
+            $to   = $this->requestdata['to']   ?? '';
+            if ($from && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) $from = '';
+            if ($to   && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $to))   $to   = '';
+            $this->manager->setlocation($location_id);
+            $this->manager->setdaterange($from, $to);
+            return $this->prepare_std_body($user_id, '', $errormessage, $trace);
+        } catch(\Exception $e) {
+            $errormessage = __METHOD__." : {$e->getCode()} {$e->getMessage()}";
+            if ($this->trace) { echo gtab(-1)."Leave ".__METHOD__."...<br>$errormessage<br>\n"; }
+            return false;
+        }
      }
     private function prepare_help_display_body($user_id, &$errormessage, $trace=false) {
         if ($this->trace || $trace) { echo gtab(1)."Enter ".__METHOD__."<br>"; }
@@ -1043,6 +1087,27 @@ class ViewController {
         foreach ($items as &$item) {
             $content = $item['content'] ?? '';
             if (strpos($content, '{{Q}}') === false) { continue; }
+
+            // If an inline formatting tag (strong, em, etc.) wraps {{Q}}, it ends up
+            // outside the generated <span class="help-question"> and the browser
+            // auto-corrects the malformed HTML in the wrong direction.
+            // Normalise: move the formatting inside so it wraps only the text.
+            // e.g.  <strong>{{Q}} text</strong>  →  {{Q}} <strong>text</strong>
+            // Loop handles nested wrappers.
+            $prev = null;
+            while ($prev !== $content) {
+                $prev    = $content;
+                $content = preg_replace_callback(
+                    '/<(strong|em|b|i|u|s)\b([^>]*)>\s*\{\{Q\}\}(.*?)<\/\1\s*>/si',
+                    function ($m) {
+                        $inner = rtrim($m[3]);
+                        return '{{Q}}' . ($inner !== ''
+                            ? ' <' . $m[1] . $m[2] . '>' . $inner . '</' . $m[1] . '>'
+                            : '');
+                    },
+                    $content
+                );
+            }
 
             $questions = [];
             $counter   = 0;

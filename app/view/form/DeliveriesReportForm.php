@@ -56,6 +56,7 @@ class DeliveriesReportForm extends \fw\view\form\StdCRUDForm {
         $rtype .= '<option value="usagereport">Usage Report</option>';
         $rtype .= '<option value="deliveriesreport" selected>Deliveries Report</option>';
         $rtype .= '<option value="belowminimumreport">Low Stock</option>';
+        $rtype .= '<option value="eventhistory">Event History</option>';
         $rtype .= '</select>';
         $rtype .= '</form>';
 

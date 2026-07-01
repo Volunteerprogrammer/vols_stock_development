@@ -150,6 +150,9 @@ function resumestocktake(event_id, location_id, location_name) {
 }
 
 jQuery(function() {
+    // Skip auto-resume when the page was opened to view a specific past event from the summary.
+    if (parseInt(jQuery('.se-event-page').data('resume-event-id') || '0') > 0) return;
+
     // On page load, if exactly one stocktake is in progress globally, auto-resume it.
     // With multiple locations allowed to run simultaneously, only auto-select when unambiguous.
     doServerRequest(0, JSON.stringify({}), 'stockevent_getanyinprogressstocktake').then(function(resp) {

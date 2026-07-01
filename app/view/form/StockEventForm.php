@@ -17,6 +17,15 @@ abstract class StockEventForm extends \fw\view\form\Form {
     protected $suppliers  = [];
     protected $categories = [];
     protected $event      = [];    // in-progress event record from stock_event table, or []
+    private int $resume_event_id     = 0;
+    private int $resume_location1_id = 0;
+    private int $resume_location2_id = 0;
+    private int $resume_supplier_id  = 0;
+
+    public function setresumeeventid(int $id): void      { $this->resume_event_id     = $id; }
+    public function setresumelocation1id(int $id): void  { $this->resume_location1_id = $id; }
+    public function setresumelocation2id(int $id): void  { $this->resume_location2_id = $id; }
+    public function setresumesupplierid(int $id): void   { $this->resume_supplier_id  = $id; }
 
     // Called by ViewController's prepare_stockevent_body().
     // $event: the current in-progress event record (empty array if none exists yet).
@@ -163,7 +172,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
     protected function renderpreviouseventsrow(): string {
         $html  = '<div id="se-prev-event-row" class="se-event-def-row" style="display:none">';
         $html .= '<label for="se-prev-event">Previous</label>';
-        $html .= '<select id="se-prev-event"><option value="">-- None --</option></select>';
+        $html .= '<select id="se-prev-event"><option value=""></option></select>';
         $html .= '<button type="button" id="se-csv-btn" class="vols-button" style="display:none">Download CSV</button>';
         $html .= '<button type="button" id="se-start-btn" class="vols-button">New '
                . htmlspecialchars($this->event_label) . '</button>';
@@ -223,7 +232,11 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html .= '<div class="vols-form-content se-event-page se-event-' . htmlspecialchars($this->event_type) . '"'
                . ' data-defaults="' . htmlspecialchars(json_encode($defaults)) . '"'
                . ' data-pagenum="' . intval($pagenum) . '"'
-               . ' data-event-type="' . htmlspecialchars($this->event_type) . '">';
+               . ' data-event-type="' . htmlspecialchars($this->event_type) . '"'
+               . ' data-resume-event-id="'     . intval($this->resume_event_id)     . '"'
+               . ' data-resume-location1-id="' . intval($this->resume_location1_id) . '"'
+               . ' data-resume-location2-id="' . intval($this->resume_location2_id) . '"'
+               . ' data-resume-supplier-id="'  . intval($this->resume_supplier_id)  . '">';
         $html .= '<h2 class="vols-form-pageheading">' . htmlspecialchars($this->event_label) . '</h2>';
         $html .= $this->renderbanner();
         $html .= $this->rendereventdefinition();
@@ -245,7 +258,9 @@ var componentLog = {};
 function formatprevdate(s) {
     var p = s.split(/[- :]/);
     var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return p[2]+' '+m[parseInt(p[1],10)-1]+' '+p[0]+' '+p[3]+':'+p[4];
+    var dn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
+    return dn[d.getDay()]+' '+p[2]+' '+m[parseInt(p[1],10)-1]+' '+p[0]+' '+p[3]+':'+p[4];
 }
 
 function loadpreviousevents(event_type, loc1, loc2, sup) {
@@ -257,9 +272,13 @@ function loadpreviousevents(event_type, loc1, loc2, sup) {
     }), 'stockevent_getpreviousevents').then(function(resp) {
         try {
             var r = JSON.parse(resp);
-            var $sel = jQuery('#se-prev-event');
-            $sel.html('<option value="">-- None --</option>');
-            (r.events || []).forEach(function(ev) {
+            var $sel   = jQuery('#se-prev-event');
+            var events = r.events || [];
+            var placeholder = events.length === 0
+                ? '-- None --'
+                : 'Please choose from ' + events.length + (events.length === 1 ? ' event' : ' events');
+            $sel.html('<option value="">' + placeholder + '</option>');
+            events.forEach(function(ev) {
                 $sel.append(jQuery('<option>').val(ev.id).text(formatprevdate(ev.date_closed))
                     .data('weight', ev.total_weight != null ? ev.total_weight : ''));
             });
@@ -535,11 +554,46 @@ function getbreakdown(stockId) {
     });
 
     // If an event is already in progress on page load, show controls and load stock.
+    // Also handles the case where a specific closed event is resumed from the summary page.
     jQuery(function() {
         var event_id = parseInt(jQuery('#se-event-id').val() || '0');
         if (event_id > 0) {
             jQuery('#se-event-controls').show();
             loadstock(event_id, '');
+        }
+
+        var resumeId   = parseInt(jQuery('.se-event-page').data('resume-event-id')     || '0');
+        var resumeLoc1 = parseInt(jQuery('.se-event-page').data('resume-location1-id') || '0');
+        var resumeLoc2 = parseInt(jQuery('.se-event-page').data('resume-location2-id') || '0');
+        var resumeSup  = parseInt(jQuery('.se-event-page').data('resume-supplier-id')  || '0');
+        if (resumeId > 0 && !event_id) {
+            // Set location/supplier dropdowns from the resume params.
+            if (resumeLoc1 > 0) jQuery('#se-location1').val(String(resumeLoc1));
+            if (resumeLoc2 > 0) jQuery('#se-location2').val(String(resumeLoc2));
+            if (resumeSup  > 0) jQuery('#se-supplier').val(String(resumeSup));
+
+            // Reproduce the "previous event selected" state: load the previous-events
+            // dropdown for this event type/location, select the specific event, then
+            // trigger the change handler which shows the stock in readonly mode with the
+            // date visible in the dropdown — identical to arriving via the menu.
+            var eventType = jQuery('.se-event-page').data('event-type') || '';
+            var payload   = { event_type: eventType, location1_id: resumeLoc1 || 0 };
+            if (resumeLoc2) payload.location2_id = resumeLoc2;
+            if (resumeSup)  payload.supplier_id  = resumeSup;
+            jQuery('#se-prev-event-row').show();
+            doServerRequest(0, JSON.stringify(payload), 'stockevent_getpreviousevents').then(function(resp) {
+                try {
+                    var r      = JSON.parse(resp);
+                    var events = r.events || [];
+                    var $sel   = jQuery('#se-prev-event');
+                    $sel.html('<option value=""></option>');
+                    events.forEach(function(ev) {
+                        $sel.append(jQuery('<option>').val(ev.id).text(formatprevdate(ev.date_closed))
+                            .data('weight', ev.total_weight != null ? ev.total_weight : ''));
+                    });
+                    $sel.val(String(resumeId)).trigger('change');
+                } catch(ex) { console.error('resume from summary', ex, resp); }
+            });
         }
 
         // Recalculate table height whenever se-event-controls becomes visible,
@@ -556,6 +610,7 @@ function getbreakdown(stockId) {
         if (jQuery('#se-event-controls').is(':visible')) {
             resizestocktable();
         }
+
     });
 
     // Keypad entry breakdown: show accumulated components for the active stock item.

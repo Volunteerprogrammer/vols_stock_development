@@ -57,6 +57,10 @@ class HTMLHead extends \fw\view\head\HTMLHead
      }
     protected function setlinks() {
         if ($this->trace) { echo "Enter ".__METHOD__."<br>\n"; }
+        $cv = function(string $path): string {
+            $abs = APP_DIR . $path;
+            return 'app/' . $path . '?v=' . (@filemtime($abs) ?: 1);
+        };
         // $this->links .= '<link type="text/css" rel="stylesheet" href="jquery/jquery-ui.css">'."\n";
         // $this->links .= '<link type="text/css" rel="stylesheet" href="css/bootstrap.css" media="screen"/>'."\n";
         // $this->links .= '<link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />'."\n";
@@ -65,24 +69,24 @@ class HTMLHead extends \fw\view\head\HTMLHead
         // $this->links .= '<link type="text/css" rel="stylesheet" href="css/multiselect.css" media="screen">'."\n";
         // $this->links .= '<link type="text/css" rel="stylesheet" href="css/jquery.ui.timepicker.css" media="screen">'."\n";
         $this->links .= '<link type="text/css" rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">'."\n" ;
-        $this->links .= '<link type="text/css" rel="stylesheet" href="app/assets/css/vols.0.2.css" >'."\n" ;
-        $this->links .= '<link type="text/css" rel="stylesheet" href="app/assets/css/menu.0.2.css" >'."\n" ;
+        $this->links .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/vols.0.2.css') . '">'."\n" ;
+        $this->links .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/menu.0.2.css') . '">'."\n" ;
         $this->links .= '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer">';
         if ((int) $this->pagenum < 100) {
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/login.0.2.css" >';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/login.0.2.css') . '">';
         } else if ((int) $this->pagenum < 200) {
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/roster.0.2.css" >';
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/tables.0.2.css" >';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/roster.0.2.css') . '">';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/tables.0.2.css') . '">';
         } else if ((int) $this->pagenum == 332 || (int) $this->pagenum == 335 ) {
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/keyboard.0.2.css" >';
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/attendance.0.2.css" >';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/keyboard.0.2.css') . '">';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/attendance.0.2.css') . '">';
         } else if ((int) $this->pagenum == 333 ) {
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/tables.0.2.css" >';
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/forms.0.2.css" >';
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/attendancereports.0.2.css" >';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/tables.0.2.css') . '">';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/forms.0.2.css') . '">';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/attendancereports.0.2.css') . '">';
         } else {
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/tables.0.2.css" >';
-            $this->links  .= '<link type="text/css" rel="stylesheet" href="app/assets/css/forms.0.2.css" >';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/tables.0.2.css') . '">';
+            $this->links  .= '<link type="text/css" rel="stylesheet" href="' . $cv('assets/css/forms.0.2.css') . '">';
         }
         if ((int) $this->pagenum === 601) {
             $this->links .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js" referrerpolicy="origin"></script>';

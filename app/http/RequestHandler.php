@@ -292,6 +292,53 @@ class RequestHandler   // extends \fw\http\RequestHandler
                             }
                             $output = json_encode($results ?: []);
                             break;
+                        case "wizard_create_roster":
+                        case "wizard_add_task":
+                        case "wizard_remove_task":
+                        case "wizard_add_task_role":
+                        case "wizard_remove_task_role":
+                        case "wizard_create_role":
+                        case "wizard_save_alert":
+                        case "wizard_remove_alert":
+                        case "wizard_assign_user":
+                        case "wizard_remove_user_role":
+                        case "wizard_build_sessions":
+                        case "wizard_get_init_data":
+                        case "wizard_get_full_data":
+                            ob_start(); // buffer any PHP notices/deprecated output that would corrupt JSON
+                            try {
+                                $wmgr = $this->managercollection->RosterWizardManager();
+                                $wmgr->init($this->session);
+                                $d = json_decode($this->requestdata["thedata"] ?? '{}', true);
+                                $errormsg = '';
+                                $result = false;
+                                switch ($action) {
+                                    case "wizard_create_roster":   $result = $wmgr->createRoster($d, $errormsg);   break;
+                                    case "wizard_add_task":        $result = $wmgr->addTask($d, $errormsg);        break;
+                                    case "wizard_remove_task":     $result = $wmgr->removeTask($d, $errormsg);     break;
+                                    case "wizard_add_task_role":   $result = $wmgr->addTaskRole($d, $errormsg);    break;
+                                    case "wizard_remove_task_role":$result = $wmgr->removeTaskRole($d, $errormsg); break;
+                                    case "wizard_create_role":     $result = $wmgr->createRole($d, $errormsg);     break;
+                                    case "wizard_save_alert":      $result = $wmgr->saveAlert($d, $errormsg);      break;
+                                    case "wizard_remove_alert":    $result = $wmgr->removeAlert($d, $errormsg);    break;
+                                    case "wizard_assign_user":     $result = $wmgr->assignUserRole($d, $errormsg); break;
+                                    case "wizard_remove_user_role":$result = $wmgr->removeUserRole($d, $errormsg); break;
+                                    case "wizard_build_sessions":
+                                        $temgr = $this->managercollection->TaskExtenderManager();
+                                        $temgr->init($this->session);
+                                        $result = $wmgr->buildSessions($d, $errormsg, $temgr);
+                                        break;
+                                    case "wizard_get_init_data":   $result = $wmgr->getInitData($d['roster_id'] ?? 0, $errormsg);    break;
+                                    case "wizard_get_full_data":   $result = $wmgr->getFullData($d['roster_id']  ?? 0, $errormsg);  break;
+                                }
+                                $output = json_encode($result !== false
+                                    ? array_merge(['success' => true], is_array($result) ? $result : [])
+                                    : ['success' => false, 'error' => $errormsg]);
+                            } catch (\Throwable $wt) {
+                                $output = json_encode(['success' => false, 'error' => get_class($wt).': '.$wt->getMessage()]);
+                            }
+                            ob_end_clean(); // discard buffered noise so only $output is returned
+                            break;
                         default: $output = "Unknown request action: ".$action;
                     }
                 } else {

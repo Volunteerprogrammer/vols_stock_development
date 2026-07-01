@@ -113,7 +113,8 @@ class RequestProcessController {
                 case "stocklevelreportform":
                 case "stockvariancereportform":
                 case "deliveriesreportform":
-                case "belowminimumreportform": $success = true; break;
+                case "belowminimumreportform":
+                case "stockeventsummaryform": $success = true; break;
                 case "locationform":         $success = $this->processCRUDform($this->managercollection->LocationManager(),$errormessage,$trace); break;
                 case "stocksupplierform":         $success = $this->processCRUDform($this->managercollection->StockSupplierManager(),$errormessage,$trace); break;
                 case "stocksuppliercategoryform": $success = $this->processCRUDform($this->managercollection->StockSupplierCategoryManager(),$errormessage,$trace); break;
@@ -146,7 +147,7 @@ class RequestProcessController {
                 // if not the call bubbles up to the parent class's (StdManager) method which returns an "unkown action" message 
                 $success = $manager->performaction($this->requestdata["action"],$errormessage,$trace);
             }  
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $errormessage = $e->__toString();
         }
         if ($this->trace  || $trace) { echo gtab(-1)."Leave ".__METHOD__."  User > ".$this->session->getuserid().", $errormessage<br>\n"; }

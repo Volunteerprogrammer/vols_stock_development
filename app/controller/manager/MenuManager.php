@@ -53,8 +53,9 @@ class MenuManager  extends \fw\controller\manager\StdManager
     const TRANSFEREVENTPAGE    = 413;
     const ADJUSTMENTEVENTPAGE  = 414;
     const STOCKTAKEEVENTPAGE   = 411;
-    // Stock report page
-    const STOCKLEVELREPORTPAGE = 406;
+    // Stock report page and event summary
+    const STOCKLEVELREPORTPAGE  = 406;
+    const STOCKEVENTSUMMARYPAGE = 407;
     private $pagenumbers = ["0"=>"Submenu Heading"];
     private $c2v;
     protected $name = "Menuitem";

@@ -204,6 +204,37 @@ class StockEventTable extends \fw\database\table\MySQLTable
         return $success;
     }
 
+    // Returns closed events (stocktake, delivery, transfer, adjustment), optionally filtered
+    // by location (either side of the event), and by date_closed range.
+    public function geteventsummary($location_id, $from, $to, &$results, &$numrows, $trace=false) {
+        if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
+        $query  = "SELECT se.id, se.event, se.date_closed, se.total_weight";
+        $query .= ", se.location1_id, se.location2_id, se.supplier_id";
+        $query .= ", l1.name AS location1_name";
+        $query .= ", l2.name AS location2_name";
+        $query .= ", ss.name AS supplier_name";
+        $query .= " FROM stock_event se";
+        $query .= " JOIN stock_location l1 ON se.location1_id = l1.id";
+        $query .= " LEFT JOIN stock_location l2 ON se.location2_id = l2.id";
+        $query .= " LEFT JOIN stock_supplier ss ON se.supplier_id = ss.id";
+        $query .= " WHERE se.event IN ('stocktake','transfer','delivery','adjustment','issue')";
+        $query .= " AND se.status = 'closed'";
+        $params = [];
+        if ($location_id) {
+            $query .= " AND (se.location1_id = ? OR se.location2_id = ?)";
+            $params[] = (int)$location_id;
+            $params[] = (int)$location_id;
+        }
+        if ($from) { $query .= " AND DATE(se.date_closed) >= ?"; $params[] = $from; }
+        if ($to)   { $query .= " AND DATE(se.date_closed) <= ?"; $params[] = $to;   }
+        $query .= " ORDER BY se.date_closed DESC";
+        $success = $params
+            ? $this->query_params($query, $params, $results, $numrows, $trace)
+            : $this->query($query, $results, $numrows, $trace);
+        if ($this->trace || $trace) { echo 'Leave '.__METHOD__."  ({$numrows} rows)<br>"; }
+        return $success;
+    }
+
     // Returns all globally in-progress stocktake events with location name.
     // $result is set to the first row (most recent); $numrows is the total count.
     // Callers use $numrows to distinguish "exactly one" from "multiple".

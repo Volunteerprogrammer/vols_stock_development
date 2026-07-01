@@ -2224,6 +2224,49 @@ input
 /* ---- end Stock item movements history ---- */
 
 /* ============================================================
+   Stock event summary page
+   ============================================================ */
+.vols-eventsummary-wrap {
+    padding: 0.25rem 0;
+}
+.vols-eventsummary-colheadings,
+.vols-eventsummary-row {
+    display: grid;
+    grid-template-columns: 150px 100px 1fr 1fr 1fr auto;
+    padding: 0.35rem 0.5rem;
+    font-size: 1.3rem;
+    align-items: center;
+    gap: 0.5rem;
+}
+.vols-eventsummary-colheadings {
+    font-weight: bold;
+    color: var(--midgrey, #555);
+    background-color: var(--volscolor2, #cadee2);
+    border-bottom: 2px solid #aaa;
+    font-size: 1.4rem;
+}
+.vols-eventsummary-row {
+    color: inherit;
+}
+.vols-eventsummary-row:hover {
+    background-color: var(--neutralbg, rgba(202,222,226,0.5));
+}
+.vols-eventsummary-col-action { text-align: right; }
+.vols-eventsummary-col-date   { color: #555; font-size: 1.2rem; white-space: nowrap; }
+.vols-eventsummary-col-type   { font-weight: 500; }
+.vols-eventsummary-col-sup    { color: var(--midgrey, #666); }
+.vols-eventsummary-type-stocktake  { color: #555; }
+.vols-eventsummary-type-delivery   { color: var(--doitbg, #5c903a); }
+.vols-eventsummary-type-transfer   { color: #1a6fa8; }
+.vols-eventsummary-type-adjustment { color: #7a4f9e; }
+.vols-eventsummary-empty {
+    color: #888;
+    font-style: italic;
+    padding: 1rem 0.5rem;
+    font-size: 1.3rem;
+}
+
+/* ============================================================
    Stock event pages (stocktake, delivery, transfer, adjustment)
    ============================================================ */
 

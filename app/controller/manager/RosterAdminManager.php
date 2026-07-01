@@ -89,6 +89,11 @@ class RosterAdminManager extends \fw\controller\manager\StdManager {
         if ($this->trace || $trace) { echo "Leave ".__METHOD__."<br>"; }
         return $success;
      }
+    public function performaction($action, &$errormessage = '', $trace = false) {
+        $errormessage = "Unknown action: {$action}";
+        return false;
+    }
+
     private function createnewrosterpage($name, &$errormessage) {
         // Reuse an existing unassigned roster page with this name (e.g. from a prior partial save)
         $esc = $this->pagetable->real_escape_string($name);

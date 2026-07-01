@@ -135,4 +135,7 @@ class FormCollection {
     public function HelpAdminForm(): HelpAdminForm {
         return $this->instances[HelpAdminForm::class] ??= $this->factory->getClass(HelpAdminForm::class);
     }
+    public function StockEventSummaryForm(): StockEventSummaryForm {
+        return $this->instances[StockEventSummaryForm::class] ??= $this->factory->getClass(StockEventSummaryForm::class);
+    }
 }

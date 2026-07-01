@@ -267,8 +267,8 @@ abstract class StdCRUDForm extends Form {
                     }
                     return false;
                 });
-                jQuery("#editarea input").on("change",function(){
-                    setfieldinactivestatus ("#resetbutton",false) 
+                jQuery("#editarea input, #editarea select, #editarea textarea").on("change",function(){
+                    setfieldinactivestatus ("#resetbutton",false)
                 });
 
         JS;
