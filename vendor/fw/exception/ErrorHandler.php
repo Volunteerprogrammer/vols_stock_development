@@ -68,10 +68,10 @@ class ErrorHandler
             } catch (Exception $e) {
                 die("Fatal error when renaming $this->logfilename to '".$today." ".$this->logfilename."'");
             } catch (Throwable $warning) {} // ignore warnings 
-            $logfile = fopen($this->logfilename, "a"); //"w" - causes clearing of existing contents, "a" appends
-            $sessstart = str_repeat("=",5).' START at '.lib::nowf()." ".session_id().PHP_EOL;
-            fwrite($logfile,$sessstart);
-            fclose($logfile);
+            // $logfile = fopen($this->logfilename, "a"); //"w" - causes clearing of existing contents, "a" appends
+            // $sessstart = str_repeat("=",5).' START at '.lib::nowf()." ".session_id().PHP_EOL;
+            // fwrite($logfile,$sessstart);
+            // fclose($logfile);
         }
         if ( $this->trace  ) { echo "Leave ".__METHOD__."<br>"; }
      }
