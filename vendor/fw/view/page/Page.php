@@ -32,7 +32,7 @@ abstract class Page
 
 
 
-    private function selecthead ($page_num,\cypo\iface\WebSession $session=null) 
+    private function selecthead ($page_num,?\cypo\iface\WebSession $session=null)
     {    // choose the head section accourding to the page number requested 
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
         switch ($page_num) {
@@ -44,7 +44,7 @@ abstract class Page
         $this->headsection = new \cypo\web\page\HTMLHead($session);
     }
 
-    private function selectbody ($page_num,\cypo\iface\WebSession $session=null) {
+    private function selectbody ($page_num,?\cypo\iface\WebSession $session=null) {
     // choose the body section accourding to the page number requested
     if ($this->trace) { echo "Enter ".__METHOD__.$page_num."<br>"; }
     switch ($page_num) { // this top level switch processes public pages. Secure pages are processed by default...
@@ -224,7 +224,7 @@ abstract class Page
         } 
     }
 
-    public function render(\cypo\iface\WebSession $session=null,$norights=false) 
+    public function render(?\cypo\iface\WebSession $session=null,$norights=false)
     {
         if ($this->trace) { echo "Enter ".__METHOD__."<br>"; }
         $formscript = '';   
