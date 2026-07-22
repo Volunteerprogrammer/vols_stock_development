@@ -77,10 +77,10 @@ class RosterReview {
             if(date('D') == $this->config["app"]["DIGESTDAY"]) { // Date format 'D' = short Dayname e.g. "Sun"
                 $result = $dodigest && $this->digest($trace);// send out reminders to vols booked this week
             }
-            // if(date('D') == $this->config["app"]["PUBLISHDAY"]) { // Date format 'D' = short Dayname e.g. "Sun"
+            if(($this->config["app"]["PUBLISHEVERYDAY"] == true) || (date('D') == $this->config["app"]["PUBLISHDAY"])) { // Date format 'D' = short Dayname e.g. "Sun"
                 $task_id =  $data["task_id"]??0;
                 $result = $domaintainrosters && $this->taskextendermanger->extendsessions($task_id,$this->errorhandler,$this->trace||$trace); // extend the roster and publish sessions as required
-            // }
+            }
             $result = $docheckuserroles && $this->checkuserroles($trace);
             $result = $dochecksessionroles && $this->checksessionroles($trace);
             $result = $dostockalerts && $this->checkstockalerts($trace);

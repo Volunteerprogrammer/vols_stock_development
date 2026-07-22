@@ -180,7 +180,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
     // Subclasses call this at the end of rendereventdefinition().
     protected function renderpreviouseventsrow(): string {
         $html  = '<div id="se-prev-event-row" class="se-event-def-row" style="display:none">';
-        $html .= '<label for="se-prev-event">Previous</label>';
+        $html .= '<label for="se-prev-event">Previous (read only)</label>';
         $html .= '<select id="se-prev-event"><option value=""></option></select>';
         $html .= '<button type="button" id="se-csv-btn" class="vols-button" style="display:none">Download CSV</button>';
         $html .= '<button type="button" id="se-start-btn" class="vols-button">New '
