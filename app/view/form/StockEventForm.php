@@ -83,7 +83,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
     // Shared HTML helpers
     // =========================================================================
 
-    private function renderbanner(): string {
+    protected function renderbanner(): string {
         if (!$this->event_description) return '';
         return '<div class="se-event-header se-event-header-' . htmlspecialchars($this->event_type) . '">'
              . '<span class="se-event-header-icon">' . $this->event_icon . '</span>'
@@ -146,6 +146,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
     private function renderdigitpad(): string {
         $html  = '<div id="se-digitpad" class="se-digitpad">';
         $html .= '<div id="se-action-buttons" class="se-action-buttons">';
+        $html .= '<div class="se-pad-notice">If you leave the page without Closing, all data entered so far are saved. You can return later and pick up where you left off.</div>';
         $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="setTimeout(closestockevent,80)">Close ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="setTimeout(cancelstockevent,80)">Cancel ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '</div>';

@@ -101,7 +101,17 @@ h2{
     padding:0px;
     margin-bottom:10px;
  }
-
+h3{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:1.2rem;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:normal;
+    /* letter-spacing:-1px; */
+    margin:0px;
+    padding:0px;
+    margin-bottom:10px;
+ }
 /*====================================================================*/
 /* GENERAL LAYOUT */
 .page{
@@ -817,6 +827,13 @@ h2{
     color:var(--volscolor4);
     font-weight: 500;
     font-size:3rem;
+    width: auto;
+    text-align: center;
+ }
+ .vols-form-pagesubheading {
+    color:var(--volscolor4);
+    font-weight: 400;
+    font-size:1.8rem;
     width: auto;
     text-align: center;
  }
@@ -2593,6 +2610,10 @@ input
     flex: 0 0 22rem;
     max-width: 22rem;
 }
+.se-pad-notice {
+    font-size:1.4rem;
+    text-align: center;
+}
 .se-pad-display {
     margin-bottom: 0.5rem;
 }
@@ -2673,6 +2694,7 @@ input
     color: #1a5c2a;
     border-color: #3a8a4a;
     font-size: 4.8rem;
+    padding: 0;    
 }
 .se-digit-btn.se-digit-add:hover, .se-digit-btn.se-digit-add:active {
     background-color: #c8eacf;
@@ -2682,6 +2704,7 @@ input
     color: #1a3a7a;
     border-color: #3a5abf;
     font-size: 1.3rem;
+    padding: 0;    
 }
 .se-digit-btn.se-digit-replace:hover, .se-digit-btn.se-digit-replace:active {
     background-color: #c8d8fc;
@@ -2691,6 +2714,7 @@ input
     color: #7a1a1a;
     border-color: #c04040;
     font-size: 4.8rem;
+    padding: 0;    
 }
 .se-digit-btn.se-digit-subtract:hover, .se-digit-btn.se-digit-subtract:active {
     background-color: #f8d0cc;
@@ -2698,7 +2722,7 @@ input
 .se-pad-nav {
     display: flex;
     gap: 0.4rem;
-    margin-top: 3.5rem;
+    margin-top: 2rem;
 }
 .se-digit-prev,
 .se-digit-next,
@@ -2721,8 +2745,8 @@ input
     display: flex;
     gap: 0.5rem;
     margin-bottom: 0.8rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid var(--lightgrey, #e0e0e0);
+    /*padding-bottom: 0.8rem;*/
+    /*border-bottom: 1px solid var(--lightgrey, #e0e0e0);*/
     flex-wrap: wrap;
 }
 .se-action-buttons .vols-button {

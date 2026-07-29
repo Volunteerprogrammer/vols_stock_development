@@ -19,6 +19,14 @@ class AdjustmentEventForm extends StockEventForm {
         $html .= '</div>';
         return $html;
     }
+    protected function renderbanner(): string {
+        if (!$this->event_description) return '';
+        return  '<h3 class="vols-form-pagesubheading">' 
+                . htmlspecialchars("(Only use this page for breakages, spoilage or other untracked stock level changes.)")
+                . '</h3>'
+                .parent::renderbanner();
+
+    }
 
     protected function renderstocktableheader(): string {
         return '<tr>'
