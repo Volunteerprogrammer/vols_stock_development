@@ -113,18 +113,18 @@ function closestockevent() {
                 var r = JSON.parse(resp);
                 if (r.success) {
                     if (r.warning) {
-                        jQuery.volsdialog('OKMSG', r.warning, function() { reloadcurrentpage(); }, undefined, 'Stocktake Closed — Note');
+                        jQuery.volsdialog('OKMSG', r.warning, function() { reloadcurrentpage(); }, undefined, 'Stocktake Finalised — Note');
                     } else {
                         reloadcurrentpage();
                     }
                 } else {
-                    jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot close stocktake');
+                    jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot finalise stocktake');
                 }
             } catch(ex) { console.error(ex, resp); }
         });
     }
 
-    jQuery.volsdialog('YESNO', 'Close this stocktake? This will finalise all entries.',
+    jQuery.volsdialog('YESNO', 'Finalise this stocktake? This will finalise all entries.',
         function() {
             if (!isUncontrolled) { doclose(1); return; }
             jQuery('<div>')
@@ -137,7 +137,7 @@ function closestockevent() {
                     }
                 });
         },
-        undefined, 'Close Stocktake?'
+        undefined, 'Finalise Stocktake?'
     );
 }
 
@@ -185,7 +185,7 @@ jQuery(function() {
                 if (r.found && r.event) {
                     var label = r.event.event.charAt(0).toUpperCase() + r.event.event.slice(1);
                     jQuery.volsdialog('OKMSG',
-                        'A ' + label + ' event is currently in progress at this location. Please close or cancel it before starting a stocktake.',
+                        'A ' + label + ' event is currently in progress at this location. Please finalise or cancel it before starting a stocktake.',
                         function() { jQuery('#se-location1').val(''); },
                         undefined, 'Event In Progress');
                     return;

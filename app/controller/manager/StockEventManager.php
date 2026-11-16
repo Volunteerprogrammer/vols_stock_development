@@ -40,14 +40,14 @@ class StockEventManager extends \fw\controller\manager\StdManager
             $existing = []; $numrows = 0;
             $this->table->getinprogressevent('stocktake', $location1_id, $existing, $numrows);
             if ($numrows > 0) {
-                $errormessage = "A stocktake is already in progress at this location. Close or cancel it before starting a new one.";
+                $errormessage = "A stocktake is already in progress at this location. Finalise or cancel it before starting a new one.";
                 return false;
             }
             $other = []; $othern = 0;
             $this->table->getanyotherinprogresseventatlocation($location1_id, $other, $othern);
             if ($othern > 0) {
                 $ev = $other[0];
-                $errormessage = "A " . ucfirst($ev['event']) . " event is currently in progress at this location. Please close or cancel it before starting a stocktake.";
+                $errormessage = "A " . ucfirst($ev['event']) . " event is currently in progress at this location. Please finalise or cancel it before starting a stocktake.";
                 return false;
             }
         } else {
@@ -56,7 +56,7 @@ class StockEventManager extends \fw\controller\manager\StdManager
                 $stnum = 0;
                 $this->table->hasinprogressstocktakeatlocation($loc_id, $stnum);
                 if ($stnum > 0) {
-                    $errormessage = "A stocktake is in progress at this location — other transactions cannot be recorded until it is closed.";
+                    $errormessage = "A stocktake is in progress at this location — other transactions cannot be recorded until it is finalised.";
                     return false;
                 }
             }

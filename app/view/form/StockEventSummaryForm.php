@@ -117,7 +117,7 @@ class StockEventSummaryForm extends \fw\view\form\StdCRUDForm {
                          . 'var summaryReportTo="'   . htmlspecialchars($to_disp)   . '";</script>';
 
             $formfields .= '<div class="vols-usagereport-summary">';
-            $formfields .= 'Events closed from <strong>' . $from_disp . '</strong> to <strong>' . $to_disp . '</strong>';
+            $formfields .= 'Events finalised from <strong>' . $from_disp . '</strong> to <strong>' . $to_disp . '</strong>';
             if (empty($this->alldata)) {
                 $formfields .= ' &mdash; no events found.';
             } else {

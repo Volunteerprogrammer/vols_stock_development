@@ -146,8 +146,8 @@ abstract class StockEventForm extends \fw\view\form\Form {
     private function renderdigitpad(): string {
         $html  = '<div id="se-digitpad" class="se-digitpad">';
         $html .= '<div id="se-action-buttons" class="se-action-buttons">';
-        $html .= '<div class="se-pad-notice">If you leave the page without Closing, all data entered so far are saved. You can return later and pick up where you left off.</div>';
-        $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="setTimeout(closestockevent,80)">Close ' . htmlspecialchars($this->event_label) . '</button>';
+        $html .= '<div class="se-pad-notice">If you leave the page without Finalising, all data entered so far are saved. You can return later and pick up where you left off.</div>';
+        $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="setTimeout(closestockevent,80)">Finalise ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="setTimeout(cancelstockevent,80)">Cancel ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '</div>';
         // Bordered panel grouping display + keys + commit buttons as one component,
@@ -319,7 +319,7 @@ function checknostocktakeinprogress(locationIds, callback) {
             if (--remaining === 0) {
                 if (blocked) {
                     jQuery.volsdialog('OKMSG',
-                        'A stocktake is currently in progress at this location. Please close the stocktake before recording other transactions.',
+                        'A stocktake is currently in progress at this location. Please finalise the stocktake before recording other transactions.',
                         function() { jQuery('.se-location-select').val(''); },
                         undefined, 'Stocktake in Progress');
                 } else {
@@ -795,18 +795,18 @@ function reloadcurrentpage() {
 }
 
 function closestockevent() {
-    jQuery.volsdialog('YESNO', 'Close this event? This will finalise all entries.',
+    jQuery.volsdialog('YESNO', 'Finalise this event? This will finalise all entries.',
         function() {
             var event_id = jQuery('#se-event-id').val();
             doServerRequest(0, JSON.stringify({ event_id: event_id }), 'stockevent_closeevent').then(function(resp) {
                 try {
                     var r = JSON.parse(resp);
                     if (r.success) { reloadcurrentpage(); }
-                    else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot close event'); }
+                    else { jQuery.volsdialog('OKMSG', r.error, undefined, undefined, 'Cannot finalise event'); }
                 } catch(ex) { console.error(ex, resp); }
             });
         },
-        undefined, 'Close Event?'
+        undefined, 'Finalise Event?'
     );
 }
 
