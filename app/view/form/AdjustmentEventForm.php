@@ -32,6 +32,7 @@ class AdjustmentEventForm extends StockEventForm {
         return '<tr>'
              . '<th class="se-th-category">Category</th>'
              . '<th class="se-th-name">Stock Item</th>'
+             . '<th class="se-th-countby">Count By</th>'
              . '<th class="se-th-qty">Adjustment</th>'
              . '</tr>';
     }
@@ -40,6 +41,7 @@ class AdjustmentEventForm extends StockEventForm {
     protected function renderstockrow(array $row): string {
         $stock_id    = (int)$row['stock_id'];
         $stock_name  = htmlspecialchars($row['stock_name']    ?? '');
+        $count_by    = htmlspecialchars($row['count_by']      ?? '');
         $cat_name    = htmlspecialchars($row['category_name'] ?? '');
         $movement_id = (int)($row['movement_id'] ?? 0);
         $value       = ($row['qty'] !== null && $row['qty'] !== '' && $row['qty'] != 0) ? (int)$row['qty'] : '';
@@ -47,6 +49,7 @@ class AdjustmentEventForm extends StockEventForm {
         return '<tr class="se-stock-row" data-stock-id="' . $stock_id . '">'
              . '<td class="se-td-category">' . $cat_name   . '</td>'
              . '<td class="se-td-name">'     . $stock_name . '</td>'
+             . '<td class="se-td-countby">'  . $count_by   . '</td>'
              . '<td class="se-td-qty">'
              . '<div class="se-qty-wrap">'
              . '<input type="number" step="1" class="se-qty"'

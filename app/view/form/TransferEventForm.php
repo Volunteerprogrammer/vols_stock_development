@@ -27,6 +27,7 @@ class TransferEventForm extends StockEventForm {
         return '<tr>'
              . '<th class="se-th-category">Category</th>'
              . '<th class="se-th-name">Stock Item</th>'
+             . '<th class="se-th-countby">Count By</th>'
              . '<th class="se-th-qoh">Current<br>QOH</th>'
              . '<th class="se-th-target">Target</th>'
              . '<th class="se-th-required">Rqd</th>'
@@ -37,6 +38,7 @@ class TransferEventForm extends StockEventForm {
     protected function renderstockrow(array $row): string {
         $stock_id    = (int)$row['stock_id'];
         $stock_name  = htmlspecialchars($row['stock_name']    ?? '');
+        $count_by    = htmlspecialchars($row['count_by']      ?? '');
         $cat_name    = htmlspecialchars($row['category_name'] ?? '');
         $movement_id = (int)($row['movement_id'] ?? 0);
         $value       = ($row['qty'] !== null && $row['qty'] !== '' && $row['qty'] != 0) ? (int)$row['qty'] : '';
@@ -57,6 +59,7 @@ class TransferEventForm extends StockEventForm {
         return '<tr class="se-stock-row" data-stock-id="' . $stock_id . '" data-qoh="' . $current_qoh . '">'
              . '<td class="se-td-category">' . $cat_name    . '</td>'
              . '<td class="se-td-name">'     . $stock_name  . '</td>'
+             . '<td class="se-td-countby">'  . $count_by    . '</td>'
              . '<td class="se-td-qoh">'      . $current_qoh . '</td>'
              . '<td class="se-td-target">'   . $tgt_html    . '</td>'
              . '<td class="se-td-required">' . $req_html    . '</td>'

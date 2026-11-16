@@ -11,6 +11,7 @@ class StockTable extends \fw\database\table\MySQLTable
             "id"          => "",
             "Name"        => "",
             "Code"        => "",
+            "count_by"    => "",
             "category_id" => "",
         );
         if ($this->trace) { echo 'Leave '.__METHOD__.'<br>'; }

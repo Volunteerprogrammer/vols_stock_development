@@ -49,7 +49,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
     abstract protected function renderstocktableheader(): string;
 
     // Returns one <tr> of the stock table body for the given stock row.
-    // $row contains keys: stock_id, stock_name, category_name, movement_id, qty, stock_qoh, location_id.
+    // $row contains keys: stock_id, stock_name, count_by, category_name, movement_id, qty, stock_qoh, location_id.
     abstract protected function renderstockrow(array $row): string;
 
     // =========================================================================

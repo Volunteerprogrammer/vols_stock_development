@@ -27,6 +27,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
             "id"          => "",
             "Name"        => "",
             "Code"        => "",
+            "count_by"    => "",
             "category_id" => "",
         );
     }
@@ -47,7 +48,8 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '</div>';
         $formfields .= $this->component->buildinputrow("Name", 1, "", 'Name', '', 20, 64, true, '', '');
         $formfields .= $this->component->buildinputrow("Code", 2, "", 'Code', 'Short code for this item', 20, 20, true, '', '');
-        $formfields .= $this->component->buildselectrow("category_id", 3, 1, 'Category', $categorydata, "", $optn, false, false, true, false, '', false);
+        $formfields .= $this->component->buildinputrow("count_by", 3, "", 'Count by', 'Unit an item is counted in at events, e.g. each, 6-pack, box of 12', 20, 20, false, '', '');
+        $formfields .= $this->component->buildselectrow("category_id", 4, 1, 'Category', $categorydata, "", $optn, false, false, true, false, '', false);
 
         $alllocations = $this->parents['locations'] ?? [];
         if (!empty($alllocations)) {
@@ -59,9 +61,9 @@ class StockForm extends \fw\view\form\StdCRUDForm {
             $this->component->setwidths(30, 65, 5);
             $n = count($alllocations);
             foreach ($alllocations as $i => $loc) {
-                $tgt = $this->component->rendertextinput("target_qty_" . $loc['id'], 5, 5, '', false, '', '', '', 4 + $i,           false, false, false, 1, '', '');
-                $min = $this->component->rendertextinput("min_qty_"    . $loc['id'], 5, 5, '', false, '', '', '', 4 + $n + $i,       false, false, false, 1, '', '');
-                $pos = $this->component->rendertextinput("stkpos_"     . $loc['id'], 5, 5, '', false, '', '', '', 4 + 2 * $n + $i,   false, false, false, 1, '', '');
+                $tgt = $this->component->rendertextinput("target_qty_" . $loc['id'], 5, 5, '', false, '', '', '', 5 + $i,           false, false, false, 1, '', '');
+                $min = $this->component->rendertextinput("min_qty_"    . $loc['id'], 5, 5, '', false, '', '', '', 5 + $n + $i,       false, false, false, 1, '', '');
+                $pos = $this->component->rendertextinput("stkpos_"     . $loc['id'], 5, 5, '', false, '', '', '', 5 + 2 * $n + $i,   false, false, false, 1, '', '');
                 $locfields = 'target &nbsp;' . $tgt . ' &nbsp;&nbsp; min &nbsp;' . $min . ' &nbsp;&nbsp; position &nbsp;' . $pos;
                 $formfields .= $this->component->renderformrow(
                     "loc_row_" . $loc['id'], "", $loc['name'], false,

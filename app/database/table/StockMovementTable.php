@@ -83,7 +83,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
     public function getstockforevent($event_id, $category_id, &$results, &$numrows, $trace=false, $supplier_id='', $location_id='') {
         if ($this->trace || $trace) { echo 'Enter '.__METHOD__.'<br>'; }
         $params = [$event_id];
-        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
+        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.count_by, s.category_id,";
         $query .= " sc.Name as category_name,";
         $query .= " sm.id as movement_id, sm.qty, sm.stock_qoh, sm.location_id";
         if (!empty($location_id)) {
@@ -145,7 +145,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
                  . "   AND se_st2.event = 'stocktake' AND se_st2.status = 'closed'{$as_at_cond}"
                  . " ORDER BY se_st2.date_closed DESC LIMIT 1)";
 
-        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
+        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.count_by, s.category_id,";
         $query .= " sc.Name as category_name,";
         $query .= " sm.id as movement_id, sm.qty, sm.stock_qoh, sm.location_id,";
         $query .= " scl.position as category_position, sil.stocktake_position,";
@@ -210,7 +210,7 @@ class StockMovementTable extends \fw\database\table\MySQLTable
                  . "   AND se_st2.event = 'stocktake' AND se_st2.status = 'closed'{$as_at_cond}"
                  . " ORDER BY se_st2.date_closed DESC LIMIT 1)";
 
-        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.category_id,";
+        $query  = "SELECT s.id as stock_id, s.Name as stock_name, s.count_by, s.category_id,";
         $query .= " sc.Name as category_name,";
         $query .= " sm.id as movement_id, sm.qty, sm.stock_qoh, sm.location_id,";
         $query .= " sil_to.target_qty AS target_qty,";

@@ -2474,6 +2474,15 @@ input
 .se-td-name {
     padding: 0.4rem 0.6rem;
 }
+.se-th-countby {
+    text-align: left;
+}
+.se-td-countby {
+    padding: 0.4rem 0.6rem;
+    color: #555;
+    font-size: 1.3rem;
+    white-space: nowrap;
+}
 .se-td-category {
     padding: 0.4rem 0.6rem;
     color: #777;

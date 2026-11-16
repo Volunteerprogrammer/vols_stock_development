@@ -24,16 +24,18 @@ class StocktakeEventForm extends StockEventForm {
         return '<tr>'
              . '<th class="se-th-category">Category</th>'
              . '<th class="se-th-name">Stock Item</th>'
+             . '<th class="se-th-countby">Count By</th>'
              . '<th class="se-th-expected se-readonly-only">Expected</th>'
              . '<th class="se-th-qty">Count</th>'
              . '<th class="se-th-variance se-readonly-only">Variance</th>'
              . '</tr>';
     }
 
-    // $row keys: stock_id, stock_name, category_name, movement_id, qty, stock_qoh, location_id
+    // $row keys: stock_id, stock_name, count_by, category_name, movement_id, qty, stock_qoh, location_id
     protected function renderstockrow(array $row): string {
         $stock_id    = (int)$row['stock_id'];
         $stock_name  = htmlspecialchars($row['stock_name']    ?? '');
+        $count_by    = htmlspecialchars($row['count_by']      ?? '');
         $cat_name    = htmlspecialchars($row['category_name'] ?? '');
         $movement_id = (int)($row['movement_id'] ?? 0);
         // stock_qoh is the actual count recorded; null means not yet counted → show empty input
@@ -47,6 +49,7 @@ class StocktakeEventForm extends StockEventForm {
              . ($expected !== '' ? ' data-expected="' . $expected . '"' : '') . '>'
              . '<td class="se-td-category">' . $cat_name   . '</td>'
              . '<td class="se-td-name">'     . $stock_name . '</td>'
+             . '<td class="se-td-countby">'  . $count_by   . '</td>'
              . '<td class="se-td-expected se-readonly-only">' . ($expected !== '' ? $expected : '&mdash;') . '</td>'
              . '<td class="se-td-qty">'
              . '<div class="se-qty-wrap">'
