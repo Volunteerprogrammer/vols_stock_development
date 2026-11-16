@@ -75,7 +75,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
                     "", "", "", $locfields
                 );
             }
-            $this->component->setwidths(30, 30, 40);
+            $this->component->setwidths($this->promptwidth, $this->inputwidth, $this->hintwidth);
         }
 
         $alllocations = $this->parents['locations'] ?? [];
