@@ -106,7 +106,7 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
                      . '<th class="loc-tgt-name">Stock Item</th>'
                      . '<th class="loc-tgt-qty">Target Qty</th>'
                      . '<th class="loc-tgt-minqty">Min Qty</th>'
-                     . '<th class="loc-tgt-pos">Position</th>'
+                     . '<th class="loc-tgt-pos">Display Order</th>'
                      . '</tr></thead>';
         $formfields .= '<tbody id="loc-targets-tbody"></tbody>';
         $formfields .= '</table>';
@@ -118,8 +118,8 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
         $formfields .= $this->component->rendersectionheading('Category order for stocktake', inputgroup: "catorder");
         $formfields .= '<div class="childcontainer catorder grouped">';
         $formfields .= '<div class="loc-catpos-hint">'
-                     . 'Set a position number for each category to control the order in which they appear '
-                     . 'during a stocktake at this location. Categories without a position are listed last, '
+                     . 'Set a display order number for each category to control the order in which they appear '
+                     . 'during a stocktake at this location. Categories without a display order are listed last, '
                      . 'alphabetically.'
                      . '</div>';
 
@@ -132,7 +132,7 @@ class LocationForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '<table class="vols-table loc-catpos-table">';
         $formfields .= '<thead><tr>'
                      . '<th class="loc-catpos-cat">Category</th>'
-                     . '<th class="loc-catpos-pos">Position</th>'
+                     . '<th class="loc-catpos-pos">Display Order</th>'
                      . '</tr></thead><tbody id="loc-catpos-tbody">';
         foreach ($this->categories as $cat) {
             $cat_id   = (int)$cat['id'];

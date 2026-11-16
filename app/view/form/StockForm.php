@@ -55,7 +55,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         if (!empty($alllocations)) {
             $formfields .= $this->component->rendersectionheading(
                 "Stock levels by location",
-                subheading: "Set target qty, minimum qty, and stocktake position for each location. Position orders items within their category during a stocktake — items without a position follow alphabetically.",
+                subheading: "Set target qty, minimum qty, and display order for each location. Display order sets the order of items within their category during a stocktake — items without a display order follow alphabetically.",
                 inputgroup: "stocklevelsloc"
             );
             $this->component->setwidths(30, 65, 5);
@@ -64,7 +64,7 @@ class StockForm extends \fw\view\form\StdCRUDForm {
                 $tgt = $this->component->rendertextinput("target_qty_" . $loc['id'], 5, 5, '', false, '', '', '', 5 + $i,           false, false, false, 1, '', '');
                 $min = $this->component->rendertextinput("min_qty_"    . $loc['id'], 5, 5, '', false, '', '', '', 5 + $n + $i,       false, false, false, 1, '', '');
                 $pos = $this->component->rendertextinput("stkpos_"     . $loc['id'], 5, 5, '', false, '', '', '', 5 + 2 * $n + $i,   false, false, false, 1, '', '');
-                $locfields = 'target &nbsp;' . $tgt . ' &nbsp;&nbsp; min &nbsp;' . $min . ' &nbsp;&nbsp; position &nbsp;' . $pos;
+                $locfields = 'target &nbsp;' . $tgt . ' &nbsp;&nbsp; min &nbsp;' . $min . ' &nbsp;&nbsp; display order &nbsp;' . $pos;
                 $formfields .= $this->component->renderformrow(
                     "loc_row_" . $loc['id'], "", $loc['name'], false,
                     "", "", "", $locfields
