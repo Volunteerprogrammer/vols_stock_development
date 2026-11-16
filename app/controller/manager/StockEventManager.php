@@ -453,7 +453,8 @@ class StockEventManager extends \fw\controller\manager\StdManager
         $filename = $event_type . '_' . $date_str . '_' . $event_id . '.csv';
 
         $qty_label = ['delivery' => 'Qty Received', 'transfer' => 'Qty Transferred',
-                      'adjustment' => 'Adjustment', 'stocktake' => 'Count'];
+                      'adjustment' => 'Adjustment', 'stocktake' => 'Count',
+                      'issue' => 'Qty Supplied'];
         $lines   = ['"Category","Stock Item","' . ($qty_label[$event_type] ?? 'Qty') . '"'];
         foreach ($rows as $row) {
             $qty    = ($event_type === 'stocktake') ? $row['stock_qoh'] : $row['qty'];

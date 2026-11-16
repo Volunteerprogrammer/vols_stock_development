@@ -52,6 +52,7 @@ class MenuManager  extends \fw\controller\manager\StdManager
     const DELIVERYEVENTPAGE    = 412;
     const TRANSFEREVENTPAGE    = 413;
     const ADJUSTMENTEVENTPAGE  = 414;
+    const SUPPLIESEVENTPAGE    = 417;   // 'issue' events
     const STOCKTAKEEVENTPAGE   = 411;
     // Stock report page and event summary
     const STOCKLEVELREPORTPAGE  = 406;

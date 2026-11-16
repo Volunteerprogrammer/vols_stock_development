@@ -219,6 +219,7 @@ class ViewController {
                 case $c2v($mm::DELIVERYEVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->DeliveryEventForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::TRANSFEREVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->TransferEventForm(),$errormessage,"",$trace);break;
                 case $c2v($mm::ADJUSTMENTEVENTPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->AdjustmentEventForm(),$errormessage,"",$trace);break;
+                case $c2v($mm::SUPPLIESEVENTPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->StockEventManager(),$this->forms->SuppliesEventForm(),$errormessage,"",$trace);break;
             case $c2v($mm::HELPDISPLAYPAGE) : $this->setthispage(1,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpForm(),$errormessage,'',$trace); break;
             case $c2v($mm::HELPADMINPAGE)   : $this->setthispage(0,$this->pagenum,$this->mgrs->HelpManager(),$this->forms->HelpAdminForm(),$errormessage,'title',$trace); break;
             case $c2v($mm::ROSTERADMINPAGE) : $this->setthispage(0,$this->pagenum,$this->mgrs->RosterAdminManager(),$this->forms->RosterAdminForm(),$errormessage,"name",$trace); break;
@@ -288,7 +289,8 @@ class ViewController {
             case $c2v($mm::STOCKTAKEEVENTPAGE)    :
             case $c2v($mm::DELIVERYEVENTPAGE)     :
             case $c2v($mm::TRANSFEREVENTPAGE)     :
-            case $c2v($mm::ADJUSTMENTEVENTPAGE)   :$success = $this->prepare_stockevent_body($user_id,$errormessage,$trace); break;
+            case $c2v($mm::ADJUSTMENTEVENTPAGE)   :
+            case $c2v($mm::SUPPLIESEVENTPAGE)     :$success = $this->prepare_stockevent_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::HELPDISPLAYPAGE)       :$success = $this->prepare_help_display_body($user_id,$errormessage,$trace); break;
             case $c2v($mm::HELPADMINPAGE)         :$success = $this->prepare_help_admin_body($user_id,$errormessage,$trace); break;
             default:
@@ -860,7 +862,8 @@ class ViewController {
             'delivery'   => $this->forms->DeliveryEventForm(),
             'transfer'   => $this->forms->TransferEventForm(),
             'adjustment' => $this->forms->AdjustmentEventForm(),
-            default      => $this->forms->StocktakeEventForm(),
+            'issue'      => $this->forms->SuppliesEventForm(),
+            default     => $this->forms->StocktakeEventForm(),
         };
      }
     private function prepare_stocktake_body($user_id,&$errormessage,$trace=false) {

@@ -114,6 +114,9 @@ class FormCollection {
     public function AdjustmentEventForm(): AdjustmentEventForm {
         return $this->instances[AdjustmentEventForm::class] ??= $this->factory->getClass(AdjustmentEventForm::class);
     }
+    public function SuppliesEventForm(): SuppliesEventForm {
+        return $this->instances[SuppliesEventForm::class] ??= $this->factory->getClass(SuppliesEventForm::class);
+    }
     public function StocktakeVarianceReportForm(): StocktakeVarianceReportForm {
         return $this->instances[StocktakeVarianceReportForm::class] ??= $this->factory->getClass(StocktakeVarianceReportForm::class);
     }

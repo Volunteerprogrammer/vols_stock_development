@@ -8,6 +8,7 @@ app/config/**
 !sql/regenerate_audit_triggers.sql
 !sql/help_content_setup.sql
 !sql/roster_setup.sql
+!sql/stock_supplies_page_setup.sql
 
 # Claude Code personal settings (shared .claude/settings.json etc. may be committed)
 .claude/settings.local.json

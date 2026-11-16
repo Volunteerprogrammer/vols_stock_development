@@ -87,6 +87,7 @@ $formTests = [
     'DeliveryEventForm'            => \app\view\form\DeliveryEventForm::class,
     'TransferEventForm'            => \app\view\form\TransferEventForm::class,
     'AdjustmentEventForm'          => \app\view\form\AdjustmentEventForm::class,
+    'SuppliesEventForm'            => \app\view\form\SuppliesEventForm::class,
     'StocktakeVarianceReportForm'  => \app\view\form\StocktakeVarianceReportForm::class,
     'StockClientForm'              => \app\view\form\StockClientForm::class,
     'DeliveriesReportForm'         => \app\view\form\DeliveriesReportForm::class,

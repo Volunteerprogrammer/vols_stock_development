@@ -14,6 +14,7 @@ class StockEventSummaryForm extends \fw\view\form\StdCRUDForm {
         'delivery'   => 412,
         'transfer'   => 413,
         'adjustment' => 414,
+        'issue'      => 417,   // Supplies page
     ];
 
     private const TYPE_LABEL = [
