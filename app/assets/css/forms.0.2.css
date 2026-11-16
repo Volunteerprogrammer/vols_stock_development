@@ -2398,6 +2398,10 @@ input
 .se-total-weight-input {
     width: 8rem;
 }
+/* Non-stock field currently targeted by the digit pad (matches active-row highlight). */
+.se-pad-field.se-pad-active {
+    background-color: #fff176;
+}
 .se-start-area {
     display: flex;
     align-items: center;
@@ -2622,6 +2626,14 @@ input
 .se-pad-notice {
     font-size:1.4rem;
     text-align: center;
+}
+/* Bordered panel around display + keys + commit row (excludes Close/Cancel and Prev/Next). */
+.se-pad-core {
+    border: 2px solid #999;
+    border-radius: 6px;
+    padding: 0.6rem;
+    background-color: var(--volscolor2, #cadee2);
+    box-sizing: border-box;
 }
 .se-pad-display {
     margin-bottom: 0.5rem;

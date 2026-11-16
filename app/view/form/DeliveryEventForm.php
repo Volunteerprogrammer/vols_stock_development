@@ -51,7 +51,8 @@ class DeliveryEventForm extends StockEventForm {
         return '<div class="se-event-def-row">'
              . '<label for="se-total-weight">Total delivery weight (kg)</label>'
              . '<input type="number" id="se-total-weight" min="0" step="1"'
-             . ' class="se-total-weight-input" value="' . $weight . '">'
+             . ' class="se-total-weight-input se-pad-field" data-pad-integer="1" value="' . $weight . '"'
+             . ' title="Tap here, then enter the weight on the keypad">'
              . '</div>';
     }
 
@@ -191,7 +192,7 @@ class DeliveryEventForm extends StockEventForm {
 
     jQuery(document).on('change', '#se-total-weight', function() {
         var event_id = jQuery('#se-event-id').val();
-        if (!event_id) return;
+        if (!event_id || jQuery(this).prop('readonly')) return;
         doServerRequest(0, JSON.stringify({event_id: event_id, weight: jQuery(this).val()}), 'stockevent_saveweight');
     });
 

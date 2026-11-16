@@ -150,6 +150,9 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html .= '<button type="button" id="se-close-btn"  class="vols-button" onclick="setTimeout(closestockevent,80)">Close ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '<button type="button" id="se-cancel-btn" class="vols-button vols-button-danger" onclick="setTimeout(cancelstockevent,80)">Cancel ' . htmlspecialchars($this->event_label) . '</button>';
         $html .= '</div>';
+        // Bordered panel grouping display + keys + commit buttons as one component,
+        // visually separate from Close/Cancel above and Prev/Next below.
+        $html .= '<div class="se-pad-core">';
         $html .= '<div class="se-pad-display">';
         $html .= '<input type="text" id="se-pad-display" readonly tabindex="-1">';
         $html .= '</div>';
@@ -169,6 +172,7 @@ abstract class StockEventForm extends \fw\view\form\Form {
         $html .= '<button type="button" class="se-digit-btn se-digit-replace"  data-key="replace"  tabindex="-1">REPLACE</button>';
         $html .= '<button type="button" class="se-digit-btn se-digit-subtract" data-key="subtract" tabindex="-1">-</button>';
         $html .= '</div>';
+        $html .= '</div>'; // se-pad-core
         $html .= '<div class="se-pad-nav">';
         $html .= '<button type="button" class="se-digit-btn se-digit-prev" data-key="prev" tabindex="-1">&#9166; Prev</button>';
         $html .= '<button type="button" class="se-digit-btn se-digit-next" data-key="next" tabindex="-1">Next &#9166;</button>';
@@ -394,18 +398,41 @@ function getbreakdown(stockId) {
 
     function schedulesave() {
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(function() {
-            if ($activeInput) savemovement($activeInput);
-        }, 1500);
+        saveTimer = setTimeout(commitactive, 1500);
+    }
+
+    // Saves the active pad target. Stock qty inputs save a movement; other pad
+    // fields (class se-pad-field, e.g. delivery total weight) fire 'change' so
+    // their own page-specific handler saves them.
+    function commitactive() {
+        if (!$activeInput) return;
+        if ($activeInput.hasClass('se-qty')) { savemovement($activeInput); }
+        else { $activeInput.trigger('change'); }
     }
 
     // Track which qty input is active; unlock audio on focus (fires within gesture).
     jQuery(document).on('focus', '.se-qty', function() {
         $activeInput = jQuery(this);
         jQuery('#se-pad-display').val('');
+        jQuery('.se-pad-field').removeClass('se-pad-active');
         jQuery('#se-stock-table-body tr').css('background-color', '');
         jQuery(this).closest('tr').css('background-color', '#fff176');
         unlockAudioCtx();
+    });
+
+    // Non-stock fields the digit pad can also fill (tablets have no popup keyboard).
+    jQuery(document).on('focus', '.se-pad-field', function() {
+        if (jQuery(this).prop('readonly')) return;
+        $activeInput = jQuery(this);
+        jQuery('#se-pad-display').val('');
+        jQuery('#se-stock-table-body tr').css('background-color', '');
+        jQuery('.se-pad-field').removeClass('se-pad-active');
+        jQuery(this).addClass('se-pad-active');
+        unlockAudioCtx();
+    }).on('blur', '.se-pad-field', function() {
+        if (!$activeInput || $activeInput[0] !== this) return;
+        clearTimeout(saveTimer);
+        jQuery(this).trigger('change');
     });
 
     // Row tap: unlock audio on touchstart (earliest possible gesture signal).
@@ -429,7 +456,8 @@ function getbreakdown(stockId) {
     var lastPadTouch = 0;
 
     function handlepadkey(btn) {
-        if (!$activeInput) return;
+        if (!$activeInput || $activeInput.prop('readonly')) return;
+        var isqty  = $activeInput.hasClass('se-qty');   // false for se-pad-field targets
         var key    = jQuery(btn).data('key');
         var padVal = String(jQuery('#se-pad-display').val() || '');
 
@@ -448,7 +476,7 @@ function getbreakdown(stockId) {
             }
             var doNavigate = function() {
                 clearTimeout(saveTimer);
-                savemovement($activeInput);
+                commitactive();
                 jQuery('#se-pad-display').val('');
                 if ($target.length) { $target.focus(); } else { $activeInput.blur(); }
             };
@@ -464,7 +492,7 @@ function getbreakdown(stockId) {
             var padNum  = parseFloat(padVal || '0')  || 0;
             $activeInput.val(String(Math.round((current + padNum) * 10) / 10));
             jQuery('#se-pad-display').val('');
-            if (padNum !== 0) {
+            if (isqty && padNum !== 0) {
                 var sid = String($activeInput.data('stock-id'));
                 if (!componentLog[sid]) componentLog[sid] = current !== 0 ? [{op: null, val: current}] : [];
                 componentLog[sid].push(componentLog[sid].length === 0 ? {op: null, val: padNum} : {op: '+', val: padNum});
@@ -474,8 +502,10 @@ function getbreakdown(stockId) {
             var repVal = padVal === '' ? '' : (parseFloat(padVal) || 0);
             $activeInput.val(repVal === '' ? '' : String(repVal));
             jQuery('#se-pad-display').val('');
-            var sid = String($activeInput.data('stock-id'));
-            componentLog[sid] = (repVal !== '' && repVal !== 0) ? [{op: null, val: repVal}] : [];
+            if (isqty) {
+                var sid = String($activeInput.data('stock-id'));
+                componentLog[sid] = (repVal !== '' && repVal !== 0) ? [{op: null, val: repVal}] : [];
+            }
             schedulesave();
         } else if (key === 'subtract') {
             var current = parseFloat($activeInput.val() || '0') || 0;
@@ -490,7 +520,7 @@ function getbreakdown(stockId) {
             } else {
                 $activeInput.val(String(result));
                 jQuery('#se-pad-display').val('');
-                if (padNum !== 0) {
+                if (isqty && padNum !== 0) {
                     var sid = String($activeInput.data('stock-id'));
                     if (!componentLog[sid]) componentLog[sid] = current !== 0 ? [{op: null, val: current}] : [];
                     componentLog[sid].push(componentLog[sid].length === 0 ? {op: null, val: result} : {op: '-', val: padNum});
@@ -498,6 +528,8 @@ function getbreakdown(stockId) {
                 schedulesave();
             }
         } else if (key === '.') {
+            // Fields marked data-pad-integer="1" (e.g. delivery weight) take whole numbers only.
+            if ($activeInput.data('pad-integer')) return;
             if (padVal.indexOf('.') === -1) {
                 jQuery('#se-pad-display').val(padVal === '' ? '0.' : padVal + '.');
             }
@@ -684,7 +716,7 @@ function getbreakdown(stockId) {
     window.addEventListener('pagehide', function() {
         if ($activeInput) {
             clearTimeout(saveTimer);
-            savemovement($activeInput);
+            commitactive();
         }
     });
 })();
