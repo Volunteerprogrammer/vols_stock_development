@@ -75,6 +75,22 @@ class StockManager extends \fw\controller\manager\StdManager
         return $success && $this->savetargetqtys($id, $errormessage);
     }
 
+    // weeklylimit is INT NOT NULL (0 = no limit): a blank or non-numeric value from the
+    // form would be sent as '' and rejected under strict SQL mode, so default it to 0.
+    private function normalisestockdata($data) {
+        $wl = trim((string)($data['weeklylimit'] ?? ''));
+        $data['weeklylimit'] = ctype_digit($wl) ? (int)$wl : 0;
+        return $data;
+    }
+
+    protected function preparesetstatement($data) {
+        return parent::preparesetstatement($this->normalisestockdata($data));
+    }
+
+    protected function insertdataintotablefields($data) {
+        parent::insertdataintotablefields($this->normalisestockdata($data));
+    }
+
     public function getmovements($stock_id, &$results, &$numrows, $trace=false) {
         return $this->movementtable->getmovementsforitem($stock_id, $results, $numrows, $trace);
     }

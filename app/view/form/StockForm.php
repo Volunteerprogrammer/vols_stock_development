@@ -3,9 +3,9 @@ namespace app\view\form;
 use \lib\StdLib as lib;
 class StockForm extends \fw\view\form\StdCRUDForm {
     protected $trace = false;
-    protected $promptwidth = 30;
-    protected $inputwidth  = 40;
-    protected $hintwidth   = 30;
+    protected $promptwidth = 25;
+    protected $inputwidth  = 30;
+    protected $hintwidth   = 45;
     protected $fields      = [];
     protected $names       = [];
     protected $parents     = [];
@@ -27,8 +27,10 @@ class StockForm extends \fw\view\form\StdCRUDForm {
             "id"          => "",
             "Name"        => "",
             "Code"        => "",
-            "count_by"    => "",
-            "category_id" => "",
+            "count_by"      => "",
+            "foodbank_unit" => "",
+            "weeklylimit"   => "0",
+            "category_id"   => "",
         );
     }
 
@@ -47,9 +49,12 @@ class StockForm extends \fw\view\form\StdCRUDForm {
         $formfields .= '<span class="vols-stockmaint-text">Manage stock items. Add, edit or delete items that can be tracked in inventory.</span>';
         $formfields .= '</div>';
         $formfields .= $this->component->buildinputrow("Name", 1, "", 'Name', '', 20, 64, true, '', '');
-        $formfields .= $this->component->buildinputrow("Code", 2, "", 'Code', 'Short code for this item', 20, 20, true, '', '');
-        $formfields .= $this->component->buildinputrow("count_by", 3, "", 'Count by', 'Unit an item is counted in at events, e.g. each, 6-pack, box of 12', 20, 20, false, '', '');
-        $formfields .= $this->component->buildselectrow("category_id", 4, 1, 'Category', $categorydata, "", $optn, false, false, true, false, '', false);
+        $formfields .= $this->component->buildinputrow("Code", 2, "", 'Code', '', 20, 20, true, '', 'Short code for this item');
+        // 5th arg of buildinputrow() is the placeholder; the hint column text is the 10th ($hint).
+        $formfields .= $this->component->buildinputrow("count_by", 3, "", 'Count by', '', 20, 20, false, '', 'Unit an item is counted in at events, e.g. each, 6-pack, box of 12');
+        $formfields .= $this->component->buildinputrow("foodbank_unit", 4, "", 'Foodbank unit', '', 20, 20, false, '', 'Unit the foodbank uses for this item, e.g. tin, packet, kg');
+        $formfields .= $this->component->buildinputrow("weeklylimit", 5, "", 'Weekly limit', '', 5, 6, false, '', '0 means there is no limit');
+        $formfields .= $this->component->buildselectrow("category_id", 6, 1, 'Category', $categorydata, "", $optn, false, false, true, false, '', false);
 
         $alllocations = $this->parents['locations'] ?? [];
         if (!empty($alllocations)) {
@@ -61,16 +66,16 @@ class StockForm extends \fw\view\form\StdCRUDForm {
             $this->component->setwidths(30, 65, 5);
             $n = count($alllocations);
             foreach ($alllocations as $i => $loc) {
-                $tgt = $this->component->rendertextinput("target_qty_" . $loc['id'], 5, 5, '', false, '', '', '', 5 + $i,           false, false, false, 1, '', '');
-                $min = $this->component->rendertextinput("min_qty_"    . $loc['id'], 5, 5, '', false, '', '', '', 5 + $n + $i,       false, false, false, 1, '', '');
-                $pos = $this->component->rendertextinput("stkpos_"     . $loc['id'], 5, 5, '', false, '', '', '', 5 + 2 * $n + $i,   false, false, false, 1, '', '');
+                $tgt = $this->component->rendertextinput("target_qty_" . $loc['id'], 5, 5, '', false, '', '', '', 7 + $i,           false, false, false, 1, '', '');
+                $min = $this->component->rendertextinput("min_qty_"    . $loc['id'], 5, 5, '', false, '', '', '', 7 + $n + $i,       false, false, false, 1, '', '');
+                $pos = $this->component->rendertextinput("stkpos_"     . $loc['id'], 5, 5, '', false, '', '', '', 7 + 2 * $n + $i,   false, false, false, 1, '', '');
                 $locfields = 'target &nbsp;' . $tgt . ' &nbsp;&nbsp; min &nbsp;' . $min . ' &nbsp;&nbsp; display order &nbsp;' . $pos;
                 $formfields .= $this->component->renderformrow(
                     "loc_row_" . $loc['id'], "", $loc['name'], false,
                     "", "", "", $locfields
                 );
             }
-            $this->component->setwidths(30, 40, 30);
+            $this->component->setwidths(30, 30, 40);
         }
 
         $alllocations = $this->parents['locations'] ?? [];
@@ -116,6 +121,11 @@ class StockForm extends \fw\view\form\StdCRUDForm {
                 }
                 if (!jQuery("#Code").val()) {
                     jQuery("#Coderow_error").html("(This is a required field.)");
+                    errors++;
+                }
+                var wl = jQuery.trim(jQuery("#weeklylimit").val());
+                if (wl !== "" && !/^\d+$/.test(wl)) {
+                    jQuery("#weeklylimitrow_error").html("(Enter a whole number, or 0 for no limit.)");
                     errors++;
                 }
                 if (!jQuery("#category_id").val()) {
